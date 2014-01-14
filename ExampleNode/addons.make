@@ -1,0 +1,4 @@
+ofxNetwork
+ofxJSON
+ofxKinectCommonBridge
+ofxMultiTrack
