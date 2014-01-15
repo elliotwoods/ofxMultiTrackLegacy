@@ -94,7 +94,6 @@
     <ClInclude Include="..\..\ofxNetwork\src\ofxTCPManager.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxTCPServer.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxUDPManager.h" />
-    <ClInclude Include="..\src\ofxMultiTrack\Constants.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Base.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\KinectSDK.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Set.h" />
@@ -102,7 +101,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Skeleton.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Node.h" />
-    <ClInclude Include="..\src\ofxMultiTrack\Types.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Server.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_reader.cpp" />
@@ -118,6 +119,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\Devices\Set.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

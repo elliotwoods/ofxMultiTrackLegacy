@@ -10,6 +10,7 @@ namespace ofxMultiTrack {
 			virtual string getType() = 0;
 			virtual void init() = 0;
 			virtual void update() = 0;
+			virtual string getStatus() = 0;
 		protected:
 		};
 	}

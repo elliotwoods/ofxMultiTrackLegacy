@@ -42,6 +42,11 @@ namespace ofxMultiTrack {
 		}
 
 		//---------
+		string KinectSDK::getStatus() {
+			return "Kinect ID#" + ofToString(deviceID) + (this->kinect.isFrameNew() ? " ." : "");
+		}
+
+		//---------
 		ofxKinectCommonBridge& KinectSDK::getDevice() {
 			return this->kinect;
 		}

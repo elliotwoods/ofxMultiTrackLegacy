@@ -2,27 +2,46 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofSetFrameRate(100);
+	ofBackground(20);
+	ofSetVerticalSync(true);
+
+	server.init();
+	server.addNode("localhost", 0);
+	server.addNode("localhost", 1);
+
+	//--
+	//gui code
+	//
+	gui.init();
+	auto statusPanel = ofPtr<ofxCvGui::Panels::Scroll>(new ofxCvGui::Panels::Scroll);
+	gui.add(statusPanel);
+	auto worldPanel = gui.makeWorld();
+	gui.add(worldPanel);
+
+	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
+	statusPanel->add(statusElement);
+	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
+		auto status = server.getStatus();
+		ofDrawBitmapString(status, 10, 20);
+		auto resizeBounds = statusElement->getBounds();
+		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;
+		statusElement->setBounds(resizeBounds);
+	};
+
+	worldPanel->onDrawWorld += [this] (ofCamera&) {
+		this->server.drawWorld();
+	};
+	//
+	//--
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	if (ofGetFrameNum() == 5) {
-		node.init();
-	}
-	if (ofGetFrameNum() >= 5) {
-		node.update();
-	}
+	server.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	if (ofGetFrameNum() < 5) {
-		ofDrawBitmapString("Initialising...", 10, 20);
-	} else {
-		ofBackground(20);
-		ofDrawBitmapString(this->node.getStatus(), 10, 20);
-	}
 }
 
 //--------------------------------------------------------------

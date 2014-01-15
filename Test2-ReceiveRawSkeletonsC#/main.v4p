@@ -1,0 +1,231 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45alpha31.1.dtd" >
+   <PATCH nodename="C:\openFrameworks\addons\ofxMultiTrack\Test2-ReceiveRawSkeletonsC#\main.v4p" systemname="main" filename="C:\openFrameworks\addons\ofxMultiTrack\Test2-ReceiveRawSkeletonsC#\main.v4p">
+   <BOUNDS type="Window" left="2385" top="0" width="16815" height="11160">
+   </BOUNDS>
+   <NODE systemname="Timing (Debug)" nodename="Timing (Debug)" componentmode="Hidden" id="7">
+   <BOUNDS type="Node" left="4830" top="765" width="100" height="100">
+   </BOUNDS>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="8" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="4815" top="1425" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4815" top="1425" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="7" srcpinname="frames per second" dstnodeid="8" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="Receive (MultiTrack)" filename="plugins\MultiTrackReceive\MultiTrackReceive.csproj" nodename="Receive (MultiTrack)" componentmode="Hidden" id="29">
+   <BOUNDS type="Node" left="9525" top="4815" width="1755" height="270">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="30" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="9540" top="4140" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="9540" top="4140" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="localhost">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="localhost">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Client Address|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="30" srcpinname="Output String" dstnodeid="29" dstpinname="Client Address">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="31" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="11220" top="4140" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11220" top="4140" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Client Index|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="31" srcpinname="Y Output Value" dstnodeid="29" dstpinname="Client Index">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="33" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="11220" top="5490" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11220" top="5490" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Connected">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Connected" dstnodeid="33" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="AsXElement (JSON)" filename="%VVVV%\addonpack\lib\nodes\plugins\JSONStringAsElement.dll" nodename="AsXElement (JSON)" componentmode="Hidden" id="34">
+   <BOUNDS type="Node" left="8400" top="6480" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="JSON" visible="1" slicecount="1" values="|{&lf;   &quot;localIndex&quot; : 0,&lf;   &quot;modules&quot; : [&lf;      {&lf;         &quot;data&quot; : {&lf;            &quot;users&quot; : [ null, null, null, null, null, null ]&lf;         },&lf;         &quot;type&quot; : &quot;Skeleton&quot;&lf;      }&lf;   ],&lf;   &quot;timestamp&quot; : 3027914&lf;}&lf;|">
+   </PIN>
+   <PIN pinname="Element" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="34" dstpinname="JSON">
+   </LINK>
+   <NODE systemname="Renderer (TTY)" nodename="Renderer (TTY)" componentmode="Hidden" id="37">
+   <BOUNDS type="Node" left="6675" top="6855" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="6675" top="6855" width="2400" height="1800">
+   </BOUNDS>
+   <BOUNDS type="Window" left="-3825" top="9480" width="8505" height="5085">
+   </BOUNDS>
+   </NODE>
+   <NODE systemname="Element (XElement Split)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Element (XElement Split)" componentmode="Hidden" id="38">
+   <BOUNDS type="Node" left="8550" top="7365" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Element" visible="1">
+   </PIN>
+   <PIN pinname="Children" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="39" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="9540" top="6090" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="9540" top="6090" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="39" dstpinname="Input String">
+   </LINK>
+   <NODE systemname="GetElements (XElement ByXPath)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="GetElements (XElement ByXPath)" componentmode="Hidden" id="40">
+   <BOUNDS type="Node" left="11055" top="7275" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Element" visible="1">
+   </PIN>
+   <PIN pinname="Elements" visible="1">
+   </PIN>
+   <PIN pinname="XPath" slicecount="1" values="/root">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Element" dstnodeid="40" dstpinname="Element">
+   </LINK>
+   <NODE systemname="Element (XElement Split)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Element (XElement Split)" componentmode="Hidden" id="41">
+   <BOUNDS type="Node" left="8865" top="7815" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Element" visible="1">
+   </PIN>
+   <PIN pinname="Value" visible="1">
+   </PIN>
+   <PIN pinname="Children" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Element" dstnodeid="38" dstpinname="Element">
+   </LINK>
+   <NODE systemname="Element (XElement Split)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Element (XElement Split)" componentmode="Hidden" id="42">
+   <BOUNDS type="Node" left="11025" top="7770" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Element" visible="1" slicecount="1" values="||">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="40" srcpinname="Elements" dstnodeid="42" dstpinname="Element">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="43" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="11040" top="8235" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11040" top="8235" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="42" srcpinname="Name" dstnodeid="43" dstpinname="Input String">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="44" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="11520" top="6780" width="3195" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11520" top="6780" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="/modules/item/data/users/item">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="MyChildTag/MyChildsChildTag">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="44" srcpinname="Output String" dstnodeid="40" dstpinname="XPath">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="45" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="8280" top="8250" width="885" height="1275">
+   </BOUNDS>
+   <BOUNDS type="Node" left="8280" top="8250" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="5">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="41" srcpinname="Name" dstnodeid="45" dstpinname="Input String">
+   </LINK>
+   <LINK srcnodeid="40" srcpinname="Elements" dstnodeid="41" dstpinname="Element">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="46" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="9450" top="8715" width="885" height="1275">
+   </BOUNDS>
+   <BOUNDS type="Node" left="9450" top="8715" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="5">
+   </PIN>
+   <PIN pinname="Input String" visible="1" slicecount="1" values="0.5003259181976318-0.87673169374465942.192227602005005-0.01565339788794518-0.001241919700987637-0.079081110656261440.99674451351165770.6571322083473206-0.77740937471389772.057830333709717-0.1939735561609268-0.0076600797474384310.038709051907062530.98021286725997930.3031092584133148-0.21543468534946442.644475936889648-0.1529484242200851-0.3448435664176941-0.35321429371833800.85611295700073240.85550278425216680.066550329327583312.527461767196655-0.1585842818021774-0.5354365110397339-0.14776201546192170.81628745794296270.4800477921962738-0.91380029916763312.1283900737762450.3410332202911377-0.041211340576410290.11266931891441350.93236452341079710.6376962065696716-0.83209550380706792.0268595218658450.1269113719463348-0.026240313425660130.20077066123485570.97102838754653930.04543988779187203-0.34106144309043882.4790616035461430.22464698553085330.017898302525281910.077378347516059880.97119826078414920.9217469692230225-0.14367102086544042.216147184371948-0.0055646668188273910.0005904669524170458-0.10551452636718750.99440205097198490.48293238878250120.34341078996658332.866903066635132-0.01094660069793463-0.0005446987925097346-0.049696773290634160.99870425462722780.5020925998687744-0.25048711895942692.5046169757843020.07119837403297424-0.9165577888488770-0.35239961743354800.17512214183807370.4078390598297119-0.33401736617088322.480149507522583-2.516405395169841e-008-2.516405217534157e-008-0.89596724510192870.44412049651145940.5742542147636414-0.28850480914115912.431608438491821-3.910987445010505e-0089.777468612526263e-0090.92457199096679690.38100764155387880.4330883324146271-0.63030153512954712.327820539474487-0.11847725510597230.06107413768768311-0.42609798908233640.89480364322662350.6092920899391174-0.52755844593048102.1725296974182130.024926545098423960.0029276309069246050.32514038681983950.94533270597457890.50452017784118650.18077300488948822.7752044200897220.31174013018608090.015033707953989510.018929246813058850.94985985755920410.33788678050041200.036837372928857802.7627685070037840.02184839546680450-0.04295986145734787-0.89031219482421880.45279300212860110.63331151008605960.094097778201103212.6465587615966800.020749179646372800.048478841781616210.91805434226989750.39293205738067630.5185955166816711-0.20338949561119082.588162422180176-0.1803306192159653-0.0073563959449529650.025679316371679310.98324328660964970.1483414173126221-0.32694745063781742.5194222927093510.3505384325981140-2.237445784203374e-009-7.955360814548840e-0090.93654835224151610.9045652151107788-0.091408133506774902.3241035938262940.45067790150642403.912302704023318e-0100.00.8926866054534912Skeleton">
+   </PIN>
+   </NODE>
+   <NODE systemname="Element (XElement Split)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Element (XElement Split)" componentmode="Hidden" id="47">
+   <BOUNDS type="Node" left="9270" top="8115" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Element" visible="1">
+   </PIN>
+   <PIN pinname="Name" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="41" srcpinname="Children" dstnodeid="47" dstpinname="Element">
+   </LINK>
+   <LINK srcnodeid="47" srcpinname="Name" dstnodeid="46" dstpinname="Input String">
+   </LINK>
+   </PATCH>
