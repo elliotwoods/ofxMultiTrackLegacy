@@ -10,12 +10,33 @@
 
 namespace ofxMultiTrack {
 	class Server {
+	public:
+		class Recording {
+		public:
+			typedef map<Timestamp, UserSet> FrameSet;
+			void recordIncoming();
+			void clearIncoming();
+
+			void add(UserSet);
+			void clear();
+
+			FrameSet & getFrames();
+		protected:
+			FrameSet frames; //frames available on main thread as recording
+			FrameSet incomingFrames; //frames coming in on network thread
+			ofMutex incomingFramesLock;
+		};
+
 		class NodeConnection : public ofThread {
 		public:
 			NodeConnection(string address, int index);
 			~NodeConnection();
+			void update();
 			bool isConnected();
 			int getUserCount();
+
+			Recording & getRecording();
+
 			Json::Value getStatus();
 		protected:
 			void threadedFunction() override;
@@ -33,19 +54,56 @@ namespace ofxMultiTrack {
 			bool cachedConnected;
 			int cachedSkeletonCount;
 
-			vector<Data::User> users;
+			UserSet users;
 			ofMutex lockUsers;
+
+			Recording recording;
 		};
-	public:
+
+		typedef vector<ofPtr<NodeConnection>> NodeSet;
+		
+		class Recorder {
+		public:
+			enum State {
+				Waiting,
+				Recording,
+				Playing
+			};
+			Recorder(const NodeSet &);
+			
+			void update();
+
+			void record() { this->state = Recording; }
+			void play() { this->state = Playing; }
+			void stop() { this->state = Waiting; }
+			
+			bool isRecording() { return this->state == Recording; }
+			void clear();
+
+			Timestamp getStartTime();
+			Timestamp getEndTime();
+		protected:
+			State state;
+			const NodeSet & nodes;
+			Timestamp playHead;
+		};
+
 		Server();
 		~Server();
+
 		bool init();
 		void update();
+
 		void addNode(string address, int index);
 		void clearNodes();
+		
+		const NodeSet & getNodes();
+		Recorder & getRecorder();
+
 		void drawWorld();
 		string getStatus();
 	protected:
-		vector<ofPtr<NodeConnection>> nodes;
+		NodeSet nodes;
+		Recorder recorder;
 	};
 }

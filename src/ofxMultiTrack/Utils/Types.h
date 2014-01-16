@@ -11,12 +11,12 @@ namespace ofxMultiTrack {
 
 	};
 
-	namespace Data {
-		struct Joint {
-			ofVec3f position;
-			ofQuaternion rotation;
-		};
+	struct Joint {
+		ofVec3f position;
+		ofQuaternion rotation;
+	};
 
-		typedef map<string, Joint> User;
-	}
+	typedef map<string, Joint> User;
+	typedef vector<User> UserSet;
+	typedef long long Timestamp;
 }

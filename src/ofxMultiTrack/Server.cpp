@@ -1,6 +1,42 @@
 #include "Server.h"
 
 namespace ofxMultiTrack {
+#pragma mark Recording
+	//----------
+	void Server::Recording::recordIncoming() {
+		this->incomingFramesLock.lock();
+		for(auto frame : this->incomingFrames) {
+			this->frames.insert(frame);
+		}
+		this->incomingFrames.clear();
+		this->incomingFramesLock.unlock();
+	}
+
+	//----------
+	void Server::Recording::clearIncoming() {
+		this->incomingFramesLock.lock();
+		this->incomingFrames.clear();
+		this->incomingFramesLock.unlock();
+	}
+
+	//----------
+	void Server::Recording::add(UserSet userSet) {
+		this->incomingFramesLock.lock();
+		this->frames.insert(std::pair<Timestamp, UserSet>(ofGetElapsedTimeMicros(), userSet));
+		this->incomingFramesLock.unlock();
+	}
+
+	//----------
+	void Server::Recording::clear() {
+		this->frames.clear();
+		this->clearIncoming();
+	}
+
+	//----------
+	Server::Recording::FrameSet & Server::Recording::getFrames() {
+		return this->frames;
+	}
+
 #pragma mark NodeConnection
 	//----------
 	Server::NodeConnection::NodeConnection(string address, int index) {
@@ -30,6 +66,21 @@ namespace ofxMultiTrack {
 		int count = this->users.size();
 		this->lockUsers.unlock();
 		return count;
+	}
+
+	//----------
+	Server::Recording & Server::NodeConnection::getRecording() {
+		return this->recording;
+	}
+
+	//----------
+	Json::Value Server::NodeConnection::getStatus() {
+		Json::Value status;
+		status["address"] = this->address;
+		status["index"] = this->index;
+		status["connected"] = this->isConnected();
+		status["users"] = this->getUserCount();
+		return status;
 	}
 
 	//----------
@@ -102,19 +153,78 @@ namespace ofxMultiTrack {
 		}
 	}
 
+#pragma mark Recorder
 	//----------
-	Json::Value Server::NodeConnection::getStatus() {
-		Json::Value status;
-		status["address"] = this->address;
-		status["index"] = this->index;
-		status["connected"] = this->isConnected();
-		status["users"] = this->getUserCount();
-		return status;
+	Server::Recorder::Recorder(const NodeSet & nodes) : nodes(nodes) {
+		this->state = Server::Recorder::Waiting;
+	}
+
+	//----------
+	void Server::Recorder::update() {
+		if (this->playHead < this->getStartTime()) {
+			this->playHead = this->getStartTime();
+		}
+		if (this->playHead > this->getEndTime()) {
+			this->playHead = this->getEndTime();
+		}
+
+		if (this->isRecording()) {
+			for(auto node : this->nodes) {
+				node->getRecording().recordIncoming();
+			}
+		} else {
+			for(auto node : this->nodes) {
+				node->getRecording().clearIncoming();
+			}
+		}
+	}
+
+	//----------
+	void Server::Recorder::clear() {
+		for(auto node : this->nodes) {
+			node->getRecording().clear();
+		}
+	}
+	
+	//----------
+	Timestamp Server::Recorder::getStartTime() {
+		auto maximum = std::numeric_limits<Timestamp>::max();
+		auto start = maximum;
+		for(auto node : this->nodes) {
+			auto firstForThisNode = node->getRecording().getFrames().begin()->first;
+			if (firstForThisNode < start) {
+				start = firstForThisNode;
+			}
+		}
+		if (start == maximum) {
+			return 0.0f;
+		} else {
+			return start;
+		}
+	}
+
+	//----------
+	Timestamp Server::Recorder::getEndTime() {
+		auto minimum = std::numeric_limits<Timestamp>::min();
+		auto end = minimum;
+		for(auto node : this->nodes) {
+			auto last = node->getRecording().getFrames().end();
+			last--;
+			auto firstForThisNode = last->first;
+			if (firstForThisNode > end) {
+				end = firstForThisNode;
+			}
+		}
+		if (end == minimum) {
+			return 0.0f;
+		} else {
+			return end;
+		}
 	}
 
 #pragma mark Server
 	//----------
-	Server::Server() {
+	Server::Server() : recorder(this->nodes) {
 	}
 
 	//----------
@@ -140,6 +250,16 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::clearNodes() {
 		this->nodes.clear(); // presume smart pointers do their thing
+	}
+
+	//----------
+	const Server::NodeSet & Server::getNodes() {
+		return this->nodes;
+	}
+
+	//----------
+	Server::Recorder & Server::getRecorder() {
+		return this->recorder;
 	}
 
 	//----------

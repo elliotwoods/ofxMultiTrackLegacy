@@ -96,9 +96,13 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\RecorderControl.cpp" />
+    <ClCompile Include="src\RecordingControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\RecorderControl.h" />
+    <ClInclude Include="src\RecordingControl.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
