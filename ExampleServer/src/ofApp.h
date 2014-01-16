@@ -4,6 +4,9 @@
 #include "ofxMultiTrack/src/ofxMultiTrack.h"
 #include "ofxCvGui2/src/ofxCvGui.h"
 
+#include "RecordingControl.h"
+#include "RecorderControl.h"
+
 class ofApp : public ofBaseApp{
 
 public:

@@ -13,10 +13,9 @@ void ofApp::setup(){
 	//gui code
 	//
 	gui.init();
-	auto statusPanel = ofPtr<ofxCvGui::Panels::Scroll>(new ofxCvGui::Panels::Scroll);
-	gui.add(statusPanel);
-	auto worldPanel = gui.makeWorld();
-	gui.add(worldPanel);
+	auto statusPanel = gui.addScroll();
+	auto worldPanel = gui.addWorld();
+	auto recorderPanel = gui.addScroll();
 
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
 	statusPanel->add(statusElement);
@@ -31,6 +30,14 @@ void ofApp::setup(){
 	worldPanel->onDrawWorld += [this] (ofCamera&) {
 		this->server.drawWorld();
 	};
+	worldPanel->setGridEnabled(false);
+
+	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
+	auto & nodes = this->server.getNodes();
+	for(auto node : nodes) {
+		auto track = ofxCvGui::ElementPtr(new RecordingControl(node->getRecording()));
+		recorderPanel->add(track);
+	}
 	//
 	//--
 }
