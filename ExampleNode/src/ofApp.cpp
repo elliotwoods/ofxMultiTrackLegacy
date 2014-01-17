@@ -4,6 +4,7 @@
 void ofApp::setup(){
 	ofSetFrameRate(100);
 	ofSetCircleResolution(3);
+
 	this->kinect = 0;
 	this->state = FirstFrame;
 
@@ -35,12 +36,12 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	//initialise kinect on frame 5 (to allow GUI to appear)
-	if (ofGetFrameNum() == 5) {
+	if (ofGetFrameNum() >= 5 && this->state == FirstFrame) {
 		this->state = Initialising;
 	}
 
 	switch(state) {
-	case FirstFrame:
+		case FirstFrame:
 			break;
 		case Initialising:
 		{
@@ -72,6 +73,11 @@ void ofApp::update(){
 					ofPopMatrix();
 				}
 			};
+
+			//disable the alpha channel whilst renderering color frame by adding early and late listeners to the draw call
+			colorPanel->onDraw.addListener([this] (ofxCvGui::DrawArguments&) { ofDisableAlphaBlending(); }, -100, this);
+			colorPanel->onDraw.addListener([this] (ofxCvGui::DrawArguments&) { ofEnableAlphaBlending(); }, +100, this);
+
 			this->state = Running;
 			break;
 		}
@@ -92,7 +98,7 @@ void ofApp::draw(){
 	switch(state) {
 		case FirstFrame:
 		case Initialising:
-			ofDrawBitmapString("Initialising...", 10, 100);
+			ofxCvGui::AssetRegister.drawText("Initialising...", 0, 0, "", true, ofGetHeight(), ofGetWidth());
 			break;
 	}
 }
