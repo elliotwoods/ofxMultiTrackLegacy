@@ -12,15 +12,31 @@ RecordingControl::RecordingControl(Server::Recorder & recorder, Server::Recordin
 		auto endTime = (float) this->recorder.getEndTime();
 		auto timeScale = endTime - startTime;
 		
-		ofMesh markers;
 		auto & frames = this->recording.getFrames();
-		for(auto frame : frames) {
-			auto time = frame.first;
-			auto x = ofMap(time, startTime, endTime, 0, this->getWidth());
-			markers.addVertex(ofVec3f(x, this->getHeight() / 2.0f, 0));
+		auto cachedCount = this->markers.getNumVertices();
+		if (frames.size() > cachedCount) {
+			auto nextFrame = frames.begin();
+			for(int i=0; i<cachedCount; i++) {
+				nextFrame++;
+			}
+			for(auto frame = nextFrame; frame != frames.end(); frame++) {
+				markers.addVertex(ofVec3f(frame->first, 0, 0));
+			}
+		} else {
+			markers.clearVertices(); //presume build next draw frame
 		}
 
+		ofPushMatrix();
+		ofScale(this->getWidth() / timeScale, 1.0f, 1.0f);
+		ofTranslate(-startTime, this->getHeight() / 2.0f, 1.0f);
 		glPointSize(1.0f);
 		markers.drawVertices();
+		ofPopMatrix();
+
+		ofPushStyle();
+		ofSetLineWidth(1);
+		ofSetColor(100);
+		ofLine(0,this->getHeight(), this->getWidth(), this->getHeight()); 
+		ofPopStyle();
 	};
 }

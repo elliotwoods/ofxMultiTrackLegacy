@@ -163,6 +163,9 @@ namespace ofxMultiTrack {
 	//----------
 	Server::Recorder::Recorder(const NodeSet & nodes) : nodes(nodes) {
 		this->state = Server::Recorder::Waiting;
+		this->startTime = 0;
+		this->endTime = 0;
+		this->playHead = 0;
 	}
 
 	//----------
@@ -183,6 +186,33 @@ namespace ofxMultiTrack {
 				node->getRecording().clearIncoming();
 			}
 		}
+
+		auto currentTime = ofGetElapsedTimeMicros();
+
+		if (this->state == Server::Recorder::Recording) {
+			if (currentTime > this->endTime) {
+				this->endTime = currentTime;
+			}
+		}
+	}
+
+	//----------
+	void Server::Recorder::record() {
+		//This is to reset the recording start time
+		//But we might want to consider not doing this later (e.g. to avoid losing user data)
+		//That would instead suggest having a local timespan, rather than using the app's time
+		this->clear();
+		this->state = Server::Recorder::Recording;
+	}
+
+	//----------
+	void Server::Recorder::play() {
+		this->state = Server::Recorder::Playing;
+	}
+
+	//----------
+	void Server::Recorder::stop() {
+		this->state = Server::Recorder::Waiting;
 	}
 
 	//----------
@@ -190,50 +220,22 @@ namespace ofxMultiTrack {
 		for(auto node : this->nodes) {
 			node->getRecording().clear();
 		}
+		this->startTime = ofGetElapsedTimeMicros();
 	}
 	
 	//----------
+	Timestamp Server::Recorder::getPlayHead() {
+		return this->playHead;
+	}
+
+	//----------
 	Timestamp Server::Recorder::getStartTime() {
-		auto maximum = std::numeric_limits<Timestamp>::max();
-		auto start = maximum;
-		for(auto node : this->nodes) {
-			auto & frames = node->getRecording().getFrames();
-			if (frames.size() == 0) {
-				continue;
-			}
-			auto firstForThisNode = frames.begin()->first;
-			if (firstForThisNode < start) {
-				start = firstForThisNode;
-			}
-		}
-		if (start == maximum) {
-			return 0.0f;
-		} else {
-			return start;
-		}
+		return this->startTime;
 	}
 
 	//----------
 	Timestamp Server::Recorder::getEndTime() {
-		auto minimum = std::numeric_limits<Timestamp>::min();
-		auto end = minimum;
-		for(auto node : this->nodes) {
-			auto & frames = node->getRecording().getFrames();
-			if (frames.size() == 0) {
-				continue;
-			}
-			auto last = frames.end();
-			last--;
-			auto firstForThisNode = last->first;
-			if (firstForThisNode > end) {
-				end = firstForThisNode;
-			}
-		}
-		if (end == minimum) {
-			return 0.0f;
-		} else {
-			return end;
-		}
+		return this->endTime;
 	}
 
 #pragma mark Server
@@ -293,6 +295,6 @@ namespace ofxMultiTrack {
 			nodes[i++] = nodeStatus;
 		}
 		Json::StyledWriter writer;
-		return writer.write(status);
+		return "status : " + writer.write(status);
 	}
 }
