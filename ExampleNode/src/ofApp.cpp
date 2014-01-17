@@ -25,7 +25,7 @@ void ofApp::setup(){
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
 	statusPanel->add(statusElement);
 	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
-		auto status = node.getStatus();
+		auto status = node.getStatusString();
 
 		//resize element to accomodate text
 		ofDrawBitmapString(status, 10, 20);
