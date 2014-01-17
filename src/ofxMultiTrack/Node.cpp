@@ -15,20 +15,20 @@ namespace ofxMultiTrack {
 			bool stillLooking = true;
 			while(stillLooking) {
 				ofxTCPClient checkExisting;
-				checkExisting.setup("127.0.0.1", OFXMULTITRACK_CLIENT_LISTEN_PORT + localNodeIndex, true);
+				checkExisting.setup("127.0.0.1", OFXMULTITRACK_NODE_LISTEN_PORT + localNodeIndex, true);
 				if (checkExisting.isConnected()) {
 					localNodeIndex++;
 				} else {
 					stillLooking = false;
 				}
-				if (localNodeIndex >= OFXMULTITRACK_CLIENT_COUNT_MAX) {
+				if (localNodeIndex >= OFXMULTITRACK_NODE_LOCAL_COUNT_MAX) {
 					throw(std::exception("Too many clients already running on this machine"));
 				}
 			}
 			ofLogNotice("ofxMultiTrack") << "Local Node index is  " << localNodeIndex;
 
 			//open a server on correct port
-			this->server.setup(OFXMULTITRACK_CLIENT_LISTEN_PORT + localNodeIndex, false);
+			this->server.setup(OFXMULTITRACK_NODE_LISTEN_PORT + localNodeIndex, false);
 			ofLogNotice("ofxMultiTrack") << "Node is listening on port " << this->server.getPort();
 
 			//add devices
