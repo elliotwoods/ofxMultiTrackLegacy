@@ -75,10 +75,9 @@ void ofApp::update(){
 			this->leftColumn->add(colorPanel);
 
 			//override the depth draw to draw skeletons also
-			depthPanel->onDraw += [this] (ofxCvGui::DrawArguments& args) {
+			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
 				if (this->kinect != 0) {
 					ofPushMatrix();
-					ofScale(args.globalBounds.getWidth() / 640.0f, args.globalBounds.getHeight() / 480.0f);
 					int skeletonCount = this->kinect->getSkeletons().size();
 					for(int i=0; i<skeletonCount; i++) {
 						this->kinect->drawSkeleton(i);
