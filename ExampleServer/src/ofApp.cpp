@@ -6,7 +6,7 @@ void ofApp::setup(){
 
 	server.init();
 	server.addNode("192.168.10.101", 0);
-	//server.addNode("192.168.10.101", 1);
+	server.addNode("192.168.10.101", 1);
 
 	//--
 	//gui code

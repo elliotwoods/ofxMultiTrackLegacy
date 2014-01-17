@@ -345,8 +345,14 @@ namespace ofxMultiTrack {
 			node->getRecording().clear();
 		}
 		this->startTime = ofGetElapsedTimeMicros();
+		this->endTime = this->startTime;
 	}
 	
+	//----------
+	bool Server::Recorder::hasData() const {
+		return this->getDuration() > 0;
+	}
+
 	//----------
 	Timestamp Server::Recorder::getPlayHead() const {
 		return this->playHead;
@@ -439,15 +445,15 @@ namespace ofxMultiTrack {
 	vector<UserSet> Server::getCurrentFrame() {
 		vector<UserSet> currentFrame;
 
-		if (!this->recorder.isPlaying()) {
-			//get live data
-			for(auto node : this->nodes) {
-				currentFrame.push_back(node->getLiveData());
-			}
-		} else {
+		if (this->recorder.hasData()) {
 			//get data from recording
 			for(auto node : this->nodes) {
 				currentFrame.push_back(node->getRecording().getFrame(this->recorder.getPlayHead()));
+			}
+		} else {
+			//get live data
+			for(auto node : this->nodes) {
+				currentFrame.push_back(node->getLiveData());
 			}
 		}
 

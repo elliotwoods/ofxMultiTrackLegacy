@@ -82,7 +82,7 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 		ofLine(width * hoverPct, 0, width * hoverPct, height);
 
 		ofSetColor(255);
-		auto playHeadDrawPosition = recorder.getPlayHeadNormalised() * width;
+		auto playHeadDrawPosition = this->recorder.getPlayHeadNormalised() * width;
 		ofLine(playHeadDrawPosition, 0, playHeadDrawPosition, height);
 
 		ofPopStyle();
@@ -111,12 +111,22 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 	loadButton->onHit += [this] (ofVec2f&) {
 		this->recorder.load();
 	};
-
+	
 	timeTrack->onMouse += [this] (MouseArguments & args) {
-		if (args.isLocalPressed()) {
-			this->recorder.setPlayHeadNormalised(args.localNormalised.x);
-		} else if (args.isLocal()) {
+		if (args.isLocal()) {
+			float pct = args.localNormalised.x;
 			this->hoverPct = args.localNormalised.x;
+			if (args.action == MouseArguments::Pressed || args.action == MouseArguments::Dragged) {
+				this->recorder.setPlayHeadNormalised(pct);
+			}
+		}
+	};
+	
+	this->onUpdate += [=] (UpdateArguments &) {
+		if (this->recorder.hasData()) {
+			clearButton->enable();
+		} else {
+			clearButton->disable();
 		}
 	};
 

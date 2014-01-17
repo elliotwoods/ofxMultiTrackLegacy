@@ -95,6 +95,7 @@ namespace ofxMultiTrack {
 			bool isPlaying() { return this->state == Playing; }
 			void clear();
 
+			bool hasData() const; ///<currently we just lazily check the record duration
 			Timestamp getPlayHead() const;
 			void setPlayHead(Timestamp);
 			float getPlayHeadNormalised() const;
