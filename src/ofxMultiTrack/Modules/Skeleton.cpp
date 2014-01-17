@@ -3,7 +3,7 @@
 namespace ofxMultiTrack {
 	namespace Modules {
 		//---------
-		string Skeleton::getType() {
+		string Skeleton::getType() const {
 			return "Skeleton";
 		}
 

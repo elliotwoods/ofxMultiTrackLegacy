@@ -17,7 +17,7 @@ namespace ofxMultiTrack {
 			void recordIncoming();
 			void clearIncoming();
 
-			void add(UserSet);
+			void addIncoming(UserSet);
 			void clear();
 
 			FrameSet & getFrames();
@@ -53,6 +53,7 @@ namespace ofxMultiTrack {
 
 			bool cachedConnected;
 			int cachedSkeletonCount;
+			bool threadEnded;
 
 			UserSet users;
 			ofMutex lockUsers;
@@ -60,7 +61,7 @@ namespace ofxMultiTrack {
 			Recording recording;
 		};
 
-		typedef vector<ofPtr<NodeConnection>> NodeSet;
+		typedef vector<shared_ptr<NodeConnection>> NodeSet;
 		
 		class Recorder {
 		public:
@@ -78,6 +79,7 @@ namespace ofxMultiTrack {
 			void stop() { this->state = Waiting; }
 			
 			bool isRecording() { return this->state == Recording; }
+			bool isPlaying() { return this->state == Playing; }
 			void clear();
 
 			Timestamp getStartTime();

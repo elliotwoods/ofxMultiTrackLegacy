@@ -35,7 +35,7 @@ void ofApp::setup(){
 	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
 	auto & nodes = this->server.getNodes();
 	for(auto node : nodes) {
-		auto track = ofxCvGui::ElementPtr(new RecordingControl(node->getRecording()));
+		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording()));
 		recorderPanel->add(track);
 	}
 	//

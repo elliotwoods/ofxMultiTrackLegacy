@@ -22,4 +22,12 @@ class ofApp : public ofBaseApp{
 		
 		ofxCvGui::Builder gui;
 		ofxMultiTrack::Node node;
+		ofxKinectCommonBridge * kinect;
+
+		enum State {
+			FirstFrame = 0,
+			Initialising,
+			Running
+		};
+		State state;
 };

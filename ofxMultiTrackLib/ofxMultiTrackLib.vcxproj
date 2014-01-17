@@ -116,7 +116,6 @@
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPServer.cpp" />
     <ClCompile Include="..\..\ofxNetwork\src\ofxUDPManager.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />
-    <ClCompile Include="..\src\ofxMultiTrack\Devices\Set.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />

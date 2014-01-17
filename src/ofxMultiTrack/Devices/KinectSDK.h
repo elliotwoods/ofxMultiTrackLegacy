@@ -13,8 +13,9 @@ namespace ofxMultiTrack {
 	namespace Devices {
 		class KinectSDK : public Base {
 		public:
+			KinectSDK();
 			KinectSDK(int deviceID);
-			string getType() override;
+			string getType() const override;
 			void init() override;
 			void update() override;
 			string getStatus() override;

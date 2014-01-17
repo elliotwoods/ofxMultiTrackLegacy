@@ -6,7 +6,8 @@
 
 class RecordingControl : public ofxCvGui::ElementGroup {
 public:
-	RecordingControl(ofxMultiTrack::Server::Recording &);
+	RecordingControl(ofxMultiTrack::Server::Recorder &, ofxMultiTrack::Server::Recording &);
 protected:
+	ofxMultiTrack::Server::Recorder & recorder;
 	ofxMultiTrack::Server::Recording & recording;
 };

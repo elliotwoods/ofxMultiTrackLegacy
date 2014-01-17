@@ -7,7 +7,7 @@ namespace ofxMultiTrack {
 	namespace Modules {
 		class Skeleton : public Base {
 		public:
-			string getType() override;
+			string getType() const override;
 			Skeleton() { } ///< use this constructor for ofxMultiTrack::Server
 			Skeleton(Devices::KinectSDK* kinect); ///< use this constructor for ofxMultiTrack::Node
 			void init() override;

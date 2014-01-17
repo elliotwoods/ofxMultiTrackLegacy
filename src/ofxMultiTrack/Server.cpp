@@ -20,9 +20,9 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::Recording::add(UserSet userSet) {
+	void Server::Recording::addIncoming(UserSet userSet) {
 		this->incomingFramesLock.lock();
-		this->frames.insert(std::pair<Timestamp, UserSet>(ofGetElapsedTimeMicros(), userSet));
+		this->incomingFrames.insert(std::pair<Timestamp, UserSet>(ofGetElapsedTimeMicros(), userSet));
 		this->incomingFramesLock.unlock();
 	}
 
@@ -43,6 +43,7 @@ namespace ofxMultiTrack {
 		this->address = address;
 		this->index = index;
 		this->running = true;
+		this->threadEnded = false;
 
 		this->cachedConnected = false;
 
@@ -53,6 +54,9 @@ namespace ofxMultiTrack {
 	Server::NodeConnection::~NodeConnection() {
 		this->running = false;
 		this->stopThread();
+		while(!this->threadEnded) {
+			ofSleepMillis(1);
+		}
 	}
 	
 	//----------
@@ -119,6 +123,7 @@ namespace ofxMultiTrack {
 							}
 						}
 					}
+					this->recording.addIncoming(this->users);
 				}
 				catch(std::exception e)
 				{
@@ -137,6 +142,7 @@ namespace ofxMultiTrack {
 				lockActionQueue.unlock();
 			}
 		}
+		this->threadEnded = true;
 	}
 
 	//----------
@@ -191,7 +197,11 @@ namespace ofxMultiTrack {
 		auto maximum = std::numeric_limits<Timestamp>::max();
 		auto start = maximum;
 		for(auto node : this->nodes) {
-			auto firstForThisNode = node->getRecording().getFrames().begin()->first;
+			auto & frames = node->getRecording().getFrames();
+			if (frames.size() == 0) {
+				continue;
+			}
+			auto firstForThisNode = frames.begin()->first;
 			if (firstForThisNode < start) {
 				start = firstForThisNode;
 			}
@@ -208,7 +218,11 @@ namespace ofxMultiTrack {
 		auto minimum = std::numeric_limits<Timestamp>::min();
 		auto end = minimum;
 		for(auto node : this->nodes) {
-			auto last = node->getRecording().getFrames().end();
+			auto & frames = node->getRecording().getFrames();
+			if (frames.size() == 0) {
+				continue;
+			}
+			auto last = frames.end();
 			last--;
 			auto firstForThisNode = last->first;
 			if (firstForThisNode > end) {
@@ -239,12 +253,13 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::update() {
+		this->recorder.update();
 	}
 
 	//----------
 	void Server::addNode(string address, int index) {
 		auto newNode = new NodeConnection(address, index);
-		this->nodes.push_back(ofPtr<NodeConnection>(newNode));
+		this->nodes.push_back(shared_ptr<NodeConnection>(newNode));
 	}
 
 	//----------

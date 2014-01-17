@@ -8,7 +8,7 @@ namespace ofxMultiTrack {
 	namespace Modules {
 		class Base {
 		public:
-			virtual string getType() = 0;
+			virtual string getType() const = 0;
 			virtual void init() = 0;
 			virtual void update() = 0;
 			virtual Json::Value serialize() = 0;
