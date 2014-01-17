@@ -223,10 +223,20 @@ namespace ofxMultiTrack {
 
 		auto currentTime = ofGetElapsedTimeMicros();
 
-		if (this->state == Server::Recorder::Recording) {
+		switch(this->state) {
+		case Server::Recorder::Recording:
 			if (currentTime > this->endTime) {
 				this->endTime = currentTime;
 			}
+			break;
+		case Server::Recorder::Playing:
+			if (this->getDuration() > 0) {
+				this->playHead += (Timestamp) (ofGetLastFrameTime() * 1000000.0);
+				if (this->playHead > this->endTime) {
+					this->playHead = this->startTime;
+				}
+			}
+			break;
 		}
 	}
 
@@ -338,18 +348,50 @@ namespace ofxMultiTrack {
 	}
 	
 	//----------
-	Timestamp Server::Recorder::getPlayHead() {
+	Timestamp Server::Recorder::getPlayHead() const {
 		return this->playHead;
 	}
 
 	//----------
-	Timestamp Server::Recorder::getStartTime() {
+	void Server::Recorder::setPlayHead(Timestamp playHead) {
+		if (playHead < this->startTime) {
+			this->playHead = this->startTime;
+		} else if (playHead > this->endTime) {
+			this->playHead = this->endTime;
+		} else {
+			this->playHead = playHead;
+		}
+	}
+
+	//----------
+	float Server::Recorder::getPlayHeadNormalised() const {
+		float duration = (float) this->getDuration();
+		if (duration == 0.0f) {
+			return 0.0f;
+		} else {
+			return (float) (this->playHead - this->startTime) / duration;
+		}
+	}
+
+	//----------
+	void Server::Recorder::setPlayHeadNormalised(float normalised) {
+		auto duration = (float) this->getDuration();
+		this->setPlayHead(duration * normalised + this->startTime);
+	}
+
+	//----------
+	Timestamp Server::Recorder::getStartTime() const {
 		return this->startTime;
 	}
 
 	//----------
-	Timestamp Server::Recorder::getEndTime() {
+	Timestamp Server::Recorder::getEndTime() const {
 		return this->endTime;
+	}
+
+	//----------
+	Timestamp Server::Recorder::getDuration() const {
+		return this->endTime - this->startTime;
 	}
 
 #pragma mark Server

@@ -66,7 +66,7 @@ namespace ofxMultiTrack {
 		Json::Value json;
 		int userIndex = 0;
 		for(auto & user : *this) {
-			json[userIndex] = user.serialise();
+			json[userIndex++] = user.serialise();
 		}
 		return json;
 	}

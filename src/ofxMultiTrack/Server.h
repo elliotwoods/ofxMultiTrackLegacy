@@ -95,9 +95,13 @@ namespace ofxMultiTrack {
 			bool isPlaying() { return this->state == Playing; }
 			void clear();
 
-			Timestamp getPlayHead();
-			Timestamp getStartTime();
-			Timestamp getEndTime();
+			Timestamp getPlayHead() const;
+			void setPlayHead(Timestamp);
+			float getPlayHeadNormalised() const;
+			void setPlayHeadNormalised(float);
+			Timestamp getStartTime() const;
+			Timestamp getEndTime() const;
+			Timestamp getDuration() const;
 		protected:
 			State state;
 			const NodeSet & nodes;

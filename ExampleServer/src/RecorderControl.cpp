@@ -5,6 +5,8 @@ using namespace ofxCvGui;
 
 //---------
 RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorder) {
+	this->hoverPct = 0;
+
 	this->setBounds(ofRectangle(0,0,50,50));
 
 	auto playButton = ofPtr<Utils::Button>(new Utils::Button());
@@ -12,12 +14,14 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 	auto clearButton = ofPtr<Utils::Button>(new Utils::Button());
 	auto saveButton = ofPtr<Utils::Button>(new Utils::Button());
 	auto loadButton = ofPtr<Utils::Button>(new Utils::Button());
+	auto timeTrack = ElementPtr(new Element());
 
 	this->add(playButton);
 	this->add(recordButton);
 	this->add(clearButton);
 	this->add(saveButton);
 	this->add(loadButton);
+	this->add(timeTrack);
 
 	auto drawButton = [] (ofPtr<Utils::Button> button, string title) {
 		auto width = button->getWidth();
@@ -32,7 +36,7 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 		ofPopStyle();
 	};
 	
-	playButton->onDraw += [this, drawButton, playButton] (DrawArguments &) {
+	playButton->onDraw += [=] (DrawArguments &) {
 		bool engaged = this->recorder.isPlaying();
 		string title = engaged ? "Stop" : "Play";
 		if (engaged) {
@@ -44,7 +48,7 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 		}
 		drawButton(playButton, title);
 	};
-	recordButton->onDraw += [this, drawButton, recordButton] (DrawArguments &) {
+	recordButton->onDraw += [=] (DrawArguments &) {
 		bool engaged = this->recorder.isRecording();
 		string title = engaged ? "Stop" : "Record";
 		if (engaged) {
@@ -56,16 +60,32 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 		}
 		drawButton(recordButton, title);
 	};
-	clearButton->onDraw += [this, drawButton, clearButton] (DrawArguments &) {
+	clearButton->onDraw += [=] (DrawArguments &) {
 		drawButton(clearButton, "Clear");
 	};
-	saveButton->onDraw += [this, drawButton, saveButton] (DrawArguments &) {
+	saveButton->onDraw += [=] (DrawArguments &) {
 		drawButton(saveButton, "");
 		AssetRegister.getImage("save").draw(0,0);
 	};
-	loadButton->onDraw += [this, drawButton, loadButton] (DrawArguments &) {
+	loadButton->onDraw += [=] (DrawArguments &) {
 		drawButton(loadButton, "");
 		AssetRegister.getImage("load").draw(0,0);
+	};
+	timeTrack->onDraw += [=] (DrawArguments &) {
+		float width = timeTrack->getWidth();
+		float height = timeTrack->getHeight();
+
+		ofPushStyle();
+		ofSetLineWidth(1.0f);
+
+		ofSetColor(100);
+		ofLine(width * hoverPct, 0, width * hoverPct, height);
+
+		ofSetColor(255);
+		auto playHeadDrawPosition = recorder.getPlayHeadNormalised() * width;
+		ofLine(playHeadDrawPosition, 0, playHeadDrawPosition, height);
+
+		ofPopStyle();
 	};
 	
 	playButton->onHit += [this] (ofVec2f&) {
@@ -92,11 +112,20 @@ RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorde
 		this->recorder.load();
 	};
 
-	this->onBoundsChange += [recordButton, playButton, clearButton, saveButton, loadButton] (BoundsChangeArguments & args) {
+	timeTrack->onMouse += [this] (MouseArguments & args) {
+		if (args.isLocalPressed()) {
+			this->recorder.setPlayHeadNormalised(args.localNormalised.x);
+		} else if (args.isLocal()) {
+			this->hoverPct = args.localNormalised.x;
+		}
+	};
+
+	this->onBoundsChange += [=] (BoundsChangeArguments & args) {
 		playButton->setBounds(ofRectangle(0,0,100,30));
 		recordButton->setBounds(ofRectangle(100,0,100,30));
 		clearButton->setBounds(ofRectangle(200,0,100,30));
 		saveButton->setBounds(ofRectangle(300,0,30,30));
 		loadButton->setBounds(ofRectangle(330,0,30,30));
+		timeTrack->setBounds(ofRectangle(0,30,this->getWidth(),20));
 	};
 }

@@ -9,4 +9,5 @@ public:
 	RecorderControl(ofxMultiTrack::Server::Recorder &);
 protected:
 	ofxMultiTrack::Server::Recorder & recorder;
+	float hoverPct;
 };
