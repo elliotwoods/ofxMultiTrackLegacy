@@ -20,6 +20,10 @@ namespace ofxMultiTrack {
 		void Skeleton::update() {
 			if (this->kinect->isNewSkeleton()) {
 				this->skeletons = this->kinect->getSkeletons();
+				frameTimings.push_back(ofGetElapsedTimeMicros());
+				while(frameTimings.size() > 100) {
+					frameTimings.pop_front();
+				}
 			}
 		}
 
@@ -38,11 +42,26 @@ namespace ofxMultiTrack {
 
 		//---------
 		void Skeleton::deserialize(const Json::Value& data) {
+			ofLogFatalError("ofxMultiTrack") << "Skeleton currently doesn't support deserialize";
 		}
 
 		//---------
-		string Skeleton::getStatus() {
-			return "Skeletons : " + ofToString(this->skeletons.size());
+		float Skeleton::getFrameRate() {
+			if (this->frameTimings.size() == 0) {
+				return 0.0f;
+			}
+			auto timeSpan = (float) (this->frameTimings.back() - this->frameTimings.front());
+			timeSpan /= 1000000.0f; //convert micros to s
+			auto frames = (float) this->frameTimings.size();
+			return frames / timeSpan;
+		}
+
+		//---------
+		Json::Value Skeleton::getStatus() {
+			Json::Value status;
+			status["skeletonCount"] = this->skeletons.size();
+			status["fps"] = this->getFrameRate();
+			return status;
 		}
 
 		//---------

@@ -13,7 +13,7 @@ namespace ofxMultiTrack {
 			virtual void update() = 0;
 			virtual Json::Value serialize() = 0;
 			virtual void deserialize(const Json::Value& data) = 0;
-			virtual string getStatus() = 0;
+			virtual Json::Value getStatus() = 0;
 		protected:
 		};
 	}

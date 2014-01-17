@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "ofTypes.h"
+#include "ofxJSON/libs/jsoncpp/include/json/json.h"
 
 namespace ofxMultiTrack {
 	namespace Devices {
@@ -10,7 +11,7 @@ namespace ofxMultiTrack {
 			virtual string getType() const = 0;
 			virtual void init() = 0;
 			virtual void update() = 0;
-			virtual string getStatus() = 0;
+			virtual Json::Value getStatus() = 0;
 		protected:
 		};
 	}

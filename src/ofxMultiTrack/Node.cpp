@@ -135,28 +135,29 @@ namespace ofxMultiTrack {
 
 	//----------
 	string Node::getStatus() {
-		stringstream status;
+		Json::Value status;
+		status["fps"] = ofGetFrameRate();
+		status["localIndex"] = this->settings.localIndex;
+		status["listeningPort"] = this->server.getPort();
+		status["connectionCount"] = this->server.getNumClients();
 
-		status << "Local index:\t" << this->settings.localIndex << endl;
-		status << "Listening port:\t" << this->server.getPort() << endl;
-		status << "Connections:\t" << this->server.getNumClients() << endl;
-		status << endl;
-
-		status << "Fps:\t" << ofGetFrameRate() << endl;
-		status << endl;
-
-		status << "Devices:" << endl;
-		for(auto device : this->devices) {
-			status << "\t" << device->getType() << "\t: " << device->getStatus() << endl;
+		auto & devices = status["devices"];
+		int iDevice = 0;
+		for(auto deviceObject : this->devices) {
+			auto & deviceJson = devices[iDevice++];
+			deviceJson["type"] = deviceObject->getType();
+			deviceJson["status"] = deviceObject->getStatus();
 		}
-		status << endl;
 
-		status << "Modules:" << endl;
-		for(auto module : this->modules) {
-			status << "\t" << module->getType() << "\t: " << module->getStatus() << endl;
+		auto & modules = status["modules"];
+		int iModule = 0;
+		for(auto moduleObject : this->modules) {
+			auto & moduleJson = modules[iModule++];
+			moduleJson["type"] = moduleObject->getType();
+			moduleJson["status"] = moduleObject->getStatus();
 		}
-		status << endl;
 
-		return status.str();
+		Json::StyledWriter writer;
+		return writer.write(status);
 	}
 }

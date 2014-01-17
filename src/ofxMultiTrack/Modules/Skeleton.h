@@ -2,6 +2,7 @@
 
 #include "Base.h"
 #include "../Devices/KinectSDK.h"
+#include "../Utils/Types.h"
 
 namespace ofxMultiTrack {
 	namespace Modules {
@@ -14,7 +15,8 @@ namespace ofxMultiTrack {
 			void update() override;
 			Json::Value serialize() override;
 			void deserialize(const Json::Value& data) override;
-			string getStatus() override;
+			float getFrameRate();
+			Json::Value getStatus() override;
 
 			static string indexToName(int index);
 			static _NUI_SKELETON_POSITION_INDEX indexToEnum(int index);
@@ -22,6 +24,7 @@ namespace ofxMultiTrack {
 		protected:
 			ofxKinectCommonBridge* kinect;
 			vector<KinectCommonBridge::Skeleton> skeletons;
+			deque<Timestamp> frameTimings;
 		};
 	}
 }
