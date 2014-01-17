@@ -84,6 +84,11 @@ namespace ofxMultiTrack {
 		status["index"] = this->index;
 		status["connected"] = this->isConnected();
 		status["users"] = this->getUserCount();
+
+		this->remoteStatusLock.lock();
+		status["remoteStatus"] = this->remoteStatus;
+		this->remoteStatusLock.unlock();
+
 		return status;
 	}
 
@@ -101,7 +106,6 @@ namespace ofxMultiTrack {
 					Json::Value json;
 					jsonReader.parse(response, json);
 					auto & users = json["modules"][0]["data"]["users"];
-
 					this->lockUsers.lock();
 					int userIndex = 0;
 					if (this->users.size() < users.size()) {
@@ -124,6 +128,11 @@ namespace ofxMultiTrack {
 						}
 					}
 					this->recording.addIncoming(this->users);
+
+					this->remoteStatusLock.lock();
+					this->remoteStatus = json["status"];
+					this->remoteStatusLock.unlock();
+
 				}
 				catch(std::exception e)
 				{
@@ -285,7 +294,7 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	string Server::getStatus() {
+	Json::Value Server::getStatus() {
 		Json::Value status;
 		status["fps"] = ofGetFrameRate();
 		auto & nodes = status["nodes"];
@@ -294,7 +303,12 @@ namespace ofxMultiTrack {
 			auto nodeStatus = node->getStatus();
 			nodes[i++] = nodeStatus;
 		}
+		return status;
+	}
+
+	//----------
+	string Server::getStatusString() {
 		Json::StyledWriter writer;
-		return "status : " + writer.write(status);
+		return "status : " + writer.write(this->getStatus());
 	}
 }

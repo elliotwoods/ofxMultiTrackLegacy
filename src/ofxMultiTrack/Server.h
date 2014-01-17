@@ -51,6 +51,9 @@ namespace ofxMultiTrack {
 			int index;
 			bool running;
 
+			Json::Value remoteStatus;
+			ofMutex remoteStatusLock;
+
 			bool cachedConnected;
 			int cachedSkeletonCount;
 			bool threadEnded;
@@ -106,7 +109,9 @@ namespace ofxMultiTrack {
 		Recorder & getRecorder();
 
 		void drawWorld();
-		string getStatus();
+
+		Json::Value getStatus();
+		string getStatusString();
 	protected:
 		NodeSet nodes;
 		Recorder recorder;

@@ -6,22 +6,28 @@ void ofApp::setup(){
 
 	server.init();
 	server.addNode("192.168.10.101", 0);
-	//server.addNode("192.168.10.101", 1);
+	server.addNode("192.168.10.101", 1);
 
 	//--
 	//gui code
 	//
 	gui.init();
-	auto worldPanel = gui.addWorld("World");
-	auto recorderPanel = gui.addScroll("Recorder");
 	auto statusPanel = gui.addScroll("Status");
+	auto leftColumn = gui.addGrid();
+	auto worldPanel = gui.makeWorld("World");
+	auto recorderPanel = gui.makeScroll("Recorder");
+	leftColumn->setColsCount(1);
+	leftColumn->add(worldPanel);
+	leftColumn->add(recorderPanel);
 	
+	//draw 3d scene
 	worldPanel->onDrawWorld += [this] (ofCamera&) {
 		this->server.drawWorld();
 	};
 	worldPanel->setGridEnabled(true);
 	worldPanel->setGridLabelsEnabled(false);
 
+	//draw recorder tracks in interactive scrollable panel
 	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
 	auto & nodes = this->server.getNodes();
 	for(auto node : nodes) {
@@ -29,16 +35,16 @@ void ofApp::setup(){
 		recorderPanel->add(track);
 	}
 
+	//draw status in a scrollable panel
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
 	statusPanel->add(statusElement);
 	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
-		auto status = server.getStatus();
+		auto status = server.getStatusString();
 		ofDrawBitmapString(status, 10, 20);
 		auto resizeBounds = statusElement->getBounds();
 		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;
 		statusElement->setBounds(resizeBounds);
 	};
-
 	//
 	//--
 }
