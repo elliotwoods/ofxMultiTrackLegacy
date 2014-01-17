@@ -10,4 +10,5 @@ public:
 protected:
 	ofxMultiTrack::Server::Recorder & recorder;
 	ofxMultiTrack::Server::Recording & recording;
+	ofMesh markers;
 };

@@ -74,20 +74,23 @@ namespace ofxMultiTrack {
 			
 			void update();
 
-			void record() { this->state = Recording; }
-			void play() { this->state = Playing; }
-			void stop() { this->state = Waiting; }
+			void record();
+			void play();
+			void stop();
 			
 			bool isRecording() { return this->state == Recording; }
 			bool isPlaying() { return this->state == Playing; }
 			void clear();
 
+			Timestamp getPlayHead();
 			Timestamp getStartTime();
 			Timestamp getEndTime();
 		protected:
 			State state;
 			const NodeSet & nodes;
 			Timestamp playHead;
+			Timestamp startTime;
+			Timestamp endTime;
 		};
 
 		Server();

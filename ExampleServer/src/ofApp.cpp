@@ -2,20 +2,32 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofBackground(20);
 	ofSetVerticalSync(true);
 
 	server.init();
-	server.addNode("localhost", 0);
-	server.addNode("localhost", 1);
+	server.addNode("192.168.10.101", 0);
+	//server.addNode("192.168.10.101", 1);
 
 	//--
 	//gui code
 	//
 	gui.init();
-	auto statusPanel = gui.addScroll();
-	auto worldPanel = gui.addWorld();
-	auto recorderPanel = gui.addScroll();
+	auto worldPanel = gui.addWorld("World");
+	auto recorderPanel = gui.addScroll("Recorder");
+	auto statusPanel = gui.addScroll("Status");
+	
+	worldPanel->onDrawWorld += [this] (ofCamera&) {
+		this->server.drawWorld();
+	};
+	worldPanel->setGridEnabled(true);
+	worldPanel->setGridLabelsEnabled(false);
+
+	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
+	auto & nodes = this->server.getNodes();
+	for(auto node : nodes) {
+		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording()));
+		recorderPanel->add(track);
+	}
 
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
 	statusPanel->add(statusElement);
@@ -27,17 +39,6 @@ void ofApp::setup(){
 		statusElement->setBounds(resizeBounds);
 	};
 
-	worldPanel->onDrawWorld += [this] (ofCamera&) {
-		this->server.drawWorld();
-	};
-	worldPanel->setGridEnabled(false);
-
-	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
-	auto & nodes = this->server.getNodes();
-	for(auto node : nodes) {
-		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording()));
-		recorderPanel->add(track);
-	}
 	//
 	//--
 }
