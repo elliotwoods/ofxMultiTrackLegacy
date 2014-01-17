@@ -84,6 +84,12 @@ namespace ofxMultiTrack {
 			void play();
 			void stop();
 			
+			Json::Value serialise() const;
+			void deserialise(const Json::Value &);
+
+			void save(string filename="") const; ///<empty filename means ask user
+			void load(string filename=""); ///<empty filename means ask user
+
 			bool isWaiting() { return this->state == Waiting; }
 			bool isRecording() { return this->state == Recording; }
 			bool isPlaying() { return this->state == Playing; }

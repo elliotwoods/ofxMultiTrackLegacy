@@ -250,6 +250,86 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	Json::Value Server::Recorder::serialise() const {
+		Json::Value json;
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			auto & nodeJson = json[nodeIndex++];
+			auto & frames = node->getRecording().getFrames();
+			for(auto & frame : frames) {
+				auto frameJson = frame.second.serialise();
+				nodeJson[ofToString(frame.first)] = frameJson;
+			}
+		}
+		return json;
+	}
+
+	//----------
+	void Server::Recorder::deserialise(const Json::Value & json) {
+		if (json.size() != this->nodes.size()) {
+			throw(std::exception("Mismatch on deserialise : number of nodes connected does not equal number of nodes in json"));
+		}
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			auto & nodeJson = json[nodeIndex++];
+			auto & recording = node->getRecording();
+			recording.clear();
+			auto & frameSet = recording.getFrames();
+			auto timestamps = nodeJson.getMemberNames();
+			for(auto timestamp : timestamps) {
+				Timestamp rawTimestamp = stoll(timestamp);
+				auto frame = UserSet();
+				frame.deserialise(nodeJson[timestamp]);
+				frameSet[rawTimestamp] = frame;
+			}
+		}
+	}
+
+	//----------
+	void Server::Recorder::save(string filename) const {
+		if (filename=="") {
+			auto response = ofSystemSaveDialog("recording.json", "Save recording");
+			if (!response.bSuccess) {
+				ofLogWarning("ofxMultiTrack") << "No file selected for save";
+				return;
+			}
+			filename = response.filePath;
+		}
+
+		auto json = this->serialise();
+
+		Json::FastWriter writer;
+		ofFile output;
+		output.open(filename, ofFile::WriteOnly, false);
+		output << writer.write(json);
+	}
+
+	//----------
+	void Server::Recorder::load(string filename) {
+		if (filename=="") {
+			auto response = ofSystemLoadDialog("Load recording");
+			if (!response.bSuccess) {
+				ofLogWarning("ofxMultiTrack") << "No file selected for load";
+				return;
+			}
+			filename = response.filePath;
+		}
+
+		ofFile input;
+		input.open(filename, ofFile::ReadOnly, false);
+		string jsonRaw = input.readToBuffer().getText();
+
+		try {
+			Json::Reader reader;
+			Json::Value json;
+			reader.parse(jsonRaw, json);
+			this->deserialise(json);
+		} catch (std::exception e) {
+			ofLogError("ofxMultiTrack") << e.what();
+		}
+	}
+
+	//----------
 	void Server::Recorder::clear() {
 		for(auto node : this->nodes) {
 			node->getRecording().clear();

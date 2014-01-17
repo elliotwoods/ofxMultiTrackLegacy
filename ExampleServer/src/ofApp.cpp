@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofSetVerticalSync(true);
+	ofSetFrameRate(100.0f);
 
 	server.init();
 	server.addNode("192.168.10.101", 0);
