@@ -119,6 +119,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

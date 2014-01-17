@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofTypes.h"
+#include "ofNode.h"
+#include <map>
 
 namespace ofxMultiTrack {
 	struct NodeSettings {
@@ -15,8 +17,16 @@ namespace ofxMultiTrack {
 		ofVec3f position;
 		ofQuaternion rotation;
 	};
-
-	typedef map<string, Joint> User;
-	typedef vector<User> UserSet;
+	
 	typedef long long Timestamp;
+
+	class User : public std::map<string, Joint>, public ofNode {
+	protected:
+		void customDraw();
+	};
+	
+	class UserSet : public vector<User>, public ofNode {
+	protected:
+		void customDraw();
+	};
 }

@@ -12,8 +12,9 @@ void ofApp::setup(){
 	//gui code
 	//
 	gui.init();
-	auto statusPanel = gui.addScroll("Status");
 	auto leftColumn = gui.addGrid();
+	auto statusPanel = gui.addScroll("Status");
+
 	auto worldPanel = gui.makeWorld("World");
 	auto recorderPanel = gui.makeScroll("Recorder");
 	leftColumn->setColsCount(1);

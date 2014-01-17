@@ -27,6 +27,20 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	const UserSet & Server::Recording::getFrame(Timestamp timestamp) {
+		if (this->frames.empty()) {
+			return blankFrame;
+		} else {
+			auto foundFrame = this->frames.lower_bound(timestamp);
+			if (foundFrame == this->frames.end()) {
+				foundFrame = this->frames.end();
+				foundFrame--;
+			}
+			return foundFrame->second;
+		}
+	}
+
+	//----------
 	void Server::Recording::clear() {
 		this->frames.clear();
 		this->clearIncoming();
@@ -36,6 +50,9 @@ namespace ofxMultiTrack {
 	Server::Recording::FrameSet & Server::Recording::getFrames() {
 		return this->frames;
 	}
+
+	//----------
+	UserSet Server::Recording::blankFrame = UserSet();
 
 #pragma mark NodeConnection
 	//----------
@@ -70,6 +87,14 @@ namespace ofxMultiTrack {
 		int count = this->users.size();
 		this->lockUsers.unlock();
 		return count;
+	}
+
+	//----------
+	UserSet Server::NodeConnection::getLiveData() {
+		this->lockUsers.lock();
+		auto users = this->users;
+		this->lockUsers.unlock();
+		return users;
 	}
 
 	//----------
@@ -289,8 +314,30 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	vector<UserSet> Server::getCurrentFrame() {
+		vector<UserSet> currentFrame;
+
+		if (!this->recorder.isPlaying()) {
+			//get live data
+			for(auto node : this->nodes) {
+				currentFrame.push_back(node->getLiveData());
+			}
+		} else {
+			//get data from recording
+			for(auto node : this->nodes) {
+				currentFrame.push_back(node->getRecording().getFrame(this->recorder.getPlayHead()));
+			}
+		}
+
+		return currentFrame;
+	}
+
+	//----------
 	void Server::drawWorld() {
-		
+		auto currentFrame = this->getCurrentFrame();
+		for(auto & node : currentFrame) {
+			node.draw();
+		}
 	}
 
 	//----------

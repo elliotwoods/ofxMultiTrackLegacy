@@ -196,5 +196,8 @@
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp">
       <Filter>src\ofxMultiTrack</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

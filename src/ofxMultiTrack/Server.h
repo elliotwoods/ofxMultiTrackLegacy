@@ -18,10 +18,12 @@ namespace ofxMultiTrack {
 			void clearIncoming();
 
 			void addIncoming(UserSet);
+			const UserSet & getFrame(Timestamp);
 			void clear();
 
 			FrameSet & getFrames();
 		protected:
+			static UserSet blankFrame;
 			FrameSet frames; //frames available on main thread as recording
 			FrameSet incomingFrames; //frames coming in on network thread
 			ofMutex incomingFramesLock;
@@ -35,6 +37,7 @@ namespace ofxMultiTrack {
 			bool isConnected();
 			int getUserCount();
 
+			UserSet getLiveData();
 			Recording & getRecording();
 
 			Json::Value getStatus();
@@ -81,6 +84,7 @@ namespace ofxMultiTrack {
 			void play();
 			void stop();
 			
+			bool isWaiting() { return this->state == Waiting; }
 			bool isRecording() { return this->state == Recording; }
 			bool isPlaying() { return this->state == Playing; }
 			void clear();
@@ -108,6 +112,7 @@ namespace ofxMultiTrack {
 		const NodeSet & getNodes();
 		Recorder & getRecorder();
 
+		vector<UserSet> getCurrentFrame();
 		void drawWorld();
 
 		Json::Value getStatus();
