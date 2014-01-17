@@ -111,6 +111,10 @@ namespace ofxMultiTrack {
 			jsonModule["type"] = module->getType();
 			jsonModule["data"] = module->serialize();
 		}
+
+		//send local status also
+		json["status"] = this->getStatus();
+
 		Json::StyledWriter writer;
 		string result = writer.write(json);
 
@@ -134,7 +138,7 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	string Node::getStatus() {
+	Json::Value Node::getStatus() {
 		Json::Value status;
 		status["fps"] = ofGetFrameRate();
 		status["localIndex"] = this->settings.localIndex;
@@ -157,7 +161,12 @@ namespace ofxMultiTrack {
 			moduleJson["status"] = moduleObject->getStatus();
 		}
 
+		return status;
+	}
+
+	//----------
+	string Node::getStatusString() {
 		Json::StyledWriter writer;
-		return writer.write(status);
+		return writer.write(this->getStatus());
 	}
 }

@@ -21,7 +21,8 @@ namespace ofxMultiTrack {
 		Devices::Set & getDevices();
 		Modules::Set & getModules();
 
-		string getStatus();
+		Json::Value getStatus();
+		string getStatusString();
 
 	protected:
 		ofxTCPServer server;
