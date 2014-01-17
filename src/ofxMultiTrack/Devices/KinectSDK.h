@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofxKinectCommonBridge/src/ofxKinectCommonBridge.h"
+#include "../Utils/Types.h"
 
 #include "Base.h"
 
@@ -18,7 +19,7 @@ namespace ofxMultiTrack {
 			string getType() const override;
 			void init() override;
 			void update() override;
-			string getStatus() override;
+			Json::Value getStatus() override;
 
 			ofxKinectCommonBridge& getDevice();
 		protected:

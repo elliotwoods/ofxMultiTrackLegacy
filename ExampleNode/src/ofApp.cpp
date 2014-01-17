@@ -13,8 +13,13 @@ void ofApp::setup(){
 	//--
 	//
 	gui.init();
-	gui.addInstructions();
+	auto leftColumn = gui.addGrid();
+	leftColumn->add(gui.makeInstructions());
 	auto statusPanel = gui.addScroll();
+
+	//set the left grid to be a single column and store for later
+	leftColumn->setColsCount(1);
+	this->leftColumn = leftColumn;
 
 	//status renders to a gui element on a scrollable panel
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
@@ -53,13 +58,21 @@ void ofApp::update(){
 			//
 			//--------------------------------------------
 
+			//position window on screen
+			int nodeIndex = this->node.getSettings().localIndex;
+			ofSetWindowPosition(nodeIndex * 1920 / 2, 0);
+
 			//get a pointer to the kinect device to draw previews
 			auto kinectDevice = this->node.getDevices().get<ofxMultiTrack::Devices::KinectSDK>();
 			this->kinect = & kinectDevice->getDevice();
 
 			//add gui panels for depth and rgb
-			auto depthPanel = gui.add(this->kinect->getDepthTexture(), "Depth");
-			auto colorPanel = gui.add(this->kinect->getColorTexture(), "RGB");
+			auto depthPanel = gui.makePanel(this->kinect->getDepthTexture(), "Depth");
+			auto colorPanel = gui.makePanel(this->kinect->getColorTexture(), "RGB");
+
+			//add these panels to the left column
+			this->leftColumn->add(depthPanel);
+			this->leftColumn->add(colorPanel);
 
 			//override the depth draw to draw skeletons also
 			depthPanel->onDraw += [this] (ofxCvGui::DrawArguments& args) {
