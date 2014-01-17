@@ -61,6 +61,9 @@
     <Filter Include="src\ofxMultiTrack\Utils">
       <UniqueIdentifier>{eb21ce4b-ddef-406a-a72b-21f890b406aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ofxMultiTrack\ServerData">
+      <UniqueIdentifier>{0c1bdb2a-3d44-4b27-9673-79237415d320}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -155,6 +158,15 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeConnection.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -198,6 +210,15 @@
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp">
       <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeConnection.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

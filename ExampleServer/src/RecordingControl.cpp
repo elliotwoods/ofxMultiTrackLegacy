@@ -4,7 +4,7 @@ using namespace ofxMultiTrack;
 using namespace ofxCvGui;
 
 //---------
-RecordingControl::RecordingControl(Server::Recorder & recorder, Server::Recording & recording) : recorder(recorder), recording(recording) {
+RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::Recording & recording) : recorder(recorder), recording(recording) {
 	this->setBounds(ofRectangle(0,0,100,10));
 
 	this->onDraw += [this] (DrawArguments & args) {

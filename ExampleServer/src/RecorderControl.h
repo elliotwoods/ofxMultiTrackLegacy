@@ -6,8 +6,8 @@
 
 class RecorderControl : public ofxCvGui::ElementGroup {
 public:
-	RecorderControl(ofxMultiTrack::Server::Recorder &);
+	RecorderControl(ofxMultiTrack::ServerData::Recorder &);
 protected:
-	ofxMultiTrack::Server::Recorder & recorder;
+	ofxMultiTrack::ServerData::Recorder & recorder;
 	float hoverPct;
 };

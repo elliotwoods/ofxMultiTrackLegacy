@@ -4,7 +4,7 @@ using namespace ofxMultiTrack;
 using namespace ofxCvGui;
 
 //---------
-RecorderControl::RecorderControl(Server::Recorder & recorder) : recorder(recorder) {
+RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(recorder) {
 	this->hoverPct = 0;
 
 	this->setBounds(ofRectangle(0,0,50,50));

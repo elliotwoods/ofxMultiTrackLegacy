@@ -102,6 +102,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Skeleton.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Node.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Server.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeConnection.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
   </ItemGroup>
@@ -119,6 +122,9 @@
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeConnection.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
