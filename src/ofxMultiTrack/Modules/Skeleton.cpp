@@ -31,11 +31,13 @@ namespace ofxMultiTrack {
 		Json::Value Skeleton::serialize() {
 			Json::Value json;
 			auto & users = json["users"];
-			int index = 0;
-			for(auto & skeleton : this->skeletons) {
-				auto & user = users[index];
-				user = serialize(skeleton);
-				index++;
+			if (this->getLastFrameAge() < 1000000.0f * OFXMULTITRACK_NODE_FRAME_AGE_MAX) {
+				int index = 0;
+				for(auto & skeleton : this->skeletons) {
+					auto & user = users[index];
+					user = serialize(skeleton);
+					index++;
+				}
 			}
 			return json;
 		}
@@ -54,6 +56,15 @@ namespace ofxMultiTrack {
 			timeSpan /= 1000000.0f; //convert micros to s
 			auto frames = (float) this->frameTimings.size();
 			return frames / timeSpan;
+		}
+
+		//---------
+		Timestamp Skeleton::getLastFrameAge() {
+			if (this->frameTimings.size() > 0) {
+				return ofGetElapsedTimeMicros() - this->frameTimings.back();
+			} else {
+				return 0;
+			}
 		}
 
 		//---------

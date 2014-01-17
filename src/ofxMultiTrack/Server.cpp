@@ -97,7 +97,7 @@ namespace ofxMultiTrack {
 		this->client.setVerbose(false);
 		while(this->running) {
 			if (!this->client.isConnected()) {
-				this->client.setup(this->address, OFXMULTITRACK_CLIENT_LISTEN_PORT + index, false);
+				this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + index, false);
 			}
 			auto response = this->client.receive();
 			if (response.size() > 0) {

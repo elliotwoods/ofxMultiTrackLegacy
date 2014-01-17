@@ -3,6 +3,7 @@
 #include "Base.h"
 #include "../Devices/KinectSDK.h"
 #include "../Utils/Types.h"
+#include "../Utils/Constants.h"
 
 namespace ofxMultiTrack {
 	namespace Modules {
@@ -16,6 +17,7 @@ namespace ofxMultiTrack {
 			Json::Value serialize() override;
 			void deserialize(const Json::Value& data) override;
 			float getFrameRate();
+			Timestamp getLastFrameAge();
 			Json::Value getStatus() override;
 
 			static string indexToName(int index);
