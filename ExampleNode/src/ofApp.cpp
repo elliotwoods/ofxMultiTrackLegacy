@@ -76,14 +76,15 @@ void ofApp::update(){
 
 			//override the depth draw to draw skeletons also
 			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
+				ofPushMatrix();
+				ofScale(args.size.x / 640.0f, args.size.y / 480.0f);
 				if (this->kinect != 0) {
-					ofPushMatrix();
 					int skeletonCount = this->kinect->getSkeletons().size();
 					for(int i=0; i<skeletonCount; i++) {
 						this->kinect->drawSkeleton(i);
 					}
-					ofPopMatrix();
 				}
+				ofPopMatrix();
 			};
 
 			//disable the alpha channel whilst renderering color frame by adding early and late listeners to the draw call
