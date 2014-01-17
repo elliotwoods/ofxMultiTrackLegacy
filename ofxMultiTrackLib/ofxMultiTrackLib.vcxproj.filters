@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{56a99a18-ab23-4a06-b594-3d23295b4765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ofxMultiTrack">
+      <UniqueIdentifier>{7bb95a72-1fb6-4b2d-8d22-5ee2a5de74d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{1414836c-c302-414a-b7a5-2627c6253f8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNetwork">
+      <UniqueIdentifier>{8aaa5621-9cfe-4436-b773-be565870d219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNetwork\src">
+      <UniqueIdentifier>{80efa46e-1cad-4be2-a5ad-ccd403261d18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON">
+      <UniqueIdentifier>{b0b4e487-6492-46c5-b3cd-9969840cdf50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\src">
+      <UniqueIdentifier>{8ed420ec-8f86-4c7c-ab33-a1959c684209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\libs">
+      <UniqueIdentifier>{a101f26c-cbf9-4283-9944-a2508f5c8b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\libs\jsoncpp">
+      <UniqueIdentifier>{6fd41b6e-ba0f-4f90-b884-ec89c0a027fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\libs\jsoncpp\include">
+      <UniqueIdentifier>{04709165-1cb2-412f-b73d-f266cecfa81e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\libs\jsoncpp\include\json">
+      <UniqueIdentifier>{a65ebab2-d2b8-4dba-8357-0c39c0091d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxJSON\libs\jsoncpp\src">
+      <UniqueIdentifier>{fd146d17-4c4f-41bf-bcfe-a6294de1ff6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxKinectCommonBridge">
+      <UniqueIdentifier>{a4aeaf29-264a-4945-beb8-fb76b043262a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxKinectCommonBridge\src">
+      <UniqueIdentifier>{4cfdd31f-527b-4c8f-ba9a-00fbd6a9ad33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxKinectCommonBridge\libs">
+      <UniqueIdentifier>{6e992859-a38f-4963-a0ae-95ecba92d0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxKinectCommonBridge\libs\KinectCommonBridge">
+      <UniqueIdentifier>{424c8263-bd61-49e5-aae1-2da8b685a531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include">
+      <UniqueIdentifier>{e775643f-2132-423c-a48f-5aa5f4733da7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ofxMultiTrack\Modules">
+      <UniqueIdentifier>{8870adf3-a605-49bd-867c-8c15bb5515a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ofxMultiTrack\Devices">
+      <UniqueIdentifier>{3dd75bf9-2077-4b1d-b760-9ddf55aa4e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ofxMultiTrack\Uitls">
+      <UniqueIdentifier>{eb21ce4b-ddef-406a-a72b-21f890b406aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\ofxMultiTrack.h">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\ofxMultiTrack\Node.h">
+      <Filter>src\ofxMultiTrack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxNetwork.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxNetworkUtils.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxTCPClient.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxTCPManager.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxTCPServer.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNetwork\src\ofxUDPManager.h">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\src\ofxJSONElement.h">
+      <Filter>addons\ofxJSON\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\autolink.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\config.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\features.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\forwards.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\json.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\reader.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\value.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\writer.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\src\json_batchallocator.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\src\json_tool.h">
+      <Filter>addons\ofxJSON\libs\jsoncpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h">
+      <Filter>addons\ofxKinectCommonBridge\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h">
+      <Filter>addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\Base.h">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\Skeleton.h">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Devices\Base.h">
+      <Filter>src\ofxMultiTrack\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Devices\KinectSDK.h">
+      <Filter>src\ofxMultiTrack\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\Set.h">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Devices\Set.h">
+      <Filter>src\ofxMultiTrack\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Server.h">
+      <Filter>src\ofxMultiTrack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h">
+      <Filter>src\ofxMultiTrack\Uitls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
+      <Filter>src\ofxMultiTrack\Uitls</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxNetwork\src\ofxTCPManager.cpp">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxNetwork\src\ofxTCPServer.cpp">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxNetwork\src\ofxUDPManager.cpp">
+      <Filter>addons\ofxNetwork\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxJSON\src\ofxJSONElement.cpp">
+      <Filter>addons\ofxJSON\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_reader.cpp">
+      <Filter>addons\ofxJSON\libs\jsoncpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_value.cpp">
+      <Filter>addons\ofxJSON\libs\jsoncpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_writer.cpp">
+      <Filter>addons\ofxJSON\libs\jsoncpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp">
+      <Filter>addons\ofxKinectCommonBridge\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Node.cpp">
+      <Filter>src\ofxMultiTrack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp">
+      <Filter>src\ofxMultiTrack\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Server.cpp">
+      <Filter>src\ofxMultiTrack</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
