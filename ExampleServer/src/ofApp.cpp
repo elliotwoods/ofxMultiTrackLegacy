@@ -38,8 +38,12 @@ void ofApp::setup(){
 
 	//draw markers to hands
 	worldPanel->onDraw += [this, worldPanel] (ofxCvGui::DrawArguments & args) {
-		auto markerJointName = "HAND_RIGHT";
+		auto markerJointName = OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT;
+
+		//get vector of UserSet's (one per node) from the server
 		auto data = this->server.getCurrentFrame();
+
+		//init drawing of node labels from 60px down
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
@@ -52,7 +56,7 @@ void ofApp::setup(){
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);
-					auto textBounds = ofxCvGui::AssetRegister.drawText(label, 20, y, "", true, 20, 50);
+					auto textBounds = ofxCvGui::AssetRegister.drawText(label, 20, y, "", true, 20, 100);
 					y+=40;
 
 					//save label as hit target

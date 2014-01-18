@@ -64,6 +64,36 @@
     <Filter Include="src\ofxMultiTrack\ServerData">
       <UniqueIdentifier>{0c1bdb2a-3d44-4b27-9673-79237415d320}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxPolyfit">
+      <UniqueIdentifier>{e4c8e766-242c-43f2-a9da-1138ef98b8e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPolyfit\libs">
+      <UniqueIdentifier>{ce77b95e-9d32-4158-9d35-a911f8dbd288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPolyfit\libs\PolyNFit">
+      <UniqueIdentifier>{c3c542f1-cfab-4e05-a5af-535f6cb10ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPolyfit\libs\PolyNFit\src">
+      <UniqueIdentifier>{abce76d6-896a-48f1-ae46-401de65d668b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPolyfit\libs\PolyNFit\src\Data">
+      <UniqueIdentifier>{18f1842a-87b6-425c-a88d-e72652bfac72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPolyfit\src">
+      <UniqueIdentifier>{666771f4-ddc9-4986-ade4-a58757b71231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ofxMultiTrack\Align">
+      <UniqueIdentifier>{ea7ce074-6135-4a80-940d-25151ce299e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraph">
+      <UniqueIdentifier>{1237bfb8-8f1e-4c64-9582-333e453d0b23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraph\src">
+      <UniqueIdentifier>{47e5149b-128d-4852-b6af-6a2dbc8d3c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraph\src\ofxGraphEdit">
+      <UniqueIdentifier>{7f1edbd4-5bd0-4d88-a1df-2f6dc1aedc1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -167,6 +197,60 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\basisTransformIndices.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\FitBase.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\matrix.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\polyNfit.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitBasis.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataPoint.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataSet.h">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyPlane.h">
+      <Filter>addons\ofxPolyfit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyFit.h">
+      <Filter>addons\ofxPolyfit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\Base.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\PolyFit.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h">
+      <Filter>addons\ofxGraph\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h">
+      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h">
+      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h">
+      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\Default.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -218,6 +302,42 @@
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\basisTransformIndices.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\FitBase.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\matrix.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\polyNfit.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataPoint.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataSet.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitBasis.cpp">
+      <Filter>addons\ofxPolyfit\libs\PolyNFit\src\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyPlane.cpp">
+      <Filter>addons\ofxPolyfit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyFit.cpp">
+      <Filter>addons\ofxPolyfit\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeSet.cpp">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClCompile>
   </ItemGroup>

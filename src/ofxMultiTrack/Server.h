@@ -10,7 +10,12 @@
 
 #include "ServerData/Recording.h"
 #include "ServerData/NodeConnection.h"
+#include "ServerData/NodeSet.h"
 #include "ServerData/Recorder.h"
+
+#include "Align/Base.h"
+#include "Align/PolyFit.h"
+#include "Align/Default.h" //must be included after other routines
 
 namespace ofxMultiTrack {
 	class Server {
@@ -32,6 +37,9 @@ namespace ofxMultiTrack {
 
 		Json::Value getStatus();
 		string getStatusString();
+
+		void addAlignment(int nodeIndex, int sourceNodeIndex, int userIndex = 0, int sourceUserIndex = 0,
+			Align::Ptr routine = Align::Ptr(new Align::Default()));
 	protected:
 		ServerData::NodeSet nodes;
 		ServerData::Recorder recorder;

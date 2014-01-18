@@ -112,13 +112,17 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 		this->recorder.load();
 	};
 	
-	timeTrack->onMouse += [this] (MouseArguments & args) {
+	timeTrack->onMouse += [this, timeTrack] (MouseArguments & args) {
+		float pct = args.localNormalised.x;
+		bool click = false;
 		if (args.isLocal()) {
-			float pct = args.localNormalised.x;
 			if (args.action == MouseArguments::Pressed || args.action == MouseArguments::Dragged) {
-				this->recorder.setPlayHeadNormalised(pct);
+				click = true;
 			}
 			this->hoverPct = args.localNormalised.x;
+		}
+		if (timeTrack->getMouseState() == ofxCvGui::Element::Dragging || click) {
+			this->recorder.setPlayHeadNormalised(pct);
 		}
 	};
 	

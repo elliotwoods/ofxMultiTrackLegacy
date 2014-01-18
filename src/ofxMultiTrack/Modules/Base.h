@@ -8,6 +8,7 @@ namespace ofxMultiTrack {
 	namespace Modules {
 		class Base {
 		public:
+			virtual ~Base() { }
 			virtual string getType() const = 0;
 			virtual void init() = 0;
 			virtual void update() = 0;

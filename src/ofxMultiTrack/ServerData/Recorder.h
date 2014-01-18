@@ -8,6 +8,7 @@
 #include "../Modules/Set.h"
 #include "../Modules/Skeleton.h"
 #include "NodeConnection.h"
+#include "NodeSet.h"
 #include "Recording.h"
 
 namespace ofxMultiTrack {
