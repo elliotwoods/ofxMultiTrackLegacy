@@ -115,10 +115,10 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 	timeTrack->onMouse += [this] (MouseArguments & args) {
 		if (args.isLocal()) {
 			float pct = args.localNormalised.x;
-			this->hoverPct = args.localNormalised.x;
 			if (args.action == MouseArguments::Pressed || args.action == MouseArguments::Dragged) {
 				this->recorder.setPlayHeadNormalised(pct);
 			}
+			this->hoverPct = args.localNormalised.x;
 		}
 	};
 	
