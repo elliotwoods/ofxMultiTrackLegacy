@@ -84,6 +84,6 @@ namespace ofxMultiTrack {
 	//----------
 	string Server::getStatusString() {
 		Json::StyledWriter writer;
-		return "status : " + writer.write(this->getStatus());
+		return "status = " + writer.write(this->getStatus());
 	}
 }
