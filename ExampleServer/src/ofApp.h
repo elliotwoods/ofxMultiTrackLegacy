@@ -8,7 +8,11 @@
 #include "RecorderControl.h"
 
 class ofApp : public ofBaseApp{
-
+	struct Target {
+		ofRectangle bounds;
+		int node;
+		int user;
+	};
 public:
 	void setup();
 	void update();
@@ -26,4 +30,7 @@ public:
 	
 	ofxMultiTrack::Server server;
 	ofxCvGui::Builder gui;
+
+	map<int, int> userSelection; //which user from which node to use for calibration
+	vector<Target> targets;
 };

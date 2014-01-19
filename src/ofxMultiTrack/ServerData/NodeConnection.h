@@ -48,8 +48,5 @@ namespace ofxMultiTrack {
 
 			Recording recording;
 		};
-
-		typedef vector<shared_ptr<NodeConnection>> NodeSet;
-
 	}
 }

@@ -75,6 +75,10 @@
     <None Include="..\src\ofxMultiTrack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\autolink.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\config.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\features.h" />
@@ -94,6 +98,19 @@
     <ClInclude Include="..\..\ofxNetwork\src\ofxTCPManager.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxTCPServer.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxUDPManager.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\basisTransformIndices.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitBasis.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataPoint.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataSet.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\FitBase.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\matrix.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\polyNfit.h" />
+    <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.h" />
+    <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyFit.h" />
+    <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyPlane.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Align\Base.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Align\Default.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Align\PolyFit.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Base.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\KinectSDK.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Set.h" />
@@ -103,6 +120,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\Node.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Server.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeConnection.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
@@ -118,11 +136,23 @@
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPManager.cpp" />
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPServer.cpp" />
     <ClCompile Include="..\..\ofxNetwork\src\ofxUDPManager.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\basisTransformIndices.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitBasis.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataPoint.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\Data\pfitDataSet.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\FitBase.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\matrix.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\polyNfit.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyFit.cpp" />
+    <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyPlane.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeConnection.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeSet.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
