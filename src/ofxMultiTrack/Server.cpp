@@ -118,8 +118,8 @@ namespace ofxMultiTrack {
 			//--
 			//build the training set
 			//
-			vector<ofVec3f> sourcePoints;
 			vector<ofVec3f> targetPoints;
+			vector<ofVec3f> originPoints;
 
 			//iterate frames in target's recording
 			auto & targetFrames = targetNode->getRecording().getFrames();
@@ -197,7 +197,7 @@ namespace ofxMultiTrack {
 				}
 
 				targetPoints.push_back(targetJoint->second.position);
-				sourcePoints.push_back(originJoint->second.position);
+				originPoints.push_back(originJoint->second.position);
 				cout << "+";
 			}
 			cout << endl;
@@ -205,12 +205,12 @@ namespace ofxMultiTrack {
 			//--
 
 			//check we have enough data
-			if (sourcePoints.size() < 3) {
+			if (targetPoints.size() < 3) {
 				throw(std::exception("insufficient correlation points"));
 			}
 
-			//perform the calibration. target points will be transformed to match source space
-			routine->calibrate(targetPoints, sourcePoints);
+			//perform the calibration. target points will be transformed to match origin space
+			routine->calibrate(targetPoints, originPoints);
 
 			//assign the calibration in the NodeSet
 			this->nodes.setTransform(nodeIndex, originNodeIndex, routine);
