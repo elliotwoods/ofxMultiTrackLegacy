@@ -98,28 +98,25 @@ namespace ofxMultiTrack {
 			module->update();
 		}
 
-		//initialise json parcel
-		Json::Value json;
-		json["timestamp"] = ofGetElapsedTimeMillis();
-		json["localIndex"] = this->settings.localIndex;
-
-		//iterate through modules and get a data payload from each
-		auto & jsonModules = json["modules"];
-		int moduleIndex = 0;
-		for(auto module : this->modules) {
-			auto & jsonModule = jsonModules[moduleIndex++];
-			jsonModule["type"] = module->getType();
-			jsonModule["data"] = module->serialize();
+		//check if we have any data to send
+		bool needsSend = false;
+		for(auto device : this->devices) {
+			needsSend |= device->isFrameNew();
 		}
+		
+		if (needsSend) {
+			//get local dataset
+			auto json = this->serialise();
 
-		//send local status also
-		json["status"] = this->getStatus();
+			//send local status also for remote viewing
+			json["status"] = this->getStatus();
 
-		Json::StyledWriter writer;
-		string result = writer.write(json);
+			Json::StyledWriter writer;
+			string result = writer.write(json);
 
-		//send payload to all clients
-		server.sendToAll(result); //always sends a [/TCP] from oF :(
+			//send payload to all clients
+			server.sendToAll(result); //always sends a [/TCP] from oF (note for other clients, e.g. VVVV)
+		}
 	}
 
 	//----------
@@ -135,6 +132,25 @@ namespace ofxMultiTrack {
 	//----------
 	Modules::Set & Node::getModules() {
 		return this->modules;
+	}
+
+	//----------
+	Json::Value Node::serialise() const {
+		Json::Value json;
+
+		json["timestamp"] = ofGetElapsedTimeMillis();
+		json["localIndex"] = this->settings.localIndex;
+
+		//iterate through modules and get a data payload from each
+		auto & jsonModules = json["modules"];
+		int moduleIndex = 0;
+		for(auto module : this->modules) {
+			auto & jsonModule = jsonModules[moduleIndex++];
+			jsonModule["type"] = module->getType();
+			jsonModule["data"] = module->serialize();
+		}
+
+		return json;
 	}
 
 	//----------
