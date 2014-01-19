@@ -1,0 +1,16 @@
+{
+    "nodes": [
+        {
+            "address" : "192.168.100.10",
+            "index" : 0
+        },
+        {
+            "address" : "192.168.100.10",
+            "index" : 1
+        }],
+    "osc":
+    {
+        "address" : "localhost",
+        "port" : 8000
+    }
+}
