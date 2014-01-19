@@ -77,22 +77,26 @@ namespace ofxMultiTrack {
 					{
 						Json::Value json;
 						jsonReader.parse(response, json);
-						auto & users = json["modules"][0]["data"]["users"];
+						auto & jsonSkeletons = json["modules"][0]["data"];
+						bool newSkeleton = jsonSkeletons["isNewSkeleton"].asBool();
+						auto & jsonUsers = jsonSkeletons["users"];
 						this->lockUsers.lock();
 						int userIndex = 0;
-						bool newSkeleton = users["isNewSkeleton"].asBool();
-						if (this->users.size() < users.size()) {
-							this->users.resize(users.size());
+						if (this->users.size() < jsonUsers.size()) {
+							this->users.resize(jsonUsers.size());
 						}
 						for(auto & userLocal : this->users) {
-							auto & user = users[userIndex++];
-							if (user.size() == 0) {
+							if (userIndex >= jsonUsers.size() || jsonUsers.isNull()) {
+								break;
+							}
+							auto & jsonUser = jsonUsers[userIndex++];
+							if (jsonUser.size() == 0) {
 								userLocal.setAlive(false);
 							} else {
 								userLocal.setAlive(true);
-								auto jointNames = user.getMemberNames();
+								auto jointNames = jsonUser.getMemberNames();
 								for(auto & jointName : jointNames) {
-									auto & joint = user[jointName];
+									auto & joint = jsonUser[jointName];
 									auto & jointLocal = userLocal[jointName];
 									auto & position = joint["position"];
 									for(int i=0; i<3; i++) {
