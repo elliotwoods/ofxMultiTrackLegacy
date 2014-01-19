@@ -71,6 +71,9 @@ namespace ofxMultiTrack {
 		Json::Value Skeleton::getStatus() {
 			Json::Value status;
 			status["skeletonCount"] = this->skeletons.size();
+			for(int i=0; i<this->skeletons.size(); i++) {
+				status["skeletonJointCount"][i] = this->skeletons[i].size();
+			}
 			status["fps"] = this->getFrameRate();
 			return status;
 		}
