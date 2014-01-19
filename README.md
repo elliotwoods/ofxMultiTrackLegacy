@@ -6,18 +6,22 @@ Requirements
 
 ### ofxKinectCommonBridge
 
-* Repo - https://github.com/elliotwoods/ofxKinectCommonBridge
+* Repo - https://github.com/elliotwoods/ofxKinectCommonBridge.git
 * Branch - fixesFor-ofxMultiTrack (hopefully they'll merge then can use parent URL)
 
 ### ofxPolyFit
 
-* Repo - https://github.com/elliotwoods/ofxPolyfit
+* Repo - https://github.com/elliotwoods/ofxPolyfit.git
 * Branch - master
 
 ### ofxJSON
 
 * Repo - https://github.com/jefftimesten/ofxJSON.git
 * Branch - master
+
+## ofxGraphEdit
+
+* Repo - https://github.com/elliotwoods/ofxGraphEdit.git
 
 
 Requirements for examples
@@ -29,8 +33,8 @@ Requirements for examples
 * Branch - feature-lambdaDriven
 
 ### ofxUI
-
-* Repo - https://github.com/rezaali/ofxUI.git
+https://github.com/elliotwoods/ofxGraphEdit.git
+*  - https://github.com/rezaali/ofxUI.git
 * Branch - develop
 
 ### ofxGrabCam
