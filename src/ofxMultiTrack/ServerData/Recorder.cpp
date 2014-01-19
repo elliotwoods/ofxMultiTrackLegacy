@@ -35,6 +35,7 @@ namespace ofxMultiTrack {
 			case Recorder::Recording:
 				if (currentTime > this->endTime) {
 					this->endTime = currentTime;
+					this->playHead = currentTime;
 				}
 				break;
 			case Recorder::Playing:

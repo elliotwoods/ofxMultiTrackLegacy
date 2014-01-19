@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp">
       <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.cpp">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -63,6 +66,9 @@
       <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.h">
       <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
     </ClInclude>
   </ItemGroup>

@@ -53,6 +53,7 @@ void ofApp::setup(){
 
 				//check this user is alive
 				if (!user.getAlive()) {
+					userIndex++;
 					continue;
 				}
 

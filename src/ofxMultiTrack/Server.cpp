@@ -46,7 +46,7 @@ namespace ofxMultiTrack {
 		vector<UserSet> currentFrame;
 
 		int nodeIndex = 0;
-		if (this->recorder.hasData()) {
+		if (this->recorder.hasData() && !this->recorder.isRecording()) {
 			//get data from recording
 			for(auto node : this->nodes) {
 				auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());

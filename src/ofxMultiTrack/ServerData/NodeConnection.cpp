@@ -80,6 +80,7 @@ namespace ofxMultiTrack {
 						auto & users = json["modules"][0]["data"]["users"];
 						this->lockUsers.lock();
 						int userIndex = 0;
+						bool newSkeleton = users["isNewSkeleton"].asBool();
 						if (this->users.size() < users.size()) {
 							this->users.resize(users.size());
 						}
@@ -104,7 +105,9 @@ namespace ofxMultiTrack {
 								}
 							}
 						}
-						this->recording.addIncoming(this->users);
+						if (newSkeleton) {
+							this->recording.addIncoming(this->users);
+						}
 
 						this->remoteStatusLock.lock();
 						this->remoteStatus = json["status"];

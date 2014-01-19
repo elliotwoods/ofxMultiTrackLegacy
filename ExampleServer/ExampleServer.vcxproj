@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp" />
+    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\RecorderControl.cpp" />
@@ -103,6 +104,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.h" />
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
     <ClInclude Include="src\ofApp.h" />
