@@ -50,9 +50,16 @@ void ofApp::setup(){
 		for(auto & node : data) {
 			int userIndex = 0;
 			for(auto & user : node) {
+
+				//check this user is alive
+				if (!user.getAlive()) {
+					continue;
+				}
+
 				//check if we have a selection for this node
 				auto selection = this->userSelection.find(nodeIndex);
 				int selectionIndex = selection == this->userSelection.end() ? -1 : selection->second;
+
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);

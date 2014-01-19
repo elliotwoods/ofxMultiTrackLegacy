@@ -25,6 +25,11 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	User::User() {
+		this->alive = true;
+	}
+
+	//----------
 	Json::Value User::serialise() const {
 		Json::Value json;
 		for(auto & joint : *this) {
@@ -43,22 +48,34 @@ namespace ofxMultiTrack {
 			(*this)[jointName] = joint;
 		}
 	}
+	
+	//----------
+	void User::setAlive(bool alive) {
+		this->alive = alive;
+	}
+
+	//----------
+	bool User::getAlive() const {
+		return this->alive;
+	}
 
 	//----------
 	void User::customDraw() {
-		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
-		for(auto & joint : *this) {
-			ofPushMatrix();
-			ofTranslate(joint.second.position);
-			float rotation[4];
-			joint.second.rotation.getRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
-			ofRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
-			ofDrawAxis(0.05f);
-			ofScale(0.001f, 0.001f, 0.001f);
-			ofxCvGui::AssetRegister.drawText(joint.first, 0.05, 0, "", true, 20.0f);
-			ofPopMatrix();
+		if (this->alive) {
+			ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
+			for(auto & joint : *this) {
+				ofPushMatrix();
+				ofTranslate(joint.second.position);
+				float rotation[4];
+				joint.second.rotation.getRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
+				ofRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
+				ofDrawAxis(0.05f);
+				ofScale(0.001f, 0.001f, 0.001f);
+				ofxCvGui::AssetRegister.drawText(joint.first, 0.05, 0, "", true, 20.0f);
+				ofPopMatrix();
+			}
+			ofSetDrawBitmapMode(OF_BITMAPMODE_SIMPLE);
 		}
-		ofSetDrawBitmapMode(OF_BITMAPMODE_SIMPLE);
 	}
 
 	//----------

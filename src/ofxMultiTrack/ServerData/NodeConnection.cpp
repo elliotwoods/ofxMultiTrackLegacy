@@ -83,19 +83,24 @@ namespace ofxMultiTrack {
 						if (this->users.size() < users.size()) {
 							this->users.resize(users.size());
 						}
-						for(auto & user : users) {
-							auto & userLocal = this->users[userIndex++];
-							auto jointNames = user.getMemberNames();
-							for(auto & jointName : jointNames) {
-								auto & joint = user[jointName];
-								auto & jointLocal = userLocal[jointName];
-								auto & position = joint["position"];
-								for(int i=0; i<3; i++) {
-									jointLocal.position[i] = position[i].asFloat();
-								}
-								auto & rotation = joint["rotation"];
-								for(int i=0; i<3; i++) {
-									jointLocal.rotation[i] = rotation[i].asFloat();
+						for(auto & userLocal : this->users) {
+							auto & user = users[userIndex++];
+							if (user.size() == 0) {
+								userLocal.setAlive(false);
+							} else {
+								userLocal.setAlive(true);
+								auto jointNames = user.getMemberNames();
+								for(auto & jointName : jointNames) {
+									auto & joint = user[jointName];
+									auto & jointLocal = userLocal[jointName];
+									auto & position = joint["position"];
+									for(int i=0; i<3; i++) {
+										jointLocal.position[i] = position[i].asFloat();
+									}
+									auto & rotation = joint["rotation"];
+									for(int i=0; i<3; i++) {
+										jointLocal.rotation[i] = rotation[i].asFloat();
+									}
 								}
 							}
 						}

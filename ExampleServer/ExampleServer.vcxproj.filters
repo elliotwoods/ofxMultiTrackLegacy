@@ -19,10 +19,25 @@
     <ClCompile Include="src\RecorderControl.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{f4f9f124-0333-4033-939c-fa86f259e1c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraphEdit">
+      <UniqueIdentifier>{cf065249-5bb2-4054-b915-8cd06b6b1b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraphEdit\src">
+      <UniqueIdentifier>{ab1fff16-3fc1-47fc-af48-0320588d1771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxGraphEdit\src\ofxGraphEdit">
+      <UniqueIdentifier>{abb36fd3-e4e3-4c3e-96eb-5d4c0875c445}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +52,18 @@
     </ClInclude>
     <ClInclude Include="src\RecorderControl.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h">
+      <Filter>addons\ofxGraphEdit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h">
+      <Filter>addons\ofxGraphEdit\src\ofxGraphEdit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

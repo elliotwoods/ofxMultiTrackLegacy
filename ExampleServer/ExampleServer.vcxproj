@@ -94,12 +94,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\RecorderControl.cpp" />
     <ClCompile Include="src\RecordingControl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
+    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\RecorderControl.h" />
     <ClInclude Include="src\RecordingControl.h" />

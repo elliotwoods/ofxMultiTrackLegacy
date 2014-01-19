@@ -25,10 +25,14 @@ namespace ofxMultiTrack {
 
 	class User : public std::map<string, Joint>, public ofNode {
 	public:
+		User();
 		Json::Value serialise() const;
 		void deserialise(const Json::Value &);
+		void setAlive(bool);
+		bool getAlive() const;
 	protected:
 		void customDraw();
+		bool alive;
 	};
 	
 	class UserSet : public vector<User>, public ofNode {

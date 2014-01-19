@@ -176,9 +176,6 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
-      <Filter>src\ofxMultiTrack\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClInclude>
@@ -229,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Align\Default.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
