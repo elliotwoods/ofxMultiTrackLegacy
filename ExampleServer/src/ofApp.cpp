@@ -103,12 +103,32 @@ void ofApp::setup(){
 	};
 
 	//draw recorder tracks in interactive scrollable panel
-	recorderPanel->add(ofxCvGui::ElementPtr(new RecorderControl(server.getRecorder())));
+	this->recorderControl = ofPtr<RecorderControl>(new RecorderControl(server.getRecorder()));
+	recorderPanel->add(this->recorderControl);
 	auto & nodes = this->server.getNodes();
 	for(auto node : nodes) {
 		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording()));
 		recorderPanel->add(track);
 	}
+	auto calibrateButton = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button);
+	calibrateButton->setBounds(ofRectangle(0,0,100,30));
+	calibrateButton->onDraw += [calibrateButton] (ofxCvGui::DrawArguments &) {
+		ofxCvGui::AssetRegister.drawText("Calibrate", 0, 0, "", true, 30, 100);
+		ofPushStyle();
+		ofNoFill();
+		ofSetLineWidth(calibrateButton->getMouseState() == ofxCvGui::Element::Down ? 2.0f : 1.0f);
+		ofRect(0,0,100,30);
+		ofPopStyle();
+	};
+	calibrateButton->onHit += [this] (ofVec2f&) {
+		//check we have selections for both
+		if (this->userSelection.count(0) == 0 || this->userSelection.count(1) == 0) {
+			return;
+		}
+		this->server.addAlignment(1, 0, this->userSelection[1], this->userSelection[0]);
+	};
+	recorderPanel->add(calibrateButton);
+	this->calibrateButton = calibrateButton;
 
 	//draw status in a scrollable panel
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
@@ -127,6 +147,12 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	server.update();
+
+	if (this->userSelection.count(0) == 0 || this->userSelection.count(1) == 0) {
+		this->calibrateButton->disable();
+	} else {
+		this->calibrateButton->enable();
+	}
 }
 
 //--------------------------------------------------------------

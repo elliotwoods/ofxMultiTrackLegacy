@@ -19,9 +19,11 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void PolyFit::calibrate(const vector<ofVec3f> & source, const vector<ofVec3f> & target) {
-			auto dataSet = ofxPolyFit::makeDataSet(source, target);
-			this->fit.RANSAC(dataSet, 100, 0.2f, 0.1f, 0.7f);
+		void PolyFit::calibrate(const vector<ofVec3f> & thisSpace, const vector<ofVec3f> & originSpace) {
+			auto dataSet = ofxPolyFit::makeDataSet(thisSpace, originSpace);
+			this->fit.correlate(dataSet);
+			cout << "Residual : " << this->fit.residualRMS(dataSet) << "m" << endl;
+			//this->fit.RANSAC(dataSet, 100, 0.2f, 0.1f, 0.7f);
 		}
 
 		//----------

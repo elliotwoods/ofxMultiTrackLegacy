@@ -45,19 +45,32 @@ namespace ofxMultiTrack {
 	vector<UserSet> Server::getCurrentFrame() {
 		vector<UserSet> currentFrame;
 
+		int nodeIndex = 0;
 		if (this->recorder.hasData()) {
 			//get data from recording
 			for(auto node : this->nodes) {
-				currentFrame.push_back(node->getRecording().getFrame(this->recorder.getPlayHead()));
+				auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
+				currentFrame.push_back(nodeFrame);
 			}
 		} else {
 			//get live data
 			for(auto node : this->nodes) {
-				currentFrame.push_back(node->getLiveData());
+				auto nodeFrame = node->getLiveData();
+				currentFrame.push_back(nodeFrame);
 			}
 		}
 
+		this->transformFrame(currentFrame);
+
 		return currentFrame;
+	}
+
+	//----------
+	void Server::transformFrame(vector<UserSet> & frame) {
+		int nodeIndex = 0;
+		for(auto & nodeFrame : frame) {
+			this->nodes.applyTransform(nodeFrame, nodeIndex++);
+		}
 	}
 
 	//----------
@@ -100,7 +113,7 @@ namespace ofxMultiTrack {
 
 			//local references
 			auto & targetNode = this->nodes[nodeIndex];
-			auto & sourceNode = this->nodes[nodeIndex];
+			auto & sourceNode = this->nodes[sourceNodeIndex];
 
 			//--
 			//build the training set
@@ -120,6 +133,7 @@ namespace ofxMultiTrack {
 				throw(std::exception("No frames recorded for source node"));
 			}
 
+			cout << "Frames for " << nodeIndex << ":" << userIndex << " from " << sourceNodeIndex << ":" << sourceUserIndex << "=";
 			for(auto & targetFrame : targetFrames) {
 				auto targetFrameTimestamp = targetFrame.first;
 
@@ -148,8 +162,8 @@ namespace ofxMultiTrack {
 						//before is closer
 						sourceFrame = before;
 					} else {
-						//after is closer, but that's already accounted for
-						//presume optimiser gets rid of this
+						//after is closer, but that's already accounted for.
+						//presume optimiser gets rid of this else block
 					}
 				}
 
@@ -158,6 +172,7 @@ namespace ofxMultiTrack {
 
 				//check if source and target frames are too far apart in time
 				if(abs(sourceFrame->first - targetFrameTimestamp) > OFXMULTITRACK_SERVER_ALIGN_MAX_TIME_DIFFERENCE) {
+					cout << "T";
 					continue;
 				}
 
@@ -166,6 +181,7 @@ namespace ofxMultiTrack {
 
 				//check these frames have these users
 				if (targetUserSet.size() <= userIndex || sourceUserSet.size() <= userIndex) {
+					cout << "U";
 					continue;
 				}
 
@@ -176,12 +192,15 @@ namespace ofxMultiTrack {
 
 				//check we have the joints
 				if (targetJoint == targetUser.end() || sourceJoint == sourceUser.end()) {
+					cout << "J";
 					continue;
 				}
 
 				targetPoints.push_back(targetJoint->second.position);
 				sourcePoints.push_back(sourceJoint->second.position);
+				cout << "+";
 			}
+			cout << endl;
 			//
 			//--
 
@@ -191,7 +210,7 @@ namespace ofxMultiTrack {
 			}
 
 			//perform the calibration
-			routine->calibrate(sourcePoints, targetPoints);
+			routine->calibrate(targetPoints, sourcePoints);
 
 			//assign the calibration in the NodeSet
 			this->nodes.setTransform(nodeIndex, sourceNodeIndex, routine);

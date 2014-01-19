@@ -10,7 +10,7 @@ namespace ofxMultiTrack {
 			PolyFit();
 			~PolyFit();
 			string getType() const;
-			void calibrate(const vector<ofVec3f> & source, const vector<ofVec3f> & target) override;
+			void calibrate(const vector<ofVec3f> & thisSpace, const vector<ofVec3f> & originSpace) override;
 			ofVec3f transform(const ofVec3f &) const override;
 
 			Json::Value serialise() const override;

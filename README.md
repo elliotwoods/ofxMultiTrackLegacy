@@ -9,6 +9,17 @@ Requirements
 * Repo - https://github.com/elliotwoods/ofxKinectCommonBridge
 * Branch - fixesFor-ofxMultiTrack (hopefully they'll merge then can use parent URL)
 
+### ofxPolyFit
+
+* Repo - https://github.com/elliotwoods/ofxPolyfit
+* Branch - master
+
+### ofxJSON
+
+* Repo - https://github.com/jefftimesten/ofxJSON.git
+* Branch - master
+
+
 Requirements for examples
 -------------------------
 
@@ -31,3 +42,7 @@ Requirements for examples
 
 * Repo - https://github.com/elliotwoods/ofxLiquidEvent.git
 * Branch - master
+
+Glossary
+--------
+

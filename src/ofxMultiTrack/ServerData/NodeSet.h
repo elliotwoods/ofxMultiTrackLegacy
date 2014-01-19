@@ -11,8 +11,10 @@ namespace ofxMultiTrack {
 				Align::Ptr transform;
 			};
 			typedef map<int, Transform> TransformSet;
+
 			TransformSet & getTransforms();
 			void setTransform(int nodeIndex, int sourceNodeIndex, Align::Ptr transform);
+			void applyTransform(UserSet &, int nodeIndex) const;
 		protected:
 			TransformSet transforms;
 		};

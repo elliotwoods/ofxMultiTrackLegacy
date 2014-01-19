@@ -33,6 +33,7 @@ namespace ofxMultiTrack {
 		ServerData::Recorder & getRecorder();
 
 		vector<UserSet> getCurrentFrame();
+		void transformFrame(vector<UserSet> &);
 		void drawWorld();
 
 		Json::Value getStatus();

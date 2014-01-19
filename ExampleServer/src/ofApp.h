@@ -33,4 +33,6 @@ public:
 
 	map<int, int> userSelection; //which user from which node to use for calibration
 	vector<Target> targets;
+	ofPtr<RecorderControl> recorderControl;
+	ofxCvGui::ElementPtr calibrateButton;
 };
