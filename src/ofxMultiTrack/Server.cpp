@@ -101,19 +101,19 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::addAlignment(int nodeIndex, int sourceNodeIndex, int userIndex, int sourceUserIndex, Align::Ptr routine) {
+	void Server::addAlignment(int nodeIndex, int originNodeIndex, int userIndex, int originUserIndex, Align::Ptr routine) {
 		try {
 			//check nodes exist
 			if (nodeIndex > this->nodes.size()) {
 				throw(std::exception("nodeIndex out of bounds"));
 			}
-			if (sourceNodeIndex > this->nodes.size()) {
-				throw(std::exception("sourceNodeIndex out of bounds"));
+			if (originNodeIndex > this->nodes.size()) {
+				throw(std::exception("originNodeIndex out of bounds"));
 			}
 
 			//local references
 			auto & targetNode = this->nodes[nodeIndex];
-			auto & sourceNode = this->nodes[sourceNodeIndex];
+			auto & originNode = this->nodes[originNodeIndex];
 
 			//--
 			//build the training set
@@ -123,17 +123,17 @@ namespace ofxMultiTrack {
 
 			//iterate frames in target's recording
 			auto & targetFrames = targetNode->getRecording().getFrames();
-			auto & sourceFrames = sourceNode->getRecording().getFrames();
+			auto & originFrames = originNode->getRecording().getFrames();
 
 			//first check we've got frames in both
 			if (targetFrames.empty()) {
 				throw(std::exception("No frames recorded for target node"));
 			}
-			if (sourceFrames.empty()) {
-				throw(std::exception("No frames recorded for source node"));
+			if (originFrames.empty()) {
+				throw(std::exception("No frames recorded for origin node"));
 			}
 
-			cout << "Frames for " << nodeIndex << ":" << userIndex << " from " << sourceNodeIndex << ":" << sourceUserIndex << "=";
+			cout << "Frames for " << nodeIndex << ":" << userIndex << " with origin defined as" << originNodeIndex << ":" << originUserIndex << "=";
 			for(auto & targetFrame : targetFrames) {
 				auto targetFrameTimestamp = targetFrame.first;
 
@@ -141,17 +141,17 @@ namespace ofxMultiTrack {
 				//get closest frame
 				//
 
-				//get sourceFrame >= to targetFrame
-				auto sourceFrame = sourceFrames.lower_bound(targetFrameTimestamp);
-				if (sourceFrame == sourceFrames.end())
+				//get originFrame >= to targetFrame
+				auto originFrame = originFrames.lower_bound(targetFrameTimestamp);
+				if (originFrame == originFrames.end())
 				{
 					//all source frames are before this target frame
 					//closest is last
-					sourceFrame--;
-				} else if (sourceFrame == sourceFrames.begin()) {
+					originFrame--;
+				} else if (originFrame == originFrames.begin()) {
 					//first sourceFrame is after target frame, we have our answer
 				} else {
-					auto after = sourceFrame;
+					auto after = originFrame;
 					auto before = after;
 					before--;
 
@@ -160,7 +160,7 @@ namespace ofxMultiTrack {
 
 					if(abs(beforeTime - targetFrameTimestamp) < abs(afterTime - targetFrameTimestamp)) {
 						//before is closer
-						sourceFrame = before;
+						originFrame = before;
 					} else {
 						//after is closer, but that's already accounted for.
 						//presume optimiser gets rid of this else block
@@ -171,13 +171,13 @@ namespace ofxMultiTrack {
 				//--
 
 				//check if source and target frames are too far apart in time
-				if(abs(sourceFrame->first - targetFrameTimestamp) > OFXMULTITRACK_SERVER_ALIGN_MAX_TIME_DIFFERENCE) {
+				if(abs(originFrame->first - targetFrameTimestamp) > OFXMULTITRACK_SERVER_ALIGN_MAX_TIME_DIFFERENCE) {
 					cout << "T";
 					continue;
 				}
 
 				auto & targetUserSet = targetFrame.second;
-				auto & sourceUserSet = sourceFrame->second;
+				auto & sourceUserSet = originFrame->second;
 
 				//check these frames have these users
 				if (targetUserSet.size() <= userIndex || sourceUserSet.size() <= userIndex) {
@@ -186,18 +186,18 @@ namespace ofxMultiTrack {
 				}
 
 				auto & targetUser = targetUserSet[userIndex];
-				auto & sourceUser = sourceUserSet[sourceUserIndex];
+				auto & originUser = sourceUserSet[originUserIndex];
 				auto & targetJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & sourceJoint = sourceUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
+				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
 
 				//check we have the joints
-				if (targetJoint == targetUser.end() || sourceJoint == sourceUser.end()) {
+				if (targetJoint == targetUser.end() || originJoint == originUser.end()) {
 					cout << "J";
 					continue;
 				}
 
 				targetPoints.push_back(targetJoint->second.position);
-				sourcePoints.push_back(sourceJoint->second.position);
+				sourcePoints.push_back(originJoint->second.position);
 				cout << "+";
 			}
 			cout << endl;
@@ -209,14 +209,14 @@ namespace ofxMultiTrack {
 				throw(std::exception("insufficient correlation points"));
 			}
 
-			//perform the calibration
+			//perform the calibration. target points will be transformed to match source space
 			routine->calibrate(targetPoints, sourcePoints);
 
 			//assign the calibration in the NodeSet
-			this->nodes.setTransform(nodeIndex, sourceNodeIndex, routine);
+			this->nodes.setTransform(nodeIndex, originNodeIndex, routine);
 
 		} catch (std::exception e) {
-			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from source node #" << sourceNodeIndex;
+			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;
 			ofLogError("ofxMultiTrack") << e.what();
 		}
 	}

@@ -39,7 +39,7 @@ namespace ofxMultiTrack {
 		Json::Value getStatus();
 		string getStatusString();
 
-		void addAlignment(int nodeIndex, int sourceNodeIndex, int userIndex = 0, int sourceUserIndex = 0,
+		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Ptr(new Align::Default()));
 	protected:
 		ServerData::NodeSet nodes;

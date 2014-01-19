@@ -75,10 +75,6 @@
     <None Include="..\src\ofxMultiTrack.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\autolink.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\config.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\features.h" />

@@ -85,15 +85,6 @@
     <Filter Include="src\ofxMultiTrack\Align">
       <UniqueIdentifier>{ea7ce074-6135-4a80-940d-25151ce299e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxGraph">
-      <UniqueIdentifier>{1237bfb8-8f1e-4c64-9582-333e453d0b23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="addons\ofxGraph\src">
-      <UniqueIdentifier>{47e5149b-128d-4852-b6af-6a2dbc8d3c76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="addons\ofxGraph\src\ofxGraphEdit">
-      <UniqueIdentifier>{7f1edbd4-5bd0-4d88-a1df-2f6dc1aedc1f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -232,18 +223,6 @@
     </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Align\PolyFit.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h">
-      <Filter>addons\ofxGraph\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h">
-      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h">
-      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h">
-      <Filter>addons\ofxGraph\src\ofxGraphEdit</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
