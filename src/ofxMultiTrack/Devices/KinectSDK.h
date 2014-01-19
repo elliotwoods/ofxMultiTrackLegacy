@@ -19,6 +19,7 @@ namespace ofxMultiTrack {
 			string getType() const override;
 			void init() override;
 			void update() override;
+			bool isFrameNew() override;
 			Json::Value getStatus() override;
 
 			ofxKinectCommonBridge& getDevice();

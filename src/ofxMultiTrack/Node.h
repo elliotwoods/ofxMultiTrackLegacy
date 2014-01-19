@@ -21,6 +21,8 @@ namespace ofxMultiTrack {
 		Devices::Set & getDevices();
 		Modules::Set & getModules();
 
+		Json::Value serialise() const;
+
 		Json::Value getStatus();
 		string getStatusString();
 

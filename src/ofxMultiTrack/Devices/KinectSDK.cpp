@@ -47,6 +47,11 @@ namespace ofxMultiTrack {
 		}
 
 		//---------
+		bool KinectSDK::isFrameNew() {
+			return this->kinect.isFrameNew();
+		}
+
+		//---------
 		Json::Value KinectSDK::getStatus() {
 			Json::Value status;
 			status["Device ID"] = ofToString(deviceID);

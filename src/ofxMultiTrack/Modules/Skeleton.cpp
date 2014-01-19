@@ -10,6 +10,8 @@ namespace ofxMultiTrack {
 		//---------
 		Skeleton::Skeleton(Devices::KinectSDK* kinect) {
 			this->kinect = &kinect->getDevice();
+			this->isNewSkeleton = false;
+			this->needsSendSkeleton = false;
 		}
 
 		//---------
@@ -18,7 +20,9 @@ namespace ofxMultiTrack {
 
 		//---------
 		void Skeleton::update() {
-			if (this->kinect->isNewSkeleton()) {
+			this->isNewSkeleton = this->kinect->isNewSkeleton();
+			this->needsSendSkeleton |= this->isNewSkeleton;
+			if (this->isNewSkeleton) {
 				this->skeletons = this->kinect->getSkeletons();
 				frameTimings.push_back(ofGetElapsedTimeMicros());
 				while(frameTimings.size() > 100) {
@@ -39,6 +43,8 @@ namespace ofxMultiTrack {
 					index++;
 				}
 			}
+			json["isNewSkeleton"] = this->isNewSkeleton;
+			this->needsSendSkeleton = false;
 			return json;
 		}
 
@@ -75,6 +81,7 @@ namespace ofxMultiTrack {
 				status["skeletonJointCount"][i] = this->skeletons[i].size();
 			}
 			status["fps"] = this->getFrameRate();
+			status["isNewSkeleton"] = this->isNewSkeleton;
 			return status;
 		}
 
