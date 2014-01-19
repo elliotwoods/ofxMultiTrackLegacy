@@ -3,15 +3,24 @@
 #include "ofMain.h"
 #include "ofxMultiTrack/src/ofxMultiTrack.h"
 #include "ofxCvGui2/src/ofxCvGui.h"
+#include "ofxOsc/src/ofxOsc.h"
+
 
 #include "RecordingControl.h"
 #include "RecorderControl.h"
 
 class ofApp : public ofBaseApp{
-	struct Target {
-		ofRectangle bounds;
+	struct NodeUser {
+		NodeUser() {
+			this->selectionValid = false;
+		}
 		int node;
 		int user;
+		bool selectionValid;
+	};
+	struct Target {
+		ofRectangle bounds;
+		NodeUser selection;
 	};
 public:
 	void setup();
@@ -31,8 +40,10 @@ public:
 	ofxMultiTrack::Server server;
 	ofxCvGui::Builder gui;
 
-	map<int, int> userSelection; //which user from which node to use for calibration
+	NodeUser source;
+	NodeUser target;
 	vector<Target> targets;
 	ofPtr<RecorderControl> recorderControl;
 	ofxCvGui::ElementPtr calibrateButton;
+	ofxOscSender oscSender;
 };

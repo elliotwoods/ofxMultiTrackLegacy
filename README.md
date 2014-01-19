@@ -22,6 +22,7 @@ Requirements
 ## ofxGraphEdit
 
 * Repo - https://github.com/elliotwoods/ofxGraphEdit.git
+* Branch - master
 
 
 Requirements for examples

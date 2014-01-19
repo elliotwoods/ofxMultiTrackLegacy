@@ -4,9 +4,20 @@
 void ofApp::setup(){
 	ofSetFrameRate(100.0f);
 
+	//read config
+	auto configText = ofFile("config.json").readToBuffer().getText();
+	Json::Reader reader;
+	Json::Value configJson;
+	reader.parse(configText, configJson);
+
+	//initialise the server (the important bit)
 	server.init();
-	server.addNode("192.168.10.101", 0);
-	server.addNode("192.168.10.101", 1);
+	for(auto node : configJson["nodes"]) {
+		server.addNode(node["address"].asString(), node["index"].asInt());
+	}
+
+	//setup osc sender
+	this->oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
 
 	//--
 	//gui code
@@ -57,10 +68,6 @@ void ofApp::setup(){
 					continue;
 				}
 
-				//check if we have a selection for this node
-				auto selection = this->userSelection.find(nodeIndex);
-				int selectionIndex = selection == this->userSelection.end() ? -1 : selection->second;
-
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);
@@ -70,13 +77,23 @@ void ofApp::setup(){
 					//save label as hit target
 					Target target;
 					target.bounds = textBounds;
-					target.node = nodeIndex;
-					target.user = userIndex;
+					target.selection.node = nodeIndex;
+					target.selection.user = userIndex;
 					this->targets.push_back(target);
+
+					bool selectedSource = this->source.node == nodeIndex && this->source.user == userIndex;
+					bool selectedTarget = this->target.node == nodeIndex && this->target.user == userIndex;
+					bool anySelection = selectedSource || selectedTarget;
 
 					//draw line to hand
 					ofPushStyle();
-					ofSetColor(selectionIndex == userIndex ? 255 : 90);
+					if (selectedSource) {
+						ofSetColor(200, 90, 90);
+					} else if (selectedTarget) {
+						ofSetColor(90, 200, 90);
+					} else {
+						ofSetColor(90);
+					}
 					ofSetLineWidth(2.0f);
 					auto endOfTextPoint = textBounds.getCenter() + ofVec2f(textBounds.width / 2.0f, 0.0f);
 					auto & camera = worldPanel->getCamera();
@@ -87,8 +104,9 @@ void ofApp::setup(){
 					ofPopStyle();
 
 					//draw outline if selected
-					if (selectionIndex == userIndex) {
+					if (anySelection) {
 						ofPushStyle();
+						ofSetColor(selectedSource ? ofColor(200, 90, 90) : ofColor(90, 200, 90));
 						ofSetLineWidth(2.0f);
 						ofNoFill();
 						ofRect(textBounds);
@@ -105,7 +123,9 @@ void ofApp::setup(){
 	worldPanel->onMouseReleased += [this] (ofxCvGui::MouseArguments & args) {
 		for(auto & target : this->targets) {
 			if (target.bounds.inside(args.local)) {
-				this->userSelection[target.node] = target.user;
+				auto & calibNode = (args.button == 0 ? this->source : this->target);
+				calibNode = target.selection;
+				calibNode.selectionValid = true;
 			}
 		}
 	};
@@ -130,10 +150,9 @@ void ofApp::setup(){
 	};
 	calibrateButton->onHit += [this] (ofVec2f&) {
 		//check we have selections for both
-		if (this->userSelection.count(0) == 0 || this->userSelection.count(1) == 0) {
-			return;
+		if (this->source.selectionValid && this->target.selectionValid) {
+			this->server.addAlignment(this->target.node, this->source.node, this->target.user, this->source.user);
 		}
-		this->server.addAlignment(1, 0, this->userSelection[1], this->userSelection[0]);
 	};
 	recorderPanel->add(calibrateButton);
 	this->calibrateButton = calibrateButton;
@@ -154,12 +173,33 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	//necessary server update
 	server.update();
 
-	if (this->userSelection.count(0) == 0 || this->userSelection.count(1) == 0) {
-		this->calibrateButton->disable();
-	} else {
+	//enable the calibrate button if we have a source and target selected
+	if (this->source.selectionValid && this->target.selectionValid) {
 		this->calibrateButton->enable();
+	} else {
+		this->calibrateButton->disable();
+	}
+
+	//send osc
+	auto userIndex = 0;
+	auto data = this->server.getCurrentFrame();
+	for(auto & node : data) {
+		for(auto & user : node) {
+			ofxOscBundle userBundle;
+			for(auto & joint : user) {
+				ofxOscMessage jointMessage;
+				jointMessage.setAddress("/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
+				for(int i=0; i<3; i++) {
+					jointMessage.addFloatArg(joint.second.position[i]);
+				}
+				userBundle.addMessage(jointMessage);
+			}
+			this->oscSender.sendBundle(userBundle);
+			userIndex++;
+		}
 	}
 }
 

@@ -60,7 +60,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\addons\ofxOsc\libs\oscpack\src\osc;..\..\..\addons\ofxOsc\libs\oscpack\src\ip;..\..\..\addons\ofxOsc\libs\oscpack\src;..\..\..\addons\ofxOsc\src;%(AdditionalIncludeDirectories);src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4250</DisableSpecificWarnings>
     </ClCompile>
@@ -96,6 +96,18 @@
   <ItemGroup>
     <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp" />
     <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\win32\NetworkingUtilsWin.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\win32\UdpSocketWin.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\osc\OscTypes.cpp" />
+    <ClCompile Include="..\..\ofxOsc\src\ofxOscBundle.cpp" />
+    <ClCompile Include="..\..\ofxOsc\src\ofxOscMessage.cpp" />
+    <ClCompile Include="..\..\ofxOsc\src\ofxOscParameterSync.cpp" />
+    <ClCompile Include="..\..\ofxOsc\src\ofxOscReceiver.cpp" />
+    <ClCompile Include="..\..\ofxOsc\src\ofxOscSender.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\RecorderControl.cpp" />
@@ -107,6 +119,26 @@
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.h" />
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\IpEndpointName.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\PacketListener.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\TimerListener.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\UdpSocket.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscException.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscPacketListener.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\osc\OscTypes.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOsc.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscArg.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscBundle.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscMessage.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscParameterSync.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscReceiver.h" />
+    <ClInclude Include="..\..\ofxOsc\src\ofxOscSender.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\RecorderControl.h" />
     <ClInclude Include="src\RecordingControl.h" />
