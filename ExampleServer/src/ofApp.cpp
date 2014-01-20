@@ -191,9 +191,16 @@ void ofApp::update(){
 			ofxOscBundle userBundle;
 			for(auto & joint : user) {
 				ofxOscMessage jointMessage;
-				jointMessage.setAddress("/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
+				userIndex = 1;	// MEMO HACK TO MAKE VVVV WORK
+				jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
+				
+				// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
+				// flip y and z
+				ofVec3f p(joint.second.position[0], joint.second.position[2], joint.second.position[1]);
+				p *= 100.0;// convert to cm
+
 				for(int i=0; i<3; i++) {
-					jointMessage.addFloatArg(joint.second.position[i]);
+					jointMessage.addFloatArg(p[i]);
 				}
 				userBundle.addMessage(jointMessage);
 			}
