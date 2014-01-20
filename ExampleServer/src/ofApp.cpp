@@ -191,7 +191,7 @@ void ofApp::update(){
 			ofxOscBundle userBundle;
 			for(auto & joint : user) {
 				ofxOscMessage jointMessage;
-				userIndex = 1;	// MEMO HACK TO MAKE VVVV WORK
+				//userIndex = 1;	// MEMO HACK TO MAKE VVVV WORK
 				jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
 				
 				// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
