@@ -60,7 +60,9 @@ namespace ofxMultiTrack {
 
 		//----------
 		void Recorder::play() {
-			this->state = Recorder::Playing;
+			if (this->hasData()) {
+				this->state = Recorder::Playing;
+			}
 		}
 
 		//----------

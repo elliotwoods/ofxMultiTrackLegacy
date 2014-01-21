@@ -37,6 +37,7 @@ namespace ofxMultiTrack {
 			bool isWaiting() { return this->state == Waiting; }
 			bool isRecording() { return this->state == Recording; }
 			bool isPlaying() { return this->state == Playing; }
+			State getState() { return this->state; }
 			void clear();
 
 			bool hasData() const; ///<currently we just lazily check the record duration
