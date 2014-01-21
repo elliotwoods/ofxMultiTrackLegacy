@@ -26,6 +26,7 @@ namespace ofxMultiTrack {
 	class User : public std::map<string, Joint>, public ofNode {
 	public:
 		User();
+		User(const vector<User> &); ///<creata an average user out of a set
 		Json::Value serialise() const;
 		void deserialise(const Json::Value &);
 		void setAlive(bool);

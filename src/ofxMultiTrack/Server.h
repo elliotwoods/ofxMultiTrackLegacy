@@ -29,7 +29,7 @@ namespace ofxMultiTrack {
 		void addNode(string address, int index);
 		void clearNodes();
 		
-		const ServerData::NodeSet & getNodes();
+		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
 		vector<UserSet> getCurrentFrame();

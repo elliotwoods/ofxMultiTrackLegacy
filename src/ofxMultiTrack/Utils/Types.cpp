@@ -30,6 +30,29 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	User::User(const vector<User> & userSet) {
+		int foundUserCount = 0;
+		for(auto & user : userSet) {
+			if (user.size() == 0) {
+				//blank user, carry on
+				continue;
+			}
+
+			foundUserCount++;
+			for(auto & joint : user) {
+				(*this)[joint.first].position += joint.second.position;
+
+				//currently we cheat and use last found rotation
+				(*this)[joint.first].rotation = joint.second.rotation;
+			}
+		}
+
+		for(auto & joint : *this) {
+			joint.second.position /= (float) foundUserCount;
+		}
+	}
+
+	//----------
 	Json::Value User::serialise() const {
 		Json::Value json;
 		for(auto & joint : *this) {

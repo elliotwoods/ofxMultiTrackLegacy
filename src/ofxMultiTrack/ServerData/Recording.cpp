@@ -36,7 +36,11 @@ namespace ofxMultiTrack {
 					foundFrame = this->frames.end();
 					foundFrame--;
 				}
-				return foundFrame->second;
+				if (abs(foundFrame->first - timestamp) <= OFXMULTITRACK_SERVER_RECORDING_MAX_FRAME_DURATION) {
+					return foundFrame->second;
+				} else {
+					return blankFrame;
+				}
 			}
 		}
 

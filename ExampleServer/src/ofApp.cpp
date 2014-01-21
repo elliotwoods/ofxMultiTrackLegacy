@@ -183,12 +183,27 @@ void ofApp::update(){
 		this->calibrateButton->disable();
 	}
 
-	//send osc
-	auto userIndex = 0;
+	//compile users
 	auto data = this->server.getCurrentFrame();
+	vector<ofxMultiTrack::User> userSet;
 	for(auto & node : data) {
 		for(auto & user : node) {
-			ofxOscBundle userBundle;
+			userSet.push_back(user);
+		}
+	}
+
+	//hack - right now just average all users into one
+	bool hasCalibration = this->server.getNodes().getTransforms().size() > 0;
+	if (hasCalibration) {
+		auto combinedUser = ofxMultiTrack::User(userSet);
+		userSet.clear();
+		userSet.push_back(combinedUser);
+	}
+
+	//send users
+	auto userIndex = 0;
+	for(auto & user : userSet) {
+		ofxOscBundle userBundle;
 			for(auto & joint : user) {
 				ofxOscMessage jointMessage;
 				jointMessage.setAddress("/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
@@ -199,7 +214,6 @@ void ofApp::update(){
 			}
 			this->oscSender.sendBundle(userBundle);
 			userIndex++;
-		}
 	}
 }
 

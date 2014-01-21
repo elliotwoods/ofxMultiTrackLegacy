@@ -32,7 +32,7 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	const ServerData::NodeSet & Server::getNodes() {
+	const ServerData::NodeSet & Server::getNodes() const {
 		return this->nodes;
 	}
 

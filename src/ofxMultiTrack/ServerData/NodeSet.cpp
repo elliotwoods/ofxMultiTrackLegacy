@@ -8,6 +8,11 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		const NodeSet::TransformSet & NodeSet::getTransforms() const {
+			return this->transforms;
+		}
+
+		//----------
 		void NodeSet::setTransform(int nodeIndex, int sourceNodeIndex, Align::Ptr transform) {
 			Transform newTransform;
 			newTransform.source = sourceNodeIndex;
