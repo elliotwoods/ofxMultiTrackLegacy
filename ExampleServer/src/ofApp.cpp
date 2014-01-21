@@ -202,8 +202,8 @@ void ofApp::update(){
 
 	//send users
 	auto userIndex = 0;
+	ofxOscBundle oscBundle;
 	for(auto & user : userSet) {
-		ofxOscBundle userBundle;
 			for(auto & joint : user) {
 				ofxOscMessage jointMessage;
 				//userIndex = 1;	// MEMO HACK TO MAKE VVVV WORK
@@ -217,11 +217,11 @@ void ofApp::update(){
 				for(int i=0; i<3; i++) {
 					jointMessage.addFloatArg(p[i]);
 				}
-				userBundle.addMessage(jointMessage);
+				oscBundle.addMessage(jointMessage);
 			}
-			this->oscSender.sendBundle(userBundle);
 			userIndex++;
 	}
+	this->oscSender.sendBundle(oscBundle);
 }
 
 //--------------------------------------------------------------
