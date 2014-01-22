@@ -156,6 +156,11 @@ void ofApp::setup(){
 	};
 	recorderPanel->add(calibrateButton);
 	this->calibrateButton = calibrateButton;
+	recorderPanel->ofFilesDragged += [this] (ofxCvGui::FilesDraggedArguments & args) {
+		for(auto & file : args.files) {
+			this->server.getRecorder().load(file);
+		}
+	};
 
 	//draw status in a scrollable panel
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
