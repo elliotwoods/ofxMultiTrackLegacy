@@ -88,7 +88,8 @@ namespace ofxMultiTrack {
 		//----------
 		void Recorder::deserialise(const Json::Value & json) {
 			if (json.size() != this->nodes.size()) {
-				throw(std::exception("Mismatch on deserialise : number of nodes connected does not equal number of nodes in json"));
+				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in json [" + ofToString(json.size());
+				throw(std::exception(errorMsg.c_str()));
 			}
 			int nodeIndex = 0;
 			Timestamp newStart = std::numeric_limits<Timestamp>::max();
