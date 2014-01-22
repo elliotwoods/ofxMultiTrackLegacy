@@ -162,6 +162,7 @@ void ofApp::setup(){
 	statusPanel->add(statusElement);
 	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
 		auto status = server.getStatusString();
+		status = "Build #: " + ofToString(VERSION_BUILD_NUMBER) + "\n" + status;
 		ofDrawBitmapString(status, 10, 20);
 		auto resizeBounds = statusElement->getBounds();
 		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;

@@ -5,7 +5,7 @@
 #include "ofxCvGui2/src/ofxCvGui.h"
 #include "ofxOsc/src/ofxOsc.h"
 
-
+#include "Version.h"
 #include "RecordingControl.h"
 #include "RecorderControl.h"
 

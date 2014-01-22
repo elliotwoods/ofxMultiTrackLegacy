@@ -4,6 +4,8 @@
 #include "ofxMultiTrack/src/ofxMultiTrack.h"
 #include "ofxCvGui2/src/ofxCvGui.h"
 
+#include "Version.h"
+
 class ofApp : public ofBaseApp{
 	public:
 		void setup();

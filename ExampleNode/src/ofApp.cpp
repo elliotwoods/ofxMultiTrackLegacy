@@ -26,6 +26,7 @@ void ofApp::setup(){
 	statusPanel->add(statusElement);
 	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
 		auto status = node.getStatusString();
+		status = "Build #: " + ofToString(VERSION_BUILD_NUMBER) + "\n" + status;
 
 		//resize element to accomodate text
 		ofDrawBitmapString(status, 10, 20);
