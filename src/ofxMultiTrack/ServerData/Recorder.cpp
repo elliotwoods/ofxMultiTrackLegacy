@@ -35,14 +35,15 @@ namespace ofxMultiTrack {
 			case Recorder::Recording:
 				if (currentTime > this->endTime) {
 					this->endTime = currentTime;
+					this->outPoint = currentTime;
 					this->playHead = currentTime;
 				}
 				break;
 			case Recorder::Playing:
 				if (this->getDuration() > 0) {
 					this->playHead += (Timestamp) (ofGetLastFrameTime() * 1000000.0);
-					if (this->playHead > this->endTime) {
-						this->playHead = this->startTime;
+					if (this->playHead > this->outPoint || this->playHead < this->inPoint) {
+						this->playHead = this->inPoint;
 					}
 				}
 				break;
@@ -91,6 +92,9 @@ namespace ofxMultiTrack {
 				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in json [" + ofToString(json.size()) + "]";
 				throw(std::exception(errorMsg.c_str()));
 			}
+
+			this->clear();
+
 			int nodeIndex = 0;
 			Timestamp newStart = std::numeric_limits<Timestamp>::max();
 			Timestamp newEnd = std::numeric_limits<Timestamp>::min();
@@ -99,7 +103,6 @@ namespace ofxMultiTrack {
 			for(auto node : this->nodes) {
 				auto & nodeJson = json[nodeIndex++];
 				auto & recording = node->getRecording();
-				recording.clear();
 				auto & frameSet = recording.getFrames();
 				auto timestamps = nodeJson.getMemberNames();
 				for(auto timestamp : timestamps) {
@@ -122,6 +125,7 @@ namespace ofxMultiTrack {
 			if (anyFramesFound) {
 				this->startTime = newStart;
 				this->endTime = newEnd;
+				this->clearInOutPoints();
 			}
 		}
 
@@ -176,6 +180,7 @@ namespace ofxMultiTrack {
 			}
 			this->startTime = ofGetElapsedTimeMicros();
 			this->endTime = this->startTime;
+			this->clearInOutPoints();
 		}
 	
 		//----------
@@ -211,8 +216,8 @@ namespace ofxMultiTrack {
 
 		//----------
 		void Recorder::setPlayHeadNormalised(float normalised) {
-			auto duration = (float) this->getDuration();
-			this->setPlayHead(duration * normalised + this->startTime);
+			auto playHead = this->normalisedToTimestamp(normalised);
+			this->setPlayHead(playHead);
 		}
 
 		//----------
@@ -228,6 +233,96 @@ namespace ofxMultiTrack {
 		//----------
 		Timestamp Recorder::getDuration() const {
 			return this->endTime - this->startTime;
+		}
+
+		//----------
+		void Recorder::clearInOutPoints() {
+			this->inPoint = this->startTime;
+			this->outPoint = this->endTime;
+		}
+
+		//----------
+		Timestamp Recorder::getInPoint() const {
+			return this->inPoint;
+		}
+
+		//----------
+		Timestamp Recorder::getOutPoint() const {
+			return this->outPoint;
+		}
+
+		//----------
+		void Recorder::setInPoint(Timestamp inPoint) {
+			this->inPoint = inPoint;
+		}
+
+		//----------
+		void Recorder::setOutPoint(Timestamp outPoint) {
+			this->outPoint = outPoint;
+		}
+
+		//----------
+		void Recorder::trim() {
+			this->startTime = this->inPoint;
+			this->endTime = this->outPoint;
+
+			//erase out of range frames from nodes
+			for(auto node : this->nodes) {
+				auto & frames = node->getRecording().getFrames();
+				vector<Timestamp> framesToRemove;
+				for(auto frame : frames) {
+					if (frame.first < this->startTime || frame.first > this->endTime) {
+						framesToRemove.push_back(frame.first);
+					}
+				}
+				for(auto timestamp : framesToRemove) {
+					frames.erase(frames.find(timestamp));
+				}
+			}
+		}
+		
+		//----------
+		Timestamp Recorder::appToTimeline(Timestamp timestamp) const {
+			return timestamp - this->startTime;
+		}
+
+		//----------
+		Timestamp Recorder::timelineToApp(Timestamp timestamp) const {
+			return timestamp + this->startTime;
+		}
+
+		//----------
+		float Recorder::timelineToNormalised(Timestamp timestamp) const {
+			return float(timestamp - this->startTime) / (float) this->getDuration();
+		}
+
+		//----------
+		Timestamp Recorder::normalisedToTimestamp(float normalised) const {
+			auto duration = (float) this->getDuration();
+			return duration * normalised + this->startTime;
+		}
+
+		//----------
+		string Recorder::toString(Timestamp timestamp) {
+			long long millis = timestamp / 1000LL;
+			long long secs = millis / 1000;
+			long long mins = secs / 60;
+
+			string millisString = ofToString( (int) millis % 1000);
+			string secsString = ofToString( ( (int) secs ) % 60);
+			string minsString = ofToString( (int) mins );
+			
+			while(millisString.size() < 3) {
+				millisString = "0" + millisString;
+			}
+			while(secsString.size() < 2) {
+				secsString = "0" + secsString;
+			}
+			while(minsString.size() < 4) {
+				minsString = " " + minsString;
+			}
+
+			return minsString + ":" + secsString + "." + millisString;
 		}
 	}
 }

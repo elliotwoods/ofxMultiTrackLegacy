@@ -48,12 +48,29 @@ namespace ofxMultiTrack {
 			Timestamp getStartTime() const;
 			Timestamp getEndTime() const;
 			Timestamp getDuration() const;
+
+			void clearInOutPoints();
+			Timestamp getInPoint() const;
+			Timestamp getOutPoint() const;
+			void setInPoint(Timestamp);
+			void setOutPoint(Timestamp);
+
+			void trim();
+
+			Timestamp appToTimeline(Timestamp) const;
+			Timestamp timelineToApp(Timestamp) const;
+			float timelineToNormalised(Timestamp) const;
+			Timestamp normalisedToTimestamp(float) const;
+
+			static string toString(Timestamp);
 		protected:
 			State state;
 			const NodeSet & nodes;
 			Timestamp playHead;
 			Timestamp startTime;
 			Timestamp endTime;
+			Timestamp inPoint;
+			Timestamp outPoint;
 		};
 	}
 }
