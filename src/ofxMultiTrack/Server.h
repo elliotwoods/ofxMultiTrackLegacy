@@ -12,6 +12,7 @@
 #include "ServerData/NodeConnection.h"
 #include "ServerData/NodeSet.h"
 #include "ServerData/Recorder.h"
+#include "ServerData/User.h"
 
 #include "Align/Base.h"
 #include "Align/PolyFit.h"
@@ -32,8 +33,8 @@ namespace ofxMultiTrack {
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
-		vector<UserSet> getCurrentFrame();
-		void transformFrame(vector<UserSet> &);
+		vector<ServerData::UserSet> getCurrentFrame();
+		void transformFrame(vector<ServerData::UserSet> &);
 		void drawWorld();
 
 		Json::Value getStatus();

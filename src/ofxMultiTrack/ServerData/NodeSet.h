@@ -1,6 +1,7 @@
 #pragma once
 #include "NodeConnection.h"
 #include "../Align/Base.h"
+#include "User.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {

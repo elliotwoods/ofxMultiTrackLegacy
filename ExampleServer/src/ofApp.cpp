@@ -158,6 +158,7 @@ void ofApp::setup(){
 	this->calibrateButton = calibrateButton;
 	recorderPanel->ofFilesDragged += [this] (ofxCvGui::FilesDraggedArguments & args) {
 		for(auto & file : args.files) {
+			cout << "Loading [" << file << "]";
 			this->server.getRecorder().load(file);
 		}
 	};
@@ -191,7 +192,7 @@ void ofApp::update(){
 
 	//compile users
 	auto data = this->server.getCurrentFrame();
-	vector<ofxMultiTrack::User> userSet;
+	vector<ofxMultiTrack::ServerData::User> userSet;
 	for(auto & node : data) {
 		for(auto & user : node) {
 			userSet.push_back(user);
@@ -201,7 +202,7 @@ void ofApp::update(){
 	//hack - right now just average all users into one
 	bool hasCalibration = this->server.getNodes().getTransforms().size() > 0;
 	if (hasCalibration) {
-		auto combinedUser = ofxMultiTrack::User(userSet);
+		auto combinedUser = ofxMultiTrack::ServerData::User(userSet);
 		userSet.clear();
 		userSet.push_back(combinedUser);
 	}
@@ -236,7 +237,20 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+	auto & recorder = this->server.getRecorder();
+	switch (key) {
+	case ' ':
+		switch(recorder.getState()) {
+		case ofxMultiTrack::ServerData::Recorder::Playing:
+		case ofxMultiTrack::ServerData::Recorder::Recording:
+			recorder.stop();
+			break;
+		case ofxMultiTrack::ServerData::Recorder::Waiting:
+			recorder.play();
+			break;
+		}
+		break;
+	}
 }
 
 //--------------------------------------------------------------

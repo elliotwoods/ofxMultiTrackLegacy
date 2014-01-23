@@ -159,22 +159,6 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 			this->recorder.setPlayHeadNormalised(pct);
 		}
 	};
-
-	this->onKeyboard += [this] (KeyboardArguments & args) {
-		switch (args.key) {
-		case ' ':
-			switch(this->recorder.getState()) {
-			case ServerData::Recorder::Playing:
-			case ServerData::Recorder::Recording:
-				this->recorder.stop();
-				break;
-			case ServerData::Recorder::Waiting:
-				this->recorder.play();
-				break;
-			}
-			break;
-		}
-	};
 	
 	this->onUpdate += [=] (UpdateArguments &) {
 		if (this->recorder.hasData()) {

@@ -8,9 +8,7 @@ namespace ofxMultiTrack {
 			this->index = index;
 			this->running = true;
 			this->threadEnded = false;
-
 			this->cachedConnected = false;
-
 			this->startThread(true, false);
 		}
 

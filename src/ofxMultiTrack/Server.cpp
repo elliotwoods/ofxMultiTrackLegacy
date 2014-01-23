@@ -42,8 +42,8 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	vector<UserSet> Server::getCurrentFrame() {
-		vector<UserSet> currentFrame;
+	vector<ServerData::UserSet> Server::getCurrentFrame() {
+		vector<ServerData::UserSet> currentFrame;
 
 		int nodeIndex = 0;
 		if (this->recorder.hasData() && !this->recorder.isRecording()) {
@@ -66,7 +66,7 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::transformFrame(vector<UserSet> & frame) {
+	void Server::transformFrame(vector<ServerData::UserSet> & frame) {
 		int nodeIndex = 0;
 		for(auto & nodeFrame : frame) {
 			this->nodes.applyTransform(nodeFrame, nodeIndex++);

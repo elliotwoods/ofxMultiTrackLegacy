@@ -230,6 +230,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\User.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -317,6 +320,9 @@
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeSet.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\User.cpp">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClCompile>
   </ItemGroup>
