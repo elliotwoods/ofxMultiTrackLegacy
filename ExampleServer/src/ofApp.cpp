@@ -58,16 +58,10 @@ void ofApp::setup(){
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
-		for(auto & node : data.world) {
+		auto & views = data.calibrated ? data.world : data.views;
+		for(auto & view : views) {
 			int userIndex = 0;
-			for(auto & user : node) {
-
-				//check this user is alive
-				if (!user.getAlive()) {
-					userIndex++;
-					continue;
-				}
-
+			for(auto & user : view) {
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);

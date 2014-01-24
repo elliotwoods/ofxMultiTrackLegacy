@@ -83,7 +83,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		bool User::getAlive() const {
+		bool User::isAlive() const {
 			return this->alive;
 		}
 		

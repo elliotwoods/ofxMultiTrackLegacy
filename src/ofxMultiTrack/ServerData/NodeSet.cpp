@@ -20,6 +20,16 @@ namespace ofxMultiTrack {
 
 #pragma mark NodeSet
 		//----------
+		NodeSet::NodeSet() {
+			this->enableCalibration = false;
+		}
+
+		//----------
+		bool NodeSet::isCalibrated() const {
+			return this->enableCalibration;
+		}
+
+		//----------
 		NodeSet::TransformSet & NodeSet::getTransforms() {
 			return this->transforms;
 		}
@@ -35,6 +45,7 @@ namespace ofxMultiTrack {
 			newTransform.source = sourceNodeIndex;
 			newTransform.transform = transform;
 			this->transforms[nodeIndex] = newTransform;
+			this->enableCalibration = true;
 		}
 
 		//----------
@@ -87,7 +98,7 @@ namespace ofxMultiTrack {
 
 		//----------
 		CombinedUserSet NodeSet::getUsersCombined(const vector<UserSet> & usersWorld) const {
-			auto userMatches = this->getUserMatches();
+			auto userMatches = this->getUserMatches(usersWorld);
 			CombinedUserSet combinedUserSet;
 			for(auto baseUser : userMatches) {
 				vector<User> usersToCombine;
@@ -129,7 +140,7 @@ namespace ofxMultiTrack {
 				//search other users for best matching user
 				//
 				float bestMatchDistance = std::numeric_limits<float>::max(); //lower is better
-				NodeUserIndex * bestMatch;
+				NodeUserIndex * bestMatch = NULL;
 				for(auto otherUserIndex : userIndices) {
 					//don't look within the same node for matching users
 					// (and therefore also don't look at self)
@@ -148,7 +159,7 @@ namespace ofxMultiTrack {
 				//
 				//--
 
-				if(bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
+				if(bestMatch != NULL && bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
 					if (matches.count(searchUserIndex) == 0) {
 						//add this base user to the results map indices
 						matches.insert(pair<NodeUserIndex, vector<NodeUserIndex> >(searchUserIndex, vector<NodeUserIndex>()));

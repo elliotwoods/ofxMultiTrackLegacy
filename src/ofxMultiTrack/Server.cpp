@@ -84,33 +84,41 @@ namespace ofxMultiTrack {
 		glPushAttrib(GL_POINT_BIT);
 		glEnable(GL_POINT_SMOOTH);
 		
-		//draw combined skeleton
-		glPointSize(5.0f);
-		currentFrame.combined.draw();
+		if (this->nodes.isCalibrated()) {
+			//draw combined skeleton
+			glPointSize(5.0f);
+			currentFrame.combined.draw();
 
-		//draw world space skeletons per view
-		// it would be nice to also draw lines
-		// but then we need to know which user
-		// index in each view matches each
-		// combined index
-		auto & sourceMapping = currentFrame.combined.getSourceMapping();
-		glPointSize(2.0f);
-		ofMesh lines;
-		ofMesh points;
-		int nodeIndex = 0;
-		for(auto & node : currentFrame.world) {
-			int userIndex = 0;
-			for(auto & user : node) {
-				auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
-				auto & combinedUser = currentFrame.combined[combinedUserIndex];
-				for(auto & joint : user) {
-					points.addVertex(joint.second.position);
-					lines.addVertex(joint.second.position);
-					lines.addVertex(combinedUser[joint.first].position);
+			//draw world space skeletons per view
+			// it would be nice to also draw lines
+			// but then we need to know which user
+			// index in each view matches each
+			// combined index
+			auto & sourceMapping = currentFrame.combined.getSourceMapping();
+			glPointSize(2.0f);
+			ofMesh lines;
+			ofMesh points;
+			int nodeIndex = 0;
+			for(auto & node : currentFrame.world) {
+				int userIndex = 0;
+				for(auto & user : node) {
+					auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
+					auto & combinedUser = currentFrame.combined[combinedUserIndex];
+					for(auto & joint : user) {
+						points.addVertex(joint.second.position);
+						lines.addVertex(joint.second.position);
+						lines.addVertex(combinedUser[joint.first].position);
+					}
+					userIndex++;
 				}
-				userIndex++;
+				nodeIndex++;
 			}
-			nodeIndex++;
+		} else {
+			for(auto & node : currentFrame.views) {
+				for(auto & user : node) {
+					user.draw();
+				}
+			}
 		}
 
 		glPopAttrib();

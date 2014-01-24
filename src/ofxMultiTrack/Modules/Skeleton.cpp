@@ -21,6 +21,7 @@ namespace ofxMultiTrack {
 		//---------
 		void Skeleton::update() {
 			this->isNewSkeleton = this->kinect->isNewSkeleton();
+			this->isNewFrame = this->kinect->isFrameNew();
 			this->needsSendSkeleton |= this->isNewSkeleton;
 			if (this->isNewSkeleton) {
 				this->skeletons = this->kinect->getSkeletons();
@@ -28,6 +29,10 @@ namespace ofxMultiTrack {
 				while(frameTimings.size() > 100) {
 					frameTimings.pop_front();
 				}
+			} else if(this->isNewFrame) {
+				//we got a new kinect frame but no skeletons came with it
+				this->skeletons.clear();
+				this->frameTimings.clear();
 			}
 		}
 
@@ -136,7 +141,7 @@ namespace ofxMultiTrack {
 					rotationJson[j] = rotationQuaternion[j];
 				}
 
-				jointJson["inferred"] = find out if its inferred;
+				jointJson["inferred"] = false;//find out if its inferred;
 			}
 			return json;
 		}

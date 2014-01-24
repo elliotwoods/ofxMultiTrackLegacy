@@ -22,7 +22,7 @@ namespace ofxMultiTrack {
 			Json::Value serialise() const;
 			void deserialise(const Json::Value &);
 			void setAlive(bool);
-			bool getAlive() const;
+			bool isAlive() const;
 			float getDistanceTo(const User &) const;
 			void draw();
 		protected:

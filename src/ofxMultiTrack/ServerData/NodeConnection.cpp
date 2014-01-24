@@ -46,6 +46,16 @@ namespace ofxMultiTrack {
 			this->lockUsers.lock();
 			auto users = this->users;
 			this->lockUsers.unlock();
+
+			//remove dead users from set to send
+			UserSet::size_type i = 0;
+			while (i < users.size()) {
+				if(!users[i].isAlive()) {
+					users.erase(users.begin() + i);
+				} else {
+					i++;
+				}
+			}
 			return users;
 		}
 
@@ -92,20 +102,22 @@ namespace ofxMultiTrack {
 						}
 						for(auto & userLocal : this->users) {
 							if (userIndex >= jsonUsers.size() || jsonUsers.isNull()) {
-								break;
-							}
-							auto & jsonUser = jsonUsers[userIndex++];
-							if (jsonUser.size() == 0) {
 								userLocal.setAlive(false);
 							} else {
-								userLocal.setAlive(true);
-								auto jointNames = jsonUser.getMemberNames();
-								for(auto & jointName : jointNames) {
-									auto & joint = jsonUser[jointName];
-									auto & jointLocal = userLocal[jointName];
-									jointLocal.deserialise(joint);
+								auto & jsonUser = jsonUsers[userIndex];
+								if (jsonUser.size() == 0) {
+									userLocal.setAlive(false);
+								} else {
+									userLocal.setAlive(true);
+									auto jointNames = jsonUser.getMemberNames();
+									for(auto & jointName : jointNames) {
+										auto & joint = jsonUser[jointName];
+										auto & jointLocal = userLocal[jointName];
+										jointLocal.deserialise(joint);
+									}
 								}
 							}
+							userIndex++;
 						}
 						if (newSkeleton) {
 							this->recording.addIncoming(this->users);
