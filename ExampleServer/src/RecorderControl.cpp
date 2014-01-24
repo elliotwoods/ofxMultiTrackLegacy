@@ -9,18 +9,22 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 
 	this->setBounds(ofRectangle(0,0,50,50));
 
-	auto playButton = ofPtr<Utils::Button>(new Utils::Button());
-	auto recordButton = ofPtr<Utils::Button>(new Utils::Button());
-	auto clearButton = ofPtr<Utils::Button>(new Utils::Button());
-	auto saveButton = ofPtr<Utils::Button>(new Utils::Button());
-	auto loadButton = ofPtr<Utils::Button>(new Utils::Button());
-	auto timeTrack = ElementPtr(new Element());
+	auto newBlankButton = [=] () {
+		auto button = ofPtr<Utils::Button>(new Utils::Button());
+		this->add(button);
+		return button;
+	};
 
-	this->add(playButton);
-	this->add(recordButton);
-	this->add(clearButton);
-	this->add(saveButton);
-	this->add(loadButton);
+	auto playButton = newBlankButton();
+	auto recordButton = newBlankButton();
+	auto clearButton = newBlankButton();
+	auto inButton = newBlankButton();
+	auto outButton = newBlankButton();
+	auto trimButton = newBlankButton();
+	auto saveButton = newBlankButton();
+	auto loadButton = newBlankButton();
+
+	auto timeTrack = ElementPtr(new Element());
 	this->add(timeTrack);
 
 	auto drawButton = [] (ofPtr<Utils::Button> button, string title) {
@@ -60,6 +64,15 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 		}
 		drawButton(recordButton, title);
 	};
+	inButton->onDraw += [=] (DrawArguments &) {
+		drawButton(inButton, "in");
+	};
+	outButton->onDraw += [=] (DrawArguments &) {
+		drawButton(inButton, "out");
+	};
+	trimButton->onDraw += [=] (DrawArguments &) {
+		drawButton(trimButton, "trim");
+	};
 	clearButton->onDraw += [=] (DrawArguments &) {
 		drawButton(clearButton, "Clear");
 	};
@@ -78,13 +91,25 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 		ofPushStyle();
 		ofSetLineWidth(1.0f);
 
+		//hover head
 		ofSetColor(100);
 		ofLine(width * hoverPct, 0, width * hoverPct, height);
 
+		//play head
 		ofSetColor(255);
 		auto playHeadDrawPosition = this->recorder.getPlayHeadNormalised() * width;
 		ofLine(playHeadDrawPosition, 0, playHeadDrawPosition, height);
 
+		//in point
+		float inPointDrawPosition = this->recorder.timelineToNormalised(this->recorder.getInPoint()) * width;
+		ofLine(0, height / 2.0f, inPointDrawPosition, height / 2.0f);
+		ofLine(inPointDrawPosition, 0, inPointDrawPosition, height);
+		
+		//out point
+		float outPointDrawPosition = this->recorder.timelineToNormalised(this->recorder.getOutPoint()) * width;
+		ofLine(outPointDrawPosition, height / 2.0f, width, height / 2.0f);
+		ofLine(outPointDrawPosition, 0, outPointDrawPosition, height);
+		
 		ofPopStyle();
 	};
 	
@@ -101,6 +126,15 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 		} else {
 			this->recorder.record();
 		}
+	};
+	inButton->onHit += [this] (ofVec2f&) {
+		this->recorder.setInPoint(this->recorder.getPlayHead());
+	};
+	outButton->onHit += [this] (ofVec2f&) {
+		this->recorder.setOutPoint(this->recorder.getPlayHead());
+	};
+	trimButton->onHit += [this] (ofVec2f&) {
+		this->recorder.trim();
 	};
 	clearButton->onHit += [this] (ofVec2f&) {
 		this->recorder.clear();
@@ -125,22 +159,6 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 			this->recorder.setPlayHeadNormalised(pct);
 		}
 	};
-
-	this->onKeyboard += [this] (KeyboardArguments & args) {
-		switch (args.key) {
-		case ' ':
-			switch(this->recorder.getState()) {
-			case ServerData::Recorder::Playing:
-			case ServerData::Recorder::Recording:
-				this->recorder.stop();
-				break;
-			case ServerData::Recorder::Waiting:
-				this->recorder.play();
-				break;
-			}
-			break;
-		}
-	};
 	
 	this->onUpdate += [=] (UpdateArguments &) {
 		if (this->recorder.hasData()) {
@@ -148,14 +166,40 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 		} else {
 			clearButton->disable();
 		}
+		if (this->recorder.getInPoint() != this->recorder.getStartTime() || this->recorder.getOutPoint() != this->recorder.getEndTime()) {
+			trimButton->enable();
+		} else {
+			trimButton->disable();
+		}
 	};
 
+	auto arrangeButton = [=] (ElementPtr button, float width, float &x) {
+		button->setBounds(ofRectangle(x, 0, width, 30));
+		x+= width;
+	};
 	this->onBoundsChange += [=] (BoundsChangeArguments & args) {
-		playButton->setBounds(ofRectangle(0,0,100,30));
-		recordButton->setBounds(ofRectangle(100,0,100,30));
-		clearButton->setBounds(ofRectangle(200,0,100,30));
-		saveButton->setBounds(ofRectangle(300,0,30,30));
-		loadButton->setBounds(ofRectangle(330,0,30,30));
+		float x = 0.0f;
+		arrangeButton(playButton, 60, x);
+		arrangeButton(recordButton, 60, x);
+		arrangeButton(clearButton, 60, x);
+		arrangeButton(inButton, 50, x);
+		arrangeButton(outButton, 50, x);
+		arrangeButton(trimButton, 50, x);
+		arrangeButton(saveButton, 30, x);
+		arrangeButton(loadButton, 30, x);
+		
 		timeTrack->setBounds(ofRectangle(0,30,this->getWidth(),20));
+	};
+
+	auto toString = [this] (Timestamp timestamp) {
+		return this->recorder.toString(this->recorder.appToTimeline(timestamp));
+	};
+	this->onDraw += [=] (DrawArguments & args) {
+		float x = loadButton->getBounds().getRight() + 20;
+		ofDrawBitmapString(toString(this->recorder.getPlayHead()), x, 15);
+		ofPushStyle();
+		ofSetColor(100);
+		ofDrawBitmapString(toString(this->recorder.normalisedToTimestamp(this->hoverPct)), x, 30);
+		ofPopStyle();
 	};
 }

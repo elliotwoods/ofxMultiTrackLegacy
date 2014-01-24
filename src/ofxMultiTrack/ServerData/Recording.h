@@ -7,6 +7,7 @@
 #include "../Utils/Types.h"
 #include "../Modules/Set.h"
 #include "../Modules/Skeleton.h"
+#include "User.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {

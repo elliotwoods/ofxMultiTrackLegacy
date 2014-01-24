@@ -119,6 +119,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\User.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
   </ItemGroup>
@@ -151,6 +152,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeSet.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\User.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
