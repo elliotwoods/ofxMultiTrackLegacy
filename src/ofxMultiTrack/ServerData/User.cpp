@@ -89,6 +89,10 @@ namespace ofxMultiTrack {
 		
 		//----------
 		float User::getDistanceTo(const User & other) const {
+			if (other.size() == 0 || !other.isAlive()) {
+				return std::numeric_limits<float>::max();
+			}
+
 			//find mean of joint distances
 			//N.B. didn't use RMS as it is more sensetive to a few large differences in the set
 			float totalDistance = 0.0f;

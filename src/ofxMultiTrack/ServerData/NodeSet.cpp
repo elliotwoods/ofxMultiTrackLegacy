@@ -99,6 +99,7 @@ namespace ofxMultiTrack {
 			int viewIndex = 0;
 			for(auto & users : usersWorld) {
 				this->applyTransform(users, viewIndex);
+				viewIndex++;
 			}
 			return usersWorld;
 		}
@@ -110,6 +111,21 @@ namespace ofxMultiTrack {
 
 		//----------
 		CombinedUserSet NodeSet::getUsersCombined(const vector<UserSet> & usersWorld) const {
+
+			// HACK!!
+			//combine all users into one
+			vector<User> users;
+			for(auto view : usersWorld) {
+				for(auto user : view) {
+					users.push_back(user);
+				}
+			}
+			CombinedUserSet combined;
+			combined.push_back(User(users));
+			return combined;
+
+
+			/*
 			auto userMatches = this->getUserMatches(usersWorld);
 			CombinedUserSet combinedUserSet;
 			for(auto baseUser : userMatches) {
@@ -123,6 +139,7 @@ namespace ofxMultiTrack {
 				combinedUserSet.addSourceMapping(sourceMapping);
 			}
 			return combinedUserSet;
+			*/
 		}
 
 		//----------
@@ -134,7 +151,9 @@ namespace ofxMultiTrack {
 				int userIndex = 0;
 				for(const auto & user : node) {
 					userIndices.insert(NodeUserIndex(nodeIndex, userIndex));
+					userIndex++;
 				}
+				nodeIndex++;
 			}
 
 			//allocate solution

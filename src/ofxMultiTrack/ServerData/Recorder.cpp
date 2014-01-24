@@ -100,6 +100,8 @@ namespace ofxMultiTrack {
 			Timestamp newEnd = std::numeric_limits<Timestamp>::min();
 			bool anyFramesFound = false;
 
+			cout << "Loading";
+
 			for(auto node : this->nodes) {
 				auto & nodeJson = json[nodeIndex++];
 				auto & recording = node->getRecording();
@@ -118,9 +120,12 @@ namespace ofxMultiTrack {
 						newEnd = rawTimestamp;
 					}
 
+					cout << ".";
 					anyFramesFound = true;
 				}
 			}
+
+			cout << endl;
 
 			if (anyFramesFound) {
 				this->startTime = newStart;

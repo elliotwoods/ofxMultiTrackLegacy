@@ -91,6 +91,7 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::drawWorld() const {
+		ofPushStyle();
 		this->drawViewConesWorld();
 		auto currentFrame = this->getCurrentFrame();
 		glPushAttrib(GL_POINT_BIT);
@@ -98,7 +99,14 @@ namespace ofxMultiTrack {
 
 		//draw combined skeleton
 		glPointSize(5.0f);
+		ofSetColor(255, 0, 0);
 		currentFrame.combined.draw();
+
+		glPointSize(2.0f);
+		ofSetColor(255);
+		for(auto & view : currentFrame.world) {
+			view.draw();
+		}
 
 		/*
 
@@ -131,6 +139,7 @@ namespace ofxMultiTrack {
 		}
 		*/
 		glPopAttrib();
+		ofPopStyle();
 	}
 
 	//----------

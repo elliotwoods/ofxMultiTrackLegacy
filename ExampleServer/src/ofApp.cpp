@@ -65,7 +65,8 @@ void ofApp::setup(){
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
-		auto & views = this->drawMode == World ? data.world : data.views;
+		bool useWorld = this->drawMode == World;
+		auto & views = useWorld ? data.world : data.views;
 		for(auto & view : views) {
 			int userIndex = 0;
 			for(auto & user : view) {
