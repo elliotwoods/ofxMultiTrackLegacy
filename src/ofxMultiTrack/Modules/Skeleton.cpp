@@ -135,6 +135,8 @@ namespace ofxMultiTrack {
 				for(int j=0; j<4; j++) {
 					rotationJson[j] = rotationQuaternion[j];
 				}
+
+				jointJson["inferred"] = find out if its inferred;
 			}
 			return json;
 		}

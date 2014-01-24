@@ -38,5 +38,48 @@ namespace ofxMultiTrack {
 				}
 			}
 		}
+
+		//----------
+		vector<UserSet> NodeSet::getUsersView() const {
+			vector<UserSet> usersView;
+			for(auto node : *this) {
+				usersView.push_back(node->getLiveData());
+			}
+			return usersView;
+		}
+
+		//----------
+		vector<UserSet> NodeSet::getUsersWorld() const {
+			return this->getUsersWorld(this->getUsersView());
+		}
+
+		//----------
+		vector<UserSet> NodeSet::getUsersWorld(const vector<UserSet> & usersView) const {
+			auto usersWorld = usersView;
+			int viewIndex = 0;
+			for(auto & users : usersWorld) {
+				this->applyTransform(users, viewIndex);
+			}
+			return usersWorld;
+		}
+
+		//----------
+		CombinedUserSet NodeSet::getUsersCombined() const {
+			return this->getUsersCombined(this->getUsersWorld());
+		}
+
+		//----------
+		CombinedUserSet NodeSet::getUsersCombined(const vector<UserSet> & usersWorld) const {
+			CombinedUserSet combinedUserSet;
+
+			//go to first node with a user
+			//check other nodes for users and add to search map
+			//if closest per node is within threshold value:
+			//	1. make a combined user for the combinedSet
+			//	2. stop usimg users from other nodes in next search
+			good morning elliot. implement this please :)
+			
+			return combinedUserSet;
+		}
 	}
 }

@@ -21,6 +21,15 @@
 namespace ofxMultiTrack {
 	class Server {
 	public:
+		struct OutputFrame {
+			vector<ServerData::UserSet> views;
+			vector<ServerData::UserSet> world;
+			ServerData::CombinedUserSet combined;
+			bool calibrated;
+
+			void draw();
+		};
+
 		Server();
 		~Server();
 
@@ -33,8 +42,7 @@ namespace ofxMultiTrack {
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
-		vector<ServerData::UserSet> getCurrentFrame();
-		void transformFrame(vector<ServerData::UserSet> &);
+		OutputFrame getCurrentFrame();
 		void drawWorld();
 
 		Json::Value getStatus();

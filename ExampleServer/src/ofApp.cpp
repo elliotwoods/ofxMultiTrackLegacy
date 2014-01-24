@@ -58,7 +58,7 @@ void ofApp::setup(){
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
-		for(auto & node : data) {
+		for(auto & node : data.world) {
 			int userIndex = 0;
 			for(auto & user : node) {
 
@@ -190,21 +190,26 @@ void ofApp::update(){
 		this->calibrateButton->disable();
 	}
 
-	//compile users
-	auto data = this->server.getCurrentFrame();
-	vector<ofxMultiTrack::ServerData::User> userSet;
-	for(auto & node : data) {
-		for(auto & user : node) {
-			userSet.push_back(user);
-		}
-	}
+	auto currentFrame = this->server.getCurrentFrame();
+	ofxMultiTrack::ServerData::UserSet userSet;
 
-	//hack - right now just average all users into one
-	bool hasCalibration = this->server.getNodes().getTransforms().size() > 0;
-	if (hasCalibration) {
-		auto combinedUser = ofxMultiTrack::ServerData::User(userSet);
-		userSet.clear();
-		userSet.push_back(combinedUser);
+	//--
+	//send data
+	//
+
+	//check if we're calibrated or note
+	if (currentFrame.calibrated) {
+		//if so, get the combined user set to send
+		userSet = currentFrame.combined;
+	} else {
+		//otherwise just add all users from all views
+		auto data = currentFrame.views;
+		vector<ofxMultiTrack::ServerData::User> userSet;
+		for(auto & node : data) {
+			for(auto & user : node) {
+				userSet.push_back(user);
+			}
+		}
 	}
 
 	//send users
@@ -229,6 +234,8 @@ void ofApp::update(){
 			userIndex++;
 	}
 	this->oscSender.sendBundle(oscBundle);
+	//
+	//--
 }
 
 //--------------------------------------------------------------

@@ -42,43 +42,71 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	vector<ServerData::UserSet> Server::getCurrentFrame() {
-		vector<ServerData::UserSet> currentFrame;
+	Server::OutputFrame Server::getCurrentFrame() {
+		OutputFrame currentFrame;
 
+		//get data in view spaces
 		int nodeIndex = 0;
 		if (this->recorder.hasData() && !this->recorder.isRecording()) {
 			//get data from recording
 			for(auto node : this->nodes) {
 				auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
-				currentFrame.push_back(nodeFrame);
+				currentFrame.views.push_back(nodeFrame);
 			}
 		} else {
-			//get live data
-			for(auto node : this->nodes) {
-				auto nodeFrame = node->getLiveData();
-				currentFrame.push_back(nodeFrame);
-			}
+			currentFrame.views = this->nodes.getUsersView();
 		}
 
-		this->transformFrame(currentFrame);
+		//mark frame as calibrated if any calibrations exist (perhaps should be if N-1 calibrations exist)
+		auto transforms = this->nodes.getTransforms();
+		currentFrame.calibrated = this->nodes.getTransforms().size() > 0;
+
+		//get data in world space
+		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
+
+		//get combined user set
+		currentFrame.combined = this->nodes.getUsersCombined();
 
 		return currentFrame;
 	}
 
 	//----------
-	void Server::transformFrame(vector<ServerData::UserSet> & frame) {
-		int nodeIndex = 0;
-		for(auto & nodeFrame : frame) {
-			this->nodes.applyTransform(nodeFrame, nodeIndex++);
-		}
-	}
-
-	//----------
 	void Server::drawWorld() {
 		auto currentFrame = this->getCurrentFrame();
-		for(auto & node : currentFrame) {
-			node.draw();
+
+		glPushAttrib(GL_POINT_BIT);
+		glEnable(GL_POINT_SMOOTH);
+		
+		//draw combined skeleton
+		glPointSize(5.0f);
+		currentFrame.combined.draw();
+
+		//draw world space skeletons per view
+		// it would be nice to also draw lines
+		// but then we need to know which user
+		// index in each view matches each
+		// combined index
+		auto & sourceMapping = currentFrame.combined.getSourceMapping();
+		glPointSize(2.0f);
+		ofMesh lines;
+		ofMesh points;
+		int nodeIndex = 0;
+		for(auto & node : currentFrame.world) {
+			int userIndex = 0;
+			for(auto & user : node) {
+				auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
+				auto & combinedUser = currentFrame.combined[combinedUserIndex];
+				for(auto & joint : user) {
+					points.addVertex(joint.second.position);
+					lines.addVertex(joint.second.position);
+					lines.addVertex(combinedUser[joint.first].position);
+				}
+				userIndex++;
+			}
+			nodeIndex++;
 		}
+
+		glPopAttrib();
 	}
 
 	//----------

@@ -96,14 +96,7 @@ namespace ofxMultiTrack {
 								for(auto & jointName : jointNames) {
 									auto & joint = jsonUser[jointName];
 									auto & jointLocal = userLocal[jointName];
-									auto & position = joint["position"];
-									for(int i=0; i<3; i++) {
-										jointLocal.position[i] = position[i].asFloat();
-									}
-									auto & rotation = joint["rotation"];
-									for(int i=0; i<3; i++) {
-										jointLocal.rotation[i] = rotation[i].asFloat();
-									}
+									jointLocal.deserialise(joint);
 								}
 							}
 						}
