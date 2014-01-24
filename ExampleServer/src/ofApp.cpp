@@ -28,7 +28,8 @@ void ofApp::setup(){
 	auto leftColumn = gui.addGrid();
 	auto statusPanel = gui.addScroll("Status");
 
-	auto worldPanel = gui.makeWorld("World");
+	auto worldPanel = gui.makeWorld("View");
+	this->worldPanel = worldPanel;
 	auto recorderPanel = gui.makeScroll("Recorder");
 	leftColumn->setColsCount(1);
 	leftColumn->add(worldPanel);
@@ -64,7 +65,7 @@ void ofApp::setup(){
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
-		auto & views = data.calibrated ? data.world : data.views;
+		auto & views = this->drawMode == World ? data.world : data.views;
 		for(auto & view : views) {
 			int userIndex = 0;
 			for(auto & user : view) {
@@ -262,9 +263,11 @@ void ofApp::keyPressed(int key){
 		break;
 	case 'v':
 		this->drawMode = View;
+		this->worldPanel->setCaption("View");
 		break;
 	case 'w':
 		this->drawMode = World;
+		this->worldPanel->setCaption("World");
 		break;
 	}
 }

@@ -43,6 +43,7 @@ public:
 	
 	ofxMultiTrack::Server server;
 	ofxCvGui::Builder gui;
+	ofxCvGui::PanelPtr worldPanel;
 
 	NodeUser source;
 	NodeUser target;

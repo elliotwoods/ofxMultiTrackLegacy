@@ -66,13 +66,11 @@ namespace ofxMultiTrack {
 
 		currentFrame.calibrated = this->nodes.isCalibrated();
 
-		if (currentFrame.calibrated) {
-			//get data in world space
-			currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
+		//get data in world space
+		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
 
-			//get combined user set
-			currentFrame.combined = this->nodes.getUsersCombined();
-		}
+		//get combined user set
+		currentFrame.combined = this->nodes.getUsersCombined(currentFrame.world);
 
 		return currentFrame;
 	}
@@ -224,6 +222,22 @@ namespace ofxMultiTrack {
 	string Server::getStatusString() {
 		Json::StyledWriter writer;
 		return "status = " + writer.write(this->getStatus());
+	}
+
+	//----------
+	void Server::autoCalibrate() {
+		auto graph = ofxTSP::Problem();
+		auto solver = ofxTSP::BruteForce();
+
+		//generate a problem space
+		int sourceNodeIndex = 0;
+		for(auto node : this->nodes) {
+			for(int otherNodeIndex = sourceNodeIndex+1; otherNodeIndex < this->nodes.size(); otherNodeIndex++) {
+				// search for valid pairs, like we did in addAlignment. 
+				// in fact, we should be splitting that code out into findUsefulTimestampPairs(int sourceIndex, int targetIndex)
+			}
+			sourceNodeIndex++;
+		}
 	}
 
 	//----------

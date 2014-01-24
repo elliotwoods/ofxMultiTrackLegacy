@@ -104,6 +104,13 @@
     <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.h" />
     <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyFit.h" />
     <ClInclude Include="..\..\ofxPolyfit\src\ofxPolyPlane.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\BruteForce.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Journey.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Problem.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Route.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\RouteFind.h" />
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Solver.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\Base.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\Default.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\PolyFit.h" />
@@ -143,6 +150,11 @@
     <ClCompile Include="..\..\ofxPolyfit\libs\PolyNFit\src\powerBases.cpp" />
     <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyFit.cpp" />
     <ClCompile Include="..\..\ofxPolyfit\src\ofxPolyPlane.cpp" />
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\BruteForce.cpp" />
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Journey.cpp" />
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Problem.cpp" />
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Route.cpp" />
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\RouteFind.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />

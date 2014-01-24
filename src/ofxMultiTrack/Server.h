@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxNetwork/src/ofxNetwork.h"
+#include "ofxTSP/src/ofxTSP.h"
 
 #include "Utils/Constants.h"
 #include "Utils/Types.h"
