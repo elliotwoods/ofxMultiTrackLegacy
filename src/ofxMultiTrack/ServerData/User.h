@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofTypes.h"
-#include "ofNode.h"
+#include "ofQuaternion.h"
+
 #include <map>
 #include "ofxJSON/libs/jsoncpp/include/json/json.h"
 
@@ -38,7 +39,10 @@ namespace ofxMultiTrack {
 
 		class CombinedUserSet : public UserSet {
 		public:
-			typedef map<int, map<int, int> > SourceMapping;
+			typedef vector<map<int, int> > SourceMapping;
+
+			///add map of origin users (used in tandem with .push_back(user) )
+			void addSourceMapping(const map<int, int> &);
 			const SourceMapping & getSourceMapping() const;
 		protected:
 			SourceMapping sourceUserMapping; /// < mapping of user in this list -> mapping of node -> this user index in node view

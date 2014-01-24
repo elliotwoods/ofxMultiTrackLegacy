@@ -45,8 +45,9 @@ namespace ofxMultiTrack {
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
-		OutputFrame getCurrentFrame();
-		void drawWorld();
+		OutputFrame getCurrentFrame() const;
+		void drawWorld() const;
+		void drawViewConesWorld() const;
 
 		Json::Value getStatus();
 		string getStatusString();

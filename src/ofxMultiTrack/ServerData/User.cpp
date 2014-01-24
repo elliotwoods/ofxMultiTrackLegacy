@@ -146,7 +146,12 @@ namespace ofxMultiTrack {
 			}
 		}
 
-#pragma mark UserSet
+#pragma mark CombinedUserSet
+		//----------
+		void CombinedUserSet::addSourceMapping(const map<int, int> & sourceMapping) { 
+			this->sourceUserMapping.push_back(sourceMapping);
+		}
+
 		//----------
 		const CombinedUserSet::SourceMapping & CombinedUserSet::getSourceMapping() const {
 			return this->sourceUserMapping;

@@ -34,10 +34,10 @@ namespace ofxMultiTrack {
 			void save(string filename="") const; ///<empty filename means ask user
 			void load(string filename=""); ///<empty filename means ask user
 
-			bool isWaiting() { return this->state == Waiting; }
-			bool isRecording() { return this->state == Recording; }
-			bool isPlaying() { return this->state == Playing; }
-			State getState() { return this->state; }
+			bool isWaiting() const { return this->state == Waiting; }
+			bool isRecording() const { return this->state == Recording; }
+			bool isPlaying() const { return this->state == Playing; }
+			State getState() const { return this->state; }
 			void clear();
 
 			bool hasData() const; ///<currently we just lazily check the record duration

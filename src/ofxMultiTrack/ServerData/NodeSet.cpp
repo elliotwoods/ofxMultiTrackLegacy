@@ -68,6 +68,18 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		ofVec3f NodeSet::applyTransform(const ofVec3f & xyz, int nodeIndex) const {
+			auto transform = this->transforms.find(nodeIndex);
+			if (transform == this->transforms.end()) {
+				return xyz;
+			} else {
+				auto xyzTransformed = this->applyTransform(xyz, transform->second.source);
+				xyzTransformed = transform->second.transform->transform(xyzTransformed);
+				return xyzTransformed;
+			}
+		}
+
+		//----------
 		vector<UserSet> NodeSet::getUsersView() const {
 			vector<UserSet> usersView;
 			for(auto node : *this) {
@@ -102,10 +114,13 @@ namespace ofxMultiTrack {
 			CombinedUserSet combinedUserSet;
 			for(auto baseUser : userMatches) {
 				vector<User> usersToCombine;
+				map<int, int> sourceMapping;
 				for(auto userToCombineIndex : baseUser.second) {
 					usersToCombine.push_back(usersWorld[userToCombineIndex.nodeIndex][userToCombineIndex.userIndex]);
+					sourceMapping.insert(pair<int, int>(userToCombineIndex.nodeIndex, userToCombineIndex.userIndex));
 				}
 				combinedUserSet.push_back(User(usersToCombine));
+				combinedUserSet.addSourceMapping(sourceMapping);
 			}
 			return combinedUserSet;
 		}

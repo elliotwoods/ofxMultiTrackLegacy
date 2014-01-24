@@ -49,7 +49,7 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	Server::OutputFrame Server::getCurrentFrame() {
+	Server::OutputFrame Server::getCurrentFrame() const {
 		OutputFrame currentFrame;
 
 		//get data in view spaces
@@ -64,26 +64,28 @@ namespace ofxMultiTrack {
 			currentFrame.views = this->nodes.getUsersView();
 		}
 
-		//mark frame as calibrated if any calibrations exist (perhaps should be if N-1 calibrations exist)
-		auto transforms = this->nodes.getTransforms();
-		currentFrame.calibrated = this->nodes.getTransforms().size() > 0;
+		currentFrame.calibrated = this->nodes.isCalibrated();
 
-		//get data in world space
-		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
+		if (currentFrame.calibrated) {
+			//get data in world space
+			currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
 
-		//get combined user set
-		currentFrame.combined = this->nodes.getUsersCombined();
+			//get combined user set
+			currentFrame.combined = this->nodes.getUsersCombined();
+		}
 
 		return currentFrame;
 	}
 
 	//----------
-	void Server::drawWorld() {
+	void Server::drawWorld() const {
 		auto currentFrame = this->getCurrentFrame();
 
 		glPushAttrib(GL_POINT_BIT);
 		glEnable(GL_POINT_SMOOTH);
-		
+
+		this->drawViewConesWorld();
+
 		if (this->nodes.isCalibrated()) {
 			//draw combined skeleton
 			glPointSize(5.0f);
@@ -122,6 +124,42 @@ namespace ofxMultiTrack {
 		}
 
 		glPopAttrib();
+	}
+
+	//----------
+	void Server::drawViewConesWorld() const {
+		ofPushStyle();
+		ofEnableAlphaBlending();
+
+		const auto fovY = 43.0f;
+		const auto fovX = 57.0f;
+		const auto gradientX = tan(DEG_TO_RAD * fovX);
+		const auto gradientY = tan(DEG_TO_RAD * fovY);
+
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			//a transform goes from kienct view to world, so we can use it to draw our cone
+			ofMesh viewCone;
+
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(0,0,0), nodeIndex));
+			viewCone.addColor(ofColor(255);
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,-gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,-gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,+gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,+gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+
+			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};
+			viewCone.addIndices(indices, 8);
+			viewCone.setMode(OF_PRIMITIVE_LINES);
+			viewCone.draw();
+
+			nodeIndex++;
+		}
+		ofPopStyle();
 	}
 
 	//----------

@@ -29,6 +29,7 @@ namespace ofxMultiTrack {
 			const TransformSet & getTransforms() const;
 			void setTransform(int nodeIndex, int sourceNodeIndex, Align::Ptr transform);
 			void applyTransform(UserSet & users, int nodeIndex) const;
+			ofVec3f applyTransform(const ofVec3f &, int nodeIndex) const;
 
 			vector<UserSet> getUsersView() const;
 			vector<UserSet> getUsersWorld() const;
