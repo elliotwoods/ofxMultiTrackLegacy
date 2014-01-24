@@ -88,7 +88,7 @@ namespace ofxMultiTrack {
 		}
 		
 		//----------
-		float User::compareTo(const User & other) const {
+		float User::getDistanceTo(const User & other) const {
 			//find mean of joint distances
 			//N.B. didn't use RMS as it is more sensetive to a few large differences in the set
 			float totalDistance = 0.0f;
@@ -97,12 +97,12 @@ namespace ofxMultiTrack {
 			}
 			auto meanDistance = sqrt(totalDistance) / (float) this->size();
 
-			//find rms of bone length difference
-			float totalDifference = 0.0f;
-			//need a way of enumerating bones before we can use this for scoring
-			float meanDifference = totalDifference;
+			////find rms of bone length difference
+			//float totalDifference = 0.0f;
+			////need a way of enumerating bones before we can use this for scoring
+			//float meanDifference = totalDifference;
 
-			return meanDistance + meanDifference;
+			return meanDistance;
 		}
 
 		//----------

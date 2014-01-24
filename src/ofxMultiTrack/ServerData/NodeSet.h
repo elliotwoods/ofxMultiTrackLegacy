@@ -11,7 +11,17 @@ namespace ofxMultiTrack {
 				int source;
 				Align::Ptr transform;
 			};
+
 			typedef map<int, Transform> TransformSet;
+
+			struct NodeUserIndex {
+				NodeUserIndex(int nodeIndex, int userIndex);
+				bool operator<(const NodeUserIndex & other) const;
+				int nodeIndex;
+				int userIndex;
+			};
+
+			typedef map<NodeUserIndex, vector<NodeUserIndex> > UserMatches;
 
 			TransformSet & getTransforms();
 			const TransformSet & getTransforms() const;
@@ -23,6 +33,7 @@ namespace ofxMultiTrack {
 			vector<UserSet> getUsersWorld(const vector<UserSet> & usersView) const;
 			CombinedUserSet getUsersCombined() const;
 			CombinedUserSet getUsersCombined(const vector<UserSet> & usersWorld) const;
+			UserMatches getUserMatches(const vector<UserSet> & userWorld) const;
 		protected:
 			TransformSet transforms;
 		};
