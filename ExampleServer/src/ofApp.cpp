@@ -257,6 +257,9 @@ void ofApp::keyPressed(int key){
 			break;
 		}
 		break;
+	case 'c':
+		this->server.clearNodeUsers();
+		break;
 	}
 }
 

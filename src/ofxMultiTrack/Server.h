@@ -39,6 +39,9 @@ namespace ofxMultiTrack {
 		void addNode(string address, int index);
 		void clearNodes();
 		
+		/// Clear all current incoming users from all nodes
+		void clearNodeUsers();
+
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 

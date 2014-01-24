@@ -35,6 +35,13 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		void NodeConnection::clearUsers() {
+			this->lockUsers.lock();
+			this->users.clear();
+			this->lockUsers.unlock();
+		}
+
+		//----------
 		UserSet NodeConnection::getLiveData() {
 			this->lockUsers.lock();
 			auto users = this->users;

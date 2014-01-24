@@ -18,6 +18,7 @@ namespace ofxMultiTrack {
 			void update();
 			bool isConnected();
 			int getUserCount();
+			void clearUsers();
 
 			UserSet getLiveData();
 			Recording & getRecording();

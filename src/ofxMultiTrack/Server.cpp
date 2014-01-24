@@ -32,6 +32,13 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	void Server::clearNodeUsers() {
+		for(auto node : this->nodes) {
+			node->clearUsers();
+		}
+	}
+
+	//----------
 	const ServerData::NodeSet & Server::getNodes() const {
 		return this->nodes;
 	}
