@@ -20,7 +20,7 @@ namespace ofxMultiTrack {
 					}
 				}
 				string error = "Device of type [" + T().getType() + "] could not be found";
-				throw(std::exception(error.c_str()));
+				throw(Exception(error.c_str()));
 			}
 		};
 	}

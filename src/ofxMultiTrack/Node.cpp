@@ -22,7 +22,7 @@ namespace ofxMultiTrack {
 					stillLooking = false;
 				}
 				if (localNodeIndex >= OFXMULTITRACK_NODE_LOCAL_COUNT_MAX) {
-					throw(std::exception("Too many clients already running on this machine"));
+					throw(Exception("Too many clients already running on this machine"));
 				}
 			}
 			ofLogNotice("ofxMultiTrack") << "Local Node index is  " << localNodeIndex;
@@ -59,7 +59,7 @@ namespace ofxMultiTrack {
 			}
 
 			return true;
-		} catch (std::exception e) {
+		} catch (Exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to initialise ofxMultiTrack::Node";
 			ofLogError("ofxMultiTrack") << e.what();
 			return false;

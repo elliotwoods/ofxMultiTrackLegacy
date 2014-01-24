@@ -6,6 +6,14 @@
 #include "ofxJSON/libs/jsoncpp/include/json/json.h"
 
 namespace ofxMultiTrack {
+	class Exception {
+	public:
+		Exception(string text);
+		string what();
+	protected:
+		string text;
+	};
+	
 	struct NodeSettings {
 		int localIndex;
 	};

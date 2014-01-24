@@ -109,7 +109,7 @@ namespace ofxMultiTrack {
 						this->remoteStatusLock.unlock();
 
 					}
-					catch(std::exception e)
+					catch(Exception e)
 					{
 						ofLogError("ofxMultiTrack") << e.what();
 					}
