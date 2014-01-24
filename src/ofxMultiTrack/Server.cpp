@@ -78,51 +78,60 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::drawWorld() const {
+	void Server::drawViews() const {
+		this->drawViewConeView();
 		auto currentFrame = this->getCurrentFrame();
-
 		glPushAttrib(GL_POINT_BIT);
 		glEnable(GL_POINT_SMOOTH);
 
-		this->drawViewConesWorld();
-
-		if (this->nodes.isCalibrated()) {
-			//draw combined skeleton
-			glPointSize(5.0f);
-			currentFrame.combined.draw();
-
-			//draw world space skeletons per view
-			// it would be nice to also draw lines
-			// but then we need to know which user
-			// index in each view matches each
-			// combined index
-			auto & sourceMapping = currentFrame.combined.getSourceMapping();
-			glPointSize(2.0f);
-			ofMesh lines;
-			ofMesh points;
-			int nodeIndex = 0;
-			for(auto & node : currentFrame.world) {
-				int userIndex = 0;
-				for(auto & user : node) {
-					auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
-					auto & combinedUser = currentFrame.combined[combinedUserIndex];
-					for(auto & joint : user) {
-						points.addVertex(joint.second.position);
-						lines.addVertex(joint.second.position);
-						lines.addVertex(combinedUser[joint.first].position);
-					}
-					userIndex++;
-				}
-				nodeIndex++;
-			}
-		} else {
-			for(auto & node : currentFrame.views) {
-				for(auto & user : node) {
-					user.draw();
-				}
-			}
+		for(auto & view : currentFrame.views) {
+			view.draw();
 		}
 
+		glPopAttrib();
+	}
+
+	//----------
+	void Server::drawWorld() const {
+		this->drawViewConesWorld();
+		auto currentFrame = this->getCurrentFrame();
+		glPushAttrib(GL_POINT_BIT);
+		glEnable(GL_POINT_SMOOTH);
+
+		//draw combined skeleton
+		glPointSize(5.0f);
+		currentFrame.combined.draw();
+
+		/*
+
+		// HACK - disabled for time being until we have proper way of selecting things
+
+
+		//draw world space skeletons per view
+		// it would be nice to also draw lines
+		// but then we need to know which user
+		// index in each view matches each
+		// combined index
+		auto & sourceMapping = currentFrame.combined.getSourceMapping();
+		glPointSize(2.0f);
+		ofMesh lines;
+		ofMesh points;
+		int nodeIndex = 0;
+		for(auto & node : currentFrame.world) {
+			int userIndex = 0;
+			for(auto & user : node) {
+				auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
+				auto & combinedUser = currentFrame.combined[combinedUserIndex];
+				for(auto & joint : user) {
+					points.addVertex(joint.second.position);
+					lines.addVertex(joint.second.position);
+					lines.addVertex(combinedUser[joint.first].position);
+				}
+				userIndex++;
+			}
+			nodeIndex++;
+		}
+		*/
 		glPopAttrib();
 	}
 
@@ -142,7 +151,7 @@ namespace ofxMultiTrack {
 			ofMesh viewCone;
 
 			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(0,0,0), nodeIndex));
-			viewCone.addColor(ofColor(255);
+			viewCone.addColor(ofColor(255));
 			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,-gradientY,1), nodeIndex));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
 			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,-gradientY,1), nodeIndex));
@@ -150,6 +159,42 @@ namespace ofxMultiTrack {
 			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,+gradientY,1), nodeIndex));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
 			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,+gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+
+			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};
+			viewCone.addIndices(indices, 8);
+			viewCone.setMode(OF_PRIMITIVE_LINES);
+			viewCone.draw();
+
+			nodeIndex++;
+		}
+		ofPopStyle();
+	}
+
+	//----------
+	void Server::drawViewConeView() const {
+		ofPushStyle();
+		ofEnableAlphaBlending();
+
+		const auto fovY = 43.0f;
+		const auto fovX = 57.0f;
+		const auto gradientX = tan(DEG_TO_RAD * fovX);
+		const auto gradientY = tan(DEG_TO_RAD * fovY);
+
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			//a transform goes from kienct view to world, so we can use it to draw our cone
+			ofMesh viewCone;
+
+			viewCone.addVertex(ofVec3f(0,0,0));
+			viewCone.addColor(ofColor(255));
+			viewCone.addVertex(ofVec3f(-gradientX,-gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(+gradientX,-gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(-gradientX,+gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(+gradientX,+gradientY,1));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
 
 			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};

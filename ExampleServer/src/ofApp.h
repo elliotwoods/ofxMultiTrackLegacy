@@ -22,6 +22,10 @@ class ofApp : public ofBaseApp{
 		ofRectangle bounds;
 		NodeUser selection;
 	};
+	enum DrawMode {
+		View,
+		World
+	};
 public:
 	void setup();
 	void update();
@@ -46,4 +50,6 @@ public:
 	ofPtr<RecorderControl> recorderControl;
 	ofxCvGui::ElementPtr calibrateButton;
 	ofxOscSender oscSender;
+
+	DrawMode drawMode;
 };

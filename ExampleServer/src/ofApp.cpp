@@ -4,6 +4,8 @@
 void ofApp::setup(){
 	ofSetFrameRate(100.0f);
 
+	this->drawMode = View;
+
 	//read config
 	auto configText = ofFile("config.json").readToBuffer().getText();
 	Json::Reader reader;
@@ -34,7 +36,11 @@ void ofApp::setup(){
 	
 	//draw 3d scene
 	worldPanel->onDrawWorld += [this] (ofCamera&) {
-		this->server.drawWorld();
+		if (this->drawMode == View) {
+			this->server.drawViews();
+		} else {
+			this->server.drawWorld();
+		}
 		
 		//draw ground plane
 		ofPushStyle();
@@ -253,6 +259,12 @@ void ofApp::keyPressed(int key){
 		break;
 	case 'c':
 		this->server.clearNodeUsers();
+		break;
+	case 'v':
+		this->drawMode = View;
+		break;
+	case 'w':
+		this->drawMode = World;
 		break;
 	}
 }

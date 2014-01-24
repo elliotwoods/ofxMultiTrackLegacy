@@ -46,12 +46,18 @@ namespace ofxMultiTrack {
 		ServerData::Recorder & getRecorder();
 
 		OutputFrame getCurrentFrame() const;
+
+		/// Draw untransformed view
+		void drawViews() const;
 		void drawWorld() const;
+
 		void drawViewConesWorld() const;
+		void drawViewConeView() const;
 
 		Json::Value getStatus();
 		string getStatusString();
 
+		void autoCalibrate();
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Ptr(new Align::Default()));
 	protected:
