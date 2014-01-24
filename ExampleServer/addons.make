@@ -1,0 +1,10 @@
+ofxNetwork
+ofxOsc
+ofxXmlSettings
+ofxGrabCam
+ofxCvGui2
+ofxPolyfit
+ofxLiquidEvent
+ofxMultiTrack
+ofxUI
+ofxGraphEdit

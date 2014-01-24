@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef TARGET_WIN32
+
 #include "ofxKinectCommonBridge/src/ofxKinectCommonBridge.h"
 #include "../Utils/Types.h"
 
@@ -29,3 +31,5 @@ namespace ofxMultiTrack {
 		};
 	}
 }
+
+#endif

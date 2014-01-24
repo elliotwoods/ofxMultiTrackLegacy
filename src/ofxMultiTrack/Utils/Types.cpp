@@ -2,6 +2,17 @@
 #include "ofxCvGui2/src/ofxCvGui/Assets.h"
 
 namespace ofxMultiTrack {
+#pragma mark Exception
+	//----------
+	Exception::Exception(string text) : text(text) {
+
+	}
+
+	//----------
+	string Exception::what() {
+		return this->text;
+	}
+
 	//----------
 	Json::Value Joint::serialise() const {
 		Json::Value json;

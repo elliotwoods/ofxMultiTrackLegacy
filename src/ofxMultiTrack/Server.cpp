@@ -105,10 +105,10 @@ namespace ofxMultiTrack {
 		try {
 			//check nodes exist
 			if (nodeIndex > this->nodes.size()) {
-				throw(std::exception("nodeIndex out of bounds"));
+				throw(Exception("nodeIndex out of bounds"));
 			}
 			if (originNodeIndex > this->nodes.size()) {
-				throw(std::exception("originNodeIndex out of bounds"));
+				throw(Exception("originNodeIndex out of bounds"));
 			}
 
 			//local references
@@ -127,10 +127,10 @@ namespace ofxMultiTrack {
 
 			//first check we've got frames in both
 			if (targetFrames.empty()) {
-				throw(std::exception("No frames recorded for target node"));
+				throw(Exception("No frames recorded for target node"));
 			}
 			if (originFrames.empty()) {
-				throw(std::exception("No frames recorded for origin node"));
+				throw(Exception("No frames recorded for origin node"));
 			}
 
 			cout << "Frames for " << nodeIndex << ":" << userIndex << " with origin defined as" << originNodeIndex << ":" << originUserIndex << "=";
@@ -206,7 +206,7 @@ namespace ofxMultiTrack {
 
 			//check we have enough data
 			if (targetPoints.size() < 3) {
-				throw(std::exception("insufficient correlation points"));
+				throw(Exception("insufficient correlation points"));
 			}
 
 			//perform the calibration. target points will be transformed to match origin space
@@ -215,7 +215,7 @@ namespace ofxMultiTrack {
 			//assign the calibration in the NodeSet
 			this->nodes.setTransform(nodeIndex, originNodeIndex, routine);
 
-		} catch (std::exception e) {
+		} catch (Exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;
 			ofLogError("ofxMultiTrack") << e.what();
 		}
