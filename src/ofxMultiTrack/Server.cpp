@@ -32,6 +32,13 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	void Server::clearNodeUsers() {
+		for(auto node : this->nodes) {
+			node->clearUsers();
+		}
+	}
+
+	//----------
 	const ServerData::NodeSet & Server::getNodes() const {
 		return this->nodes;
 	}
@@ -42,43 +49,169 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	vector<ServerData::UserSet> Server::getCurrentFrame() {
-		vector<ServerData::UserSet> currentFrame;
+	Server::OutputFrame Server::getCurrentFrame() const {
+		OutputFrame currentFrame;
 
+		//get data in view spaces
 		int nodeIndex = 0;
 		if (this->recorder.hasData() && !this->recorder.isRecording()) {
 			//get data from recording
 			for(auto node : this->nodes) {
 				auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
-				currentFrame.push_back(nodeFrame);
+				currentFrame.views.push_back(nodeFrame);
 			}
 		} else {
-			//get live data
-			for(auto node : this->nodes) {
-				auto nodeFrame = node->getLiveData();
-				currentFrame.push_back(nodeFrame);
-			}
+			currentFrame.views = this->nodes.getUsersView();
 		}
 
-		this->transformFrame(currentFrame);
+		currentFrame.calibrated = this->nodes.isCalibrated();
+
+		//get data in world space
+		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
+
+		//get combined user set
+		currentFrame.combined = this->nodes.getUsersCombined(currentFrame.world);
 
 		return currentFrame;
 	}
 
 	//----------
-	void Server::transformFrame(vector<ServerData::UserSet> & frame) {
-		int nodeIndex = 0;
-		for(auto & nodeFrame : frame) {
-			this->nodes.applyTransform(nodeFrame, nodeIndex++);
+	void Server::drawViews() const {
+		this->drawViewConeView();
+		auto currentFrame = this->getCurrentFrame();
+		glPushAttrib(GL_POINT_BIT);
+		glEnable(GL_POINT_SMOOTH);
+
+		for(auto & view : currentFrame.views) {
+			view.draw();
 		}
+
+		glPopAttrib();
 	}
 
 	//----------
-	void Server::drawWorld() {
+	void Server::drawWorld() const {
+		ofPushStyle();
+		this->drawViewConesWorld();
 		auto currentFrame = this->getCurrentFrame();
-		for(auto & node : currentFrame) {
-			node.draw();
+		glPushAttrib(GL_POINT_BIT);
+		glEnable(GL_POINT_SMOOTH);
+
+		//draw combined skeleton
+		glPointSize(5.0f);
+		ofSetColor(255, 0, 0);
+		currentFrame.combined.draw();
+
+		glPointSize(2.0f);
+		ofSetColor(255);
+		for(auto & view : currentFrame.world) {
+			view.draw();
 		}
+
+		/*
+
+		// HACK - disabled for time being until we have proper way of selecting things
+
+
+		//draw world space skeletons per view
+		// it would be nice to also draw lines
+		// but then we need to know which user
+		// index in each view matches each
+		// combined index
+		auto & sourceMapping = currentFrame.combined.getSourceMapping();
+		glPointSize(2.0f);
+		ofMesh lines;
+		ofMesh points;
+		int nodeIndex = 0;
+		for(auto & node : currentFrame.world) {
+			int userIndex = 0;
+			for(auto & user : node) {
+				auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
+				auto & combinedUser = currentFrame.combined[combinedUserIndex];
+				for(auto & joint : user) {
+					points.addVertex(joint.second.position);
+					lines.addVertex(joint.second.position);
+					lines.addVertex(combinedUser[joint.first].position);
+				}
+				userIndex++;
+			}
+			nodeIndex++;
+		}
+		*/
+		glPopAttrib();
+		ofPopStyle();
+	}
+
+	//----------
+	void Server::drawViewConesWorld() const {
+		ofPushStyle();
+		ofEnableAlphaBlending();
+
+		const auto fovY = 43.0f;
+		const auto fovX = 57.0f;
+		const auto gradientX = tan(DEG_TO_RAD * fovX);
+		const auto gradientY = tan(DEG_TO_RAD * fovY);
+
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			//a transform goes from kienct view to world, so we can use it to draw our cone
+			ofMesh viewCone;
+
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(0,0,0), nodeIndex));
+			viewCone.addColor(ofColor(255));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,-gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,-gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,+gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,+gradientY,1), nodeIndex));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+
+			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};
+			viewCone.addIndices(indices, 8);
+			viewCone.setMode(OF_PRIMITIVE_LINES);
+			viewCone.draw();
+
+			nodeIndex++;
+		}
+		ofPopStyle();
+	}
+
+	//----------
+	void Server::drawViewConeView() const {
+		ofPushStyle();
+		ofEnableAlphaBlending();
+
+		const auto fovY = 43.0f;
+		const auto fovX = 57.0f;
+		const auto gradientX = tan(DEG_TO_RAD * fovX);
+		const auto gradientY = tan(DEG_TO_RAD * fovY);
+
+		int nodeIndex = 0;
+		for(auto node : this->nodes) {
+			//a transform goes from kienct view to world, so we can use it to draw our cone
+			ofMesh viewCone;
+
+			viewCone.addVertex(ofVec3f(0,0,0));
+			viewCone.addColor(ofColor(255));
+			viewCone.addVertex(ofVec3f(-gradientX,-gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(+gradientX,-gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(-gradientX,+gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+			viewCone.addVertex(ofVec3f(+gradientX,+gradientY,1));
+			viewCone.addColor(ofColor(0, 0, 0, 0));
+
+			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};
+			viewCone.addIndices(indices, 8);
+			viewCone.setMode(OF_PRIMITIVE_LINES);
+			viewCone.draw();
+
+			nodeIndex++;
+		}
+		ofPopStyle();
 	}
 
 	//----------
@@ -98,6 +231,22 @@ namespace ofxMultiTrack {
 	string Server::getStatusString() {
 		Json::StyledWriter writer;
 		return "status = " + writer.write(this->getStatus());
+	}
+
+	//----------
+	void Server::autoCalibrate() {
+		auto graph = ofxTSP::Problem();
+		auto solver = ofxTSP::BruteForce();
+
+		//generate a problem space
+		int sourceNodeIndex = 0;
+		for(auto node : this->nodes) {
+			for(int otherNodeIndex = sourceNodeIndex+1; otherNodeIndex < this->nodes.size(); otherNodeIndex++) {
+				// search for valid pairs, like we did in addAlignment. 
+				// in fact, we should be splitting that code out into findUsefulTimestampPairs(int sourceIndex, int targetIndex)
+			}
+			sourceNodeIndex++;
+		}
 	}
 
 	//----------

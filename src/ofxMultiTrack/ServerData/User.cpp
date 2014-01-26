@@ -13,6 +13,7 @@ namespace ofxMultiTrack {
 			for(int i=0; i<4; i++) {
 				json["rotation"][i] = this->rotation[i];
 			}
+			json["inferred"] = this->inferred;
 			return json;
 		}
 
@@ -24,6 +25,7 @@ namespace ofxMultiTrack {
 			for(int i=0; i<4; i++) {
 				this->rotation[i] = json["rotation"][i].asFloat();
 			}
+			this->inferred = json["inferred"].asBool();
 		}
 
 #pragma mark User
@@ -81,27 +83,43 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		bool User::getAlive() const {
+		bool User::isAlive() const {
 			return this->alive;
+		}
+		
+		//----------
+		float User::getDistanceTo(const User & other) const {
+			if (other.size() == 0 || !other.isAlive()) {
+				return std::numeric_limits<float>::max();
+			}
+
+			//find mean of joint distances
+			//N.B. didn't use RMS as it is more sensetive to a few large differences in the set
+			float totalDistance = 0.0f;
+			for(auto & joint : *this) {
+				totalDistance += (joint.second.position - other.at(joint.first).position).length();
+			}
+			auto meanDistance = sqrt(totalDistance) / (float) this->size();
+
+			////find rms of bone length difference
+			//float totalDifference = 0.0f;
+			////need a way of enumerating bones before we can use this for scoring
+			//float meanDifference = totalDifference;
+
+			return meanDistance;
 		}
 
 		//----------
-		void User::customDraw() {
+		void User::draw() {
+			ofMesh points;
 			if (this->alive) {
 				ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
 				for(auto & joint : *this) {
-					ofPushMatrix();
-					ofTranslate(joint.second.position);
-					float rotation[4];
-					joint.second.rotation.getRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
-					ofRotate(rotation[0], rotation[1], rotation[2], rotation[3]);
-					ofDrawAxis(0.05f);
-					ofScale(0.001f, 0.001f, 0.001f);
-					ofxCvGui::AssetRegister.drawText(joint.first, 0.05, 0, "", true, 20.0f);
-					ofPopMatrix();
+					points.addVertex(joint.second.position);
 				}
 				ofSetDrawBitmapMode(OF_BITMAPMODE_SIMPLE);
 			}
+			points.drawVertices();
 		}
 
 #pragma mark UserSet
@@ -126,10 +144,21 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void UserSet::customDraw() {
+		void UserSet::draw() {
 			for(auto & user : *this) {
 				user.draw();
 			}
+		}
+
+#pragma mark CombinedUserSet
+		//----------
+		void CombinedUserSet::addSourceMapping(const map<int, int> & sourceMapping) { 
+			this->sourceUserMapping.push_back(sourceMapping);
+		}
+
+		//----------
+		const CombinedUserSet::SourceMapping & CombinedUserSet::getSourceMapping() const {
+			return this->sourceUserMapping;
 		}
 	}
 }

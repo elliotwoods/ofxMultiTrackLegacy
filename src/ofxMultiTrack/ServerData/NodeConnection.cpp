@@ -35,10 +35,27 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		void NodeConnection::clearUsers() {
+			this->lockUsers.lock();
+			this->users.clear();
+			this->lockUsers.unlock();
+		}
+
+		//----------
 		UserSet NodeConnection::getLiveData() {
 			this->lockUsers.lock();
 			auto users = this->users;
 			this->lockUsers.unlock();
+
+			//remove dead users from set to send
+			UserSet::size_type i = 0;
+			while (i < users.size()) {
+				if(!users[i].isAlive()) {
+					users.erase(users.begin() + i);
+				} else {
+					i++;
+				}
+			}
 			return users;
 		}
 
@@ -85,27 +102,22 @@ namespace ofxMultiTrack {
 						}
 						for(auto & userLocal : this->users) {
 							if (userIndex >= jsonUsers.size() || jsonUsers.isNull()) {
-								break;
-							}
-							auto & jsonUser = jsonUsers[userIndex++];
-							if (jsonUser.size() == 0) {
 								userLocal.setAlive(false);
 							} else {
-								userLocal.setAlive(true);
-								auto jointNames = jsonUser.getMemberNames();
-								for(auto & jointName : jointNames) {
-									auto & joint = jsonUser[jointName];
-									auto & jointLocal = userLocal[jointName];
-									auto & position = joint["position"];
-									for(int i=0; i<3; i++) {
-										jointLocal.position[i] = position[i].asFloat();
-									}
-									auto & rotation = joint["rotation"];
-									for(int i=0; i<3; i++) {
-										jointLocal.rotation[i] = rotation[i].asFloat();
+								auto & jsonUser = jsonUsers[userIndex];
+								if (jsonUser.size() == 0) {
+									userLocal.setAlive(false);
+								} else {
+									userLocal.setAlive(true);
+									auto jointNames = jsonUser.getMemberNames();
+									for(auto & jointName : jointNames) {
+										auto & joint = jsonUser[jointName];
+										auto & jointLocal = userLocal[jointName];
+										jointLocal.deserialise(joint);
 									}
 								}
 							}
+							userIndex++;
 						}
 						if (newSkeleton) {
 							this->recording.addIncoming(this->users);

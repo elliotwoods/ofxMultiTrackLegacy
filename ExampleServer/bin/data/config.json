@@ -1,7 +1,7 @@
 {
     "nodes": [
         {
-            "address" : "192.168.10.11",
+            "address" : "localhost",
             "index" : 0
         },
         {
@@ -11,6 +11,10 @@
         {
             "address" : "192.168.10.11",
             "index" : 2
+        },
+        {
+            "address" : "192.168.10.11",
+            "index" : 3
         }],
     "osc":
     {

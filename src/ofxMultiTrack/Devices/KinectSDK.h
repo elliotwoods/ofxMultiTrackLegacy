@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ofConstants.h"
+
 #ifdef TARGET_WIN32
 
 #include "ofxKinectCommonBridge/src/ofxKinectCommonBridge.h"

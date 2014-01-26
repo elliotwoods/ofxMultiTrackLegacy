@@ -89,7 +89,7 @@ namespace ofxMultiTrack {
 		//----------
 		void Recorder::deserialise(const Json::Value & json) {
 			if (json.size() != this->nodes.size()) {
-				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in json [" + ofToString(json.size()) + "]";
+				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in file to load [" + ofToString(json.size()) + "]";
 				throw(Exception(errorMsg.c_str()));
 			}
 
@@ -99,6 +99,8 @@ namespace ofxMultiTrack {
 			Timestamp newStart = std::numeric_limits<Timestamp>::max();
 			Timestamp newEnd = std::numeric_limits<Timestamp>::min();
 			bool anyFramesFound = false;
+
+			cout << "Loading";
 
 			for(auto node : this->nodes) {
 				auto & nodeJson = json[nodeIndex++];
@@ -118,9 +120,12 @@ namespace ofxMultiTrack {
 						newEnd = rawTimestamp;
 					}
 
+					cout << ".";
 					anyFramesFound = true;
 				}
 			}
+
+			cout << endl;
 
 			if (anyFramesFound) {
 				this->startTime = newStart;

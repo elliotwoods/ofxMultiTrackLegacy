@@ -27,6 +27,7 @@ namespace ofxMultiTrack {
 			ofxKinectCommonBridge* kinect;
 			vector<KinectCommonBridge::Skeleton> skeletons;
 			bool isNewSkeleton;
+			bool isNewFrame;
 			bool needsSendSkeleton;
 			deque<Timestamp> frameTimings;
 		};

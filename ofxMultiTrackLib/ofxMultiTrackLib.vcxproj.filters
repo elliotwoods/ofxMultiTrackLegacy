@@ -85,6 +85,15 @@
     <Filter Include="src\ofxMultiTrack\Align">
       <UniqueIdentifier>{ea7ce074-6135-4a80-940d-25151ce299e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxTSP">
+      <UniqueIdentifier>{617d0f2a-9367-406e-a08f-c8836da6c0f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTSP\src">
+      <UniqueIdentifier>{00f6deff-4d92-40ed-8cfa-3aac401dbf24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTSP\src\ofxTSP">
+      <UniqueIdentifier>{3b6d1f4e-9c46-4334-942c-2edde77ee019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -233,6 +242,27 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\User.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP.h">
+      <Filter>addons\ofxTSP\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Problem.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Route.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\RouteFind.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Solver.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\BruteForce.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Journey.h">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -324,6 +354,21 @@
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\User.cpp">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Problem.cpp">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Route.cpp">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\RouteFind.cpp">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\BruteForce.cpp">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Journey.cpp">
+      <Filter>addons\ofxTSP\src\ofxTSP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

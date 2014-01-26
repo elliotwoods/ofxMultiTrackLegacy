@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxNetwork/src/ofxNetwork.h"
+#include "ofxTSP/src/ofxTSP.h"
 
 #include "Utils/Constants.h"
 #include "Utils/Types.h"
@@ -21,6 +22,15 @@
 namespace ofxMultiTrack {
 	class Server {
 	public:
+		struct OutputFrame {
+			vector<ServerData::UserSet> views;
+			vector<ServerData::UserSet> world;
+			ServerData::CombinedUserSet combined;
+			bool calibrated;
+
+			void draw();
+		};
+
 		Server();
 		~Server();
 
@@ -30,16 +40,25 @@ namespace ofxMultiTrack {
 		void addNode(string address, int index);
 		void clearNodes();
 		
+		/// Clear all current incoming users from all nodes
+		void clearNodeUsers();
+
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
-		vector<ServerData::UserSet> getCurrentFrame();
-		void transformFrame(vector<ServerData::UserSet> &);
-		void drawWorld();
+		OutputFrame getCurrentFrame() const;
+
+		/// Draw untransformed view
+		void drawViews() const;
+		void drawWorld() const;
+
+		void drawViewConesWorld() const;
+		void drawViewConeView() const;
 
 		Json::Value getStatus();
 		string getStatusString();
 
+		void autoCalibrate();
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Ptr(new Align::Default()));
 	protected:

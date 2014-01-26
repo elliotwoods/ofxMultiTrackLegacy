@@ -4,6 +4,8 @@
 void ofApp::setup(){
 	ofSetFrameRate(100.0f);
 
+	this->drawMode = View;
+
 	//read config
 	auto configText = ofFile("config.json").readToBuffer().getText();
 	Json::Reader reader;
@@ -26,7 +28,8 @@ void ofApp::setup(){
 	auto leftColumn = gui.addGrid();
 	auto statusPanel = gui.addScroll("Status");
 
-	auto worldPanel = gui.makeWorld("World");
+	auto worldPanel = gui.makeWorld("View");
+	this->worldPanel = worldPanel;
 	auto recorderPanel = gui.makeScroll("Recorder");
 	leftColumn->setColsCount(1);
 	leftColumn->add(worldPanel);
@@ -34,7 +37,11 @@ void ofApp::setup(){
 	
 	//draw 3d scene
 	worldPanel->onDrawWorld += [this] (ofCamera&) {
-		this->server.drawWorld();
+		if (this->drawMode == View) {
+			this->server.drawViews();
+		} else {
+			this->server.drawWorld();
+		}
 		
 		//draw ground plane
 		ofPushStyle();
@@ -58,16 +65,11 @@ void ofApp::setup(){
 		float y = 60.0f;
 		int nodeIndex = 0;
 		this->targets.clear(); //<each time we draw the world, let's remake this target list
-		for(auto & node : data) {
+		bool useWorld = this->drawMode == World;
+		auto & views = useWorld ? data.world : data.views;
+		for(auto & view : views) {
 			int userIndex = 0;
-			for(auto & user : node) {
-
-				//check this user is alive
-				if (!user.getAlive()) {
-					userIndex++;
-					continue;
-				}
-
+			for(auto & user : view) {
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);
@@ -190,21 +192,26 @@ void ofApp::update(){
 		this->calibrateButton->disable();
 	}
 
-	//compile users
-	auto data = this->server.getCurrentFrame();
-	vector<ofxMultiTrack::ServerData::User> userSet;
-	for(auto & node : data) {
-		for(auto & user : node) {
-			userSet.push_back(user);
-		}
-	}
+	auto currentFrame = this->server.getCurrentFrame();
+	ofxMultiTrack::ServerData::UserSet userSet;
 
-	//hack - right now just average all users into one
-	bool hasCalibration = this->server.getNodes().getTransforms().size() > 0;
-	if (hasCalibration) {
-		auto combinedUser = ofxMultiTrack::ServerData::User(userSet);
-		userSet.clear();
-		userSet.push_back(combinedUser);
+	//--
+	//send data
+	//
+
+	//check if we're calibrated or note
+	if (currentFrame.calibrated) {
+		//if so, get the combined user set to send
+		userSet = currentFrame.combined;
+	} else {
+		//otherwise just add all users from all views
+		auto data = currentFrame.views;
+		vector<ofxMultiTrack::ServerData::User> userSet;
+		for(auto & node : data) {
+			for(auto & user : node) {
+				userSet.push_back(user);
+			}
+		}
 	}
 
 	//send users
@@ -229,6 +236,8 @@ void ofApp::update(){
 			userIndex++;
 	}
 	this->oscSender.sendBundle(oscBundle);
+	//
+	//--
 }
 
 //--------------------------------------------------------------
@@ -249,6 +258,17 @@ void ofApp::keyPressed(int key){
 			recorder.play();
 			break;
 		}
+		break;
+	case 'c':
+		this->server.clearNodeUsers();
+		break;
+	case 'v':
+		this->drawMode = View;
+		this->worldPanel->setCaption("View");
+		break;
+	case 'w':
+		this->drawMode = World;
+		this->worldPanel->setCaption("World");
 		break;
 	}
 }
