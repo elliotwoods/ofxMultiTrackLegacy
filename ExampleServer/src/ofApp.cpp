@@ -270,6 +270,9 @@ void ofApp::keyPressed(int key){
 		this->drawMode = World;
 		this->worldPanel->setCaption("World");
 		break;
+	case 'a':
+		ofxAssets::AssetRegister.refresh();
+		break;
 	}
 }
 

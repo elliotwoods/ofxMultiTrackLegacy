@@ -5,8 +5,7 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 #pragma mark Joint
 		//----------
-		Json::Value Joint::serialise() const {
-			Json::Value json;
+		void Joint::serialise(Json::Value & json) const {
 			for(int i=0; i<3; i++) {
 				json["position"][i] = this->position[i];
 			}
@@ -14,7 +13,7 @@ namespace ofxMultiTrack {
 				json["rotation"][i] = this->rotation[i];
 			}
 			json["inferred"] = this->inferred;
-			return json;
+			json["connectedTo"] = this->connectedTo;
 		}
 
 		//----------
@@ -26,6 +25,7 @@ namespace ofxMultiTrack {
 				this->rotation[i] = json["rotation"][i].asFloat();
 			}
 			this->inferred = json["inferred"].asBool();
+			this->connectedTo = json["connectedTo"].asString();
 		}
 
 #pragma mark User
@@ -58,12 +58,10 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		Json::Value User::serialise() const {
-			Json::Value json;
+		void User::serialise(Json::Value & json) const {
 			for(auto & joint : *this) {
-				json[joint.first] = joint.second.serialise();
+				joint.second.serialise(json[joint.first]);
 			}
-			return json;
 		}
 
 		//----------
@@ -94,7 +92,7 @@ namespace ofxMultiTrack {
 			}
 
 			//find mean of joint distances
-			//N.B. didn't use RMS as it is more sensetive to a few large differences in the set
+			//N.B. didn't use RMS as it is more sensitive to a few large differences in the set
 			float totalDistance = 0.0f;
 			for(auto & joint : *this) {
 				totalDistance += (joint.second.position - other.at(joint.first).position).length();
@@ -112,25 +110,30 @@ namespace ofxMultiTrack {
 		//----------
 		void User::draw() {
 			ofMesh points;
+			ofMesh lines;
 			if (this->alive) {
-				ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
 				for(auto & joint : *this) {
 					points.addVertex(joint.second.position);
+					
+					auto findConnected = this->find(joint.second.connectedTo);
+					if (findConnected != this->end()) {
+						lines.addVertex(joint.second.position);
+						lines.addVertex(findConnected->second.position);
+					}
 				}
-				ofSetDrawBitmapMode(OF_BITMAPMODE_SIMPLE);
 			}
 			points.drawVertices();
+			lines.setMode(OF_PRIMITIVE_LINES);
+			lines.draw();
 		}
 
 #pragma mark UserSet
 		//----------
-		Json::Value UserSet::serialise() const {
-			Json::Value json;
+		void UserSet::serialise(Json::Value & json) const {
 			int userIndex = 0;
 			for(auto & user : *this) {
-				json[userIndex++] = user.serialise();
+				user.serialise(json[userIndex++]);
 			}
-			return json;
 		}
 
 		//----------

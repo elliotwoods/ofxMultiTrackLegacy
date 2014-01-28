@@ -32,8 +32,8 @@ namespace ofxMultiTrack {
 			ofLogNotice("ofxMultiTrack") << "Node is listening on port " << this->server.getPort();
 
 			//add devices
-			auto kinect = new Devices::KinectSDK(this->settings.localIndex);
-			this->devices.add(kinect);
+			auto kinect = shared_ptr<Devices::KinectSDK>(new Devices::KinectSDK(this->settings.localIndex));
+			this->devices.push_back(kinect);
 
 			//initialise devices
 			for(auto device : this->devices) {
@@ -41,7 +41,7 @@ namespace ofxMultiTrack {
 			}
 
 			//add modules
-			this->modules.add(new Modules::Skeleton(kinect));
+			this->modules.push_back(shared_ptr<Modules::Skeleton>(new Modules::Skeleton(kinect)));
 
 			//initialise modules
 			for(auto module : this->modules) {
@@ -59,7 +59,7 @@ namespace ofxMultiTrack {
 			}
 
 			return true;
-		} catch (Exception e) {
+		} catch (std::exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to initialise ofxMultiTrack::Node";
 			ofLogError("ofxMultiTrack") << e.what();
 			return false;

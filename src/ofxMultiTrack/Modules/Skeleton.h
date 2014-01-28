@@ -11,7 +11,7 @@ namespace ofxMultiTrack {
 		public:
 			string getType() const override;
 			Skeleton() { } ///< use this constructor for ofxMultiTrack::Server
-			Skeleton(Devices::KinectSDK* kinect); ///< use this constructor for ofxMultiTrack::Node
+			Skeleton(shared_ptr<Devices::KinectSDK> kinect); ///< use this constructor for ofxMultiTrack::Node
 			void init() override;
 			void update() override;
 			Json::Value serialize() override;
@@ -23,8 +23,10 @@ namespace ofxMultiTrack {
 			static string indexToName(int index);
 			static _NUI_SKELETON_POSITION_INDEX indexToEnum(int index);
 			static Json::Value serialize(KinectCommonBridge::Skeleton&);
+
+			void drawOnDepth();
 		protected:
-			ofxKinectCommonBridge* kinect;
+			ofxKinectCommonBridge * kinect;
 			vector<KinectCommonBridge::Skeleton> skeletons;
 			bool isNewSkeleton;
 			bool isNewFrame;

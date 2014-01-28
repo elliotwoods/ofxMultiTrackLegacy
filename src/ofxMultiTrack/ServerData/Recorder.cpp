@@ -72,18 +72,16 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		Json::Value Recorder::serialise() const {
-			Json::Value json;
+		void Recorder::serialise(Json::Value & json) const {
 			int nodeIndex = 0;
 			for(auto node : this->nodes) {
 				auto & nodeJson = json[nodeIndex++];
 				auto & frames = node->getRecording().getFrames();
 				for(auto & frame : frames) {
-					auto frameJson = frame.second.serialise();
-					nodeJson[ofToString(frame.first)] = frameJson;
+					auto & frameJson = nodeJson[ofToString(frame.first)];
+					frame.second.serialise(frameJson);
 				}
 			}
-			return json;
 		}
 
 		//----------
@@ -145,7 +143,8 @@ namespace ofxMultiTrack {
 				filename = response.filePath;
 			}
 
-			auto json = this->serialise();
+			Json::Value json;
+			this->serialise(json);
 
 			Json::FastWriter writer;
 			ofFile output;
@@ -173,7 +172,7 @@ namespace ofxMultiTrack {
 				Json::Value json;
 				reader.parse(jsonRaw, json);
 				this->deserialise(json);
-			} catch (Exception e) {
+			} catch (std::exception e) {
 				ofSystemAlertDialog(e.what());
 			}
 		}

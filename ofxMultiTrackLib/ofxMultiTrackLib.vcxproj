@@ -54,6 +54,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /e /i /y "$(ProjectDir)..\data" "$(SolutionDir)bin\data"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -70,11 +73,15 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /e /i /y "$(ProjectDir)..\data" "$(SolutionDir)bin\data"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ofxAssets\src\ofxAssets.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\autolink.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\config.h" />
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\include\json\features.h" />
@@ -131,6 +138,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ofxAssets\src\ofxAssets.cpp" />
     <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_reader.cpp" />
     <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_value.cpp" />
     <ClCompile Include="..\..\ofxJSON\libs\jsoncpp\src\json_writer.cpp" />

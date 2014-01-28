@@ -82,6 +82,8 @@ namespace ofxMultiTrack {
 		//----------
 		void NodeConnection::threadedFunction() {
 			this->client.setVerbose(false);
+			ofSetLogLevel("ofxNetwork", OF_LOG_SILENT);
+			ofSetLogLevel("ofxTCPClient", OF_LOG_SILENT);
 			while(this->running) {
 				if (!this->client.isConnected()) {
 					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + index, false);
@@ -128,7 +130,7 @@ namespace ofxMultiTrack {
 						this->remoteStatusLock.unlock();
 
 					}
-					catch(Exception e)
+					catch(std::exception e)
 					{
 						ofLogError("ofxMultiTrack") << e.what();
 					}

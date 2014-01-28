@@ -12,6 +12,7 @@ namespace ofxMultiTrack {
 
 	//----------
 	bool Server::init() {
+		ofxAssets::AssetRegister.addAddon("ofxMultiTrack");
 		return true;
 	}
 
@@ -80,10 +81,34 @@ namespace ofxMultiTrack {
 		this->drawViewConeView();
 		auto currentFrame = this->getCurrentFrame();
 		glPushAttrib(GL_POINT_BIT);
-		glEnable(GL_POINT_SMOOTH);
+		//glEnable(GL_POINT_SMOOTH);
+		glPointSize(20.0f);
 
+		int nodeIndex = 0;
 		for(auto & view : currentFrame.views) {
+			//--
+			//point sprites
+			//
+			auto & pointSprite = ofxAssets::image("ofxMultiTrack::" + ofToString(nodeIndex));
+			pointSprite.bind();
+			ofEnablePointSprites();
+			ofDisableArbTex();
+			ofDisableAlphaBlending();
+			//
+			//--
+
 			view.draw();
+			
+			//--
+			//clear point sprites
+			//
+			ofEnableArbTex();
+			ofDisablePointSprites();
+			pointSprite.unbind();
+			//
+			//--
+
+			nodeIndex++;
 		}
 
 		glPopAttrib();
@@ -98,14 +123,16 @@ namespace ofxMultiTrack {
 		glEnable(GL_POINT_SMOOTH);
 
 		//draw combined skeleton
-		glPointSize(5.0f);
+		glPointSize(30.0f);
 		ofSetColor(255, 0, 0);
 		currentFrame.combined.draw();
 
-		glPointSize(2.0f);
+		glPointSize(20.0f);
 		ofSetColor(255);
+		int nodeIndex = 0;
 		for(auto & view : currentFrame.world) {
 			view.draw();
+			nodeIndex++;
 		}
 
 		/*
@@ -149,8 +176,8 @@ namespace ofxMultiTrack {
 
 		const auto fovY = 43.0f;
 		const auto fovX = 57.0f;
-		const auto gradientX = tan(DEG_TO_RAD * fovX);
-		const auto gradientY = tan(DEG_TO_RAD * fovY);
+		const auto gradientX = tan(DEG_TO_RAD * fovX / 2.0f);
+		const auto gradientY = tan(DEG_TO_RAD * fovY / 2.0f);
 
 		int nodeIndex = 0;
 		for(auto node : this->nodes) {
@@ -364,7 +391,7 @@ namespace ofxMultiTrack {
 			//assign the calibration in the NodeSet
 			this->nodes.setTransform(nodeIndex, originNodeIndex, routine);
 
-		} catch (Exception e) {
+		} catch (std::exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;
 			ofLogError("ofxMultiTrack") << e.what();
 		}

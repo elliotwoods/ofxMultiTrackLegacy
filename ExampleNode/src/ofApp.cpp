@@ -79,11 +79,9 @@ void ofApp::update(){
 			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
 				ofPushMatrix();
 				ofScale(args.size.x / 640.0f, args.size.y / 480.0f);
-				if (this->kinect != 0) {
-					int skeletonCount = this->kinect->getSkeletons().size();
-					for(int i=0; i<skeletonCount; i++) {
-						this->kinect->drawSkeleton(i);
-					}
+				auto skeletonModule = this->node.getModules().get<ofxMultiTrack::Modules::Skeleton>();
+				if (skeletonModule) {
+					skeletonModule->drawOnDepth();
 				}
 				ofPopMatrix();
 			};

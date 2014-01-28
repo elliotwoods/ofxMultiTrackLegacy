@@ -8,7 +8,7 @@ namespace ofxMultiTrack {
 		}
 
 		//---------
-		Skeleton::Skeleton(Devices::KinectSDK* kinect) {
+		Skeleton::Skeleton(shared_ptr<Devices::KinectSDK> kinect) {
 			this->kinect = &kinect->getDevice();
 			this->isNewSkeleton = false;
 			this->needsSendSkeleton = false;
@@ -147,9 +147,25 @@ namespace ofxMultiTrack {
 					rotationJson[j] = rotationQuaternion[j];
 				}
 
+				//this should really be getEndJoint, but ofxKinectCommonBridge is internally incorrect
+				jointJson["connectedTo"] = indexToName(jointData.getStartJoint());
 				jointJson["inferred"] = false;//find out if its inferred;
 			}
 			return json;
+		}
+
+		//---------
+		void Skeleton::drawOnDepth() {
+			for(int i=0; i<skeletons.size(); i++) {
+				this->kinect->drawSkeleton(i);
+				for(auto skeleton : this->skeletons) {
+					for(auto bone : skeleton) {
+						auto title = indexToName(bone.second.getStartJoint());
+						auto screenPosition = bone.second.getScreenPosition();
+						ofDrawBitmapString(title, screenPosition);
+					}
+				}
+			}
 		}
 	}
 }

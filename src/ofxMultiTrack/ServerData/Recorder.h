@@ -13,7 +13,7 @@
 
 namespace ofxMultiTrack {
 	namespace ServerData {
-		class Recorder {
+		class Recorder : public ISerialisable {
 		public:
 			enum State {
 				Waiting,
@@ -28,7 +28,7 @@ namespace ofxMultiTrack {
 			void play();
 			void stop();
 			
-			Json::Value serialise() const;
+			void serialise(Json::Value &) const;
 			void deserialise(const Json::Value &);
 
 			void save(string filename="") const; ///<empty filename means ask user

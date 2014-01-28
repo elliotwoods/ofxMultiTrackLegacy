@@ -5,23 +5,26 @@
 
 #include <map>
 #include "ofxJSON/libs/jsoncpp/include/json/json.h"
+#include "../Utils//Types.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {
-		struct Joint {
-			Json::Value serialise() const;
-			void deserialise(const Json::Value &);
+		class Joint : public ISerialisable {
+		public:
+			void serialise(Json::Value &) const override;
+			void deserialise(const Json::Value &) override;
 			ofVec3f position;
 			ofQuaternion rotation;
 			bool inferred;
+			string connectedTo;
 		};
 
-		class User : public std::map<string, Joint> {
+		class User : public std::map<string, Joint>, public ISerialisable {
 		public:
 			User();
 			User(const vector<User> &); ///<create an average user out of a set
-			Json::Value serialise() const;
-			void deserialise(const Json::Value &);
+			void serialise(Json::Value &) const override;
+			void deserialise(const Json::Value &) override;
 			void setAlive(bool);
 			bool isAlive() const;
 			float getDistanceTo(const User &) const;
@@ -30,10 +33,10 @@ namespace ofxMultiTrack {
 			bool alive;
 		};
 	
-		class UserSet : public vector<User>{
+		class UserSet : public vector<User>, public ISerialisable {
 		public:
-			Json::Value serialise() const;
-			void deserialise(const Json::Value &);
+			void serialise(Json::Value &) const override;
+			void deserialise(const Json::Value &) override;
 			void draw();
 		};
 

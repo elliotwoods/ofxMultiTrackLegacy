@@ -7,11 +7,6 @@ namespace ofxMultiTrack {
 		class Set : public vector<shared_ptr<Base> > {
 		public:
 			template<class T>
-			void add(T* device) {
-				this->push_back(shared_ptr<T>(device));
-			}
-
-			template<class T>
 			shared_ptr<T> get() {
 				for(auto device : *this) {
 					auto cast = dynamic_pointer_cast<T>(device);
@@ -19,8 +14,8 @@ namespace ofxMultiTrack {
 						return cast;
 					}
 				}
-				string error = "Device of type [" + T().getType() + "] could not be found";
-				throw(Exception(error.c_str()));
+				ofLogError("ofxMultiTrack") << "Device of type [" << T().getType() << "] could not be found";
+				return shared_ptr<T>();
 			}
 		};
 	}

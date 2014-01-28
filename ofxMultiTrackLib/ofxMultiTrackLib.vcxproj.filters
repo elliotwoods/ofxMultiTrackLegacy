@@ -94,6 +94,12 @@
     <Filter Include="addons\ofxTSP\src\ofxTSP">
       <UniqueIdentifier>{3b6d1f4e-9c46-4334-942c-2edde77ee019}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxAssets">
+      <UniqueIdentifier>{3e3e8473-312a-478e-8412-1b4db7241bfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxAssets\src">
+      <UniqueIdentifier>{6064b4f9-c155-462c-b3e9-0cbbb96b591f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -263,6 +269,9 @@
     <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Journey.h">
       <Filter>addons\ofxTSP\src\ofxTSP</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxAssets\src\ofxAssets.h">
+      <Filter>addons\ofxAssets\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -369,6 +378,9 @@
     </ClCompile>
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Journey.cpp">
       <Filter>addons\ofxTSP\src\ofxTSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxAssets\src\ofxAssets.cpp">
+      <Filter>addons\ofxAssets\src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
