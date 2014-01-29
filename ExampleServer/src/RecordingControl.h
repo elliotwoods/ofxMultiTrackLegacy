@@ -8,7 +8,14 @@ class RecordingControl : public ofxCvGui::ElementGroup {
 public:
 	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &);
 protected:
+	void update();
+	void update(ofxCvGui::UpdateArguments &);
+	void draw(ofxCvGui::DrawArguments &);
+	void boundsChange(ofxCvGui::BoundsChangeArguments &);
+
 	ofxMultiTrack::ServerData::Recorder & recorder;
 	ofxMultiTrack::ServerData::Recording & recording;
-	ofMesh markers;
+	ofFbo fbo;
+	bool trackDirty;
+	int cachedCount;
 };

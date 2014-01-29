@@ -121,6 +121,7 @@
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\RecorderControl.cpp" />
     <ClCompile Include="src\RecordingControl.cpp" />
+    <ClCompile Include="src\Version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />

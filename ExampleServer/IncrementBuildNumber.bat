@@ -7,7 +7,7 @@
    setlocal enabledelayedexpansion
 
    REM This is the file we are going to alter
-   set filename=Version.h
+   set filename=Version.cpp
    
    REM Use temp file
    REM delete if already exists
