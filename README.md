@@ -24,6 +24,8 @@ Requirements
 * Repo - https://github.com/elliotwoods/ofxGraphEdit.git
 * Branch - master
 
+## ofxAssets
+
 
 Requirements for examples
 -------------------------
@@ -34,8 +36,8 @@ Requirements for examples
 * Branch - feature-lambdaDriven
 
 ### ofxUI
-https://github.com/elliotwoods/ofxGraphEdit.git
-*  - https://github.com/rezaali/ofxUI.git
+
+* Repo - https://github.com/rezaali/ofxUI.git
 * Branch - develop
 
 ### ofxGrabCam
