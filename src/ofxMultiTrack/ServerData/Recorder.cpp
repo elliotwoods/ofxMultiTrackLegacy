@@ -73,9 +73,15 @@ namespace ofxMultiTrack {
 
 		//----------
 		void Recorder::serialise(Json::Value & json) const {
+			auto & jsonRecorder = json["recorder"];
+			jsonRecorder["inPoint"] = this->inPoint;
+			jsonRecorder["outPoint"] = this->outPoint;
+			jsonRecorder["playHead"] = this->playHead;
+
+			auto & jsonNodes = json["nodes"];
 			int nodeIndex = 0;
 			for(auto node : this->nodes) {
-				auto & nodeJson = json[nodeIndex++];
+				auto & nodeJson = jsonNodes[nodeIndex++];
 				auto & frames = node->getRecording().getFrames();
 				for(auto & frame : frames) {
 					auto & frameJson = nodeJson[ofToString(frame.first)];
@@ -86,8 +92,13 @@ namespace ofxMultiTrack {
 
 		//----------
 		void Recorder::deserialise(const Json::Value & json) {
-			if (json.size() != this->nodes.size()) {
-				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in file to load [" + ofToString(json.size()) + "]";
+			//new format has info about the recorder also
+			bool newFormat = ! json.isArray(); //old format would just be an array here
+			
+			const auto & nodesJson = newFormat ? json["nodes"] : json;
+
+			if (nodesJson.size() != this->nodes.size()) {
+				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in file to load [" + ofToString(nodesJson.size()) + "]";
 				throw(Exception(errorMsg.c_str()));
 			}
 
@@ -101,7 +112,7 @@ namespace ofxMultiTrack {
 			cout << "Loading";
 
 			for(auto node : this->nodes) {
-				auto & nodeJson = json[nodeIndex++];
+				auto & nodeJson = nodesJson[nodeIndex++];
 				auto & recording = node->getRecording();
 				auto & frameSet = recording.getFrames();
 				auto timestamps = nodeJson.getMemberNames();
@@ -129,6 +140,12 @@ namespace ofxMultiTrack {
 				this->startTime = newStart;
 				this->endTime = newEnd;
 				this->clearInOutPoints();
+				if (newFormat) {
+					const auto & jsonRecorder = json["recorder"];
+					this->setInPoint(jsonRecorder["inPoint"].asInt64());
+					this->setOutPoint(jsonRecorder["outPoint"].asInt64());
+					this->setPlayHead(jsonRecorder["playHead"].asInt64());
+				}
 			}
 		}
 

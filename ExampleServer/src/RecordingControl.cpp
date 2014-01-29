@@ -20,15 +20,19 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 				nextFrame++;
 			}
 			for(auto frame = nextFrame; frame != frames.end(); frame++) {
-				markers.addVertex(ofVec3f(frame->first, 0, 0));
+				for(int i=0; i<frame->second.size(); i++) {
+					if (frame->second[i].size() > 0) {
+						markers.addVertex(ofVec3f(frame->first, i, 0));
+					}
+				}
 			}
 		} else {
 			markers.clearVertices(); //presume build next draw frame
 		}
 
 		ofPushMatrix();
-		ofScale(this->getWidth() / timeScale, 1.0f, 1.0f);
-		ofTranslate(-startTime, this->getHeight() / 2.0f, 1.0f);
+		ofScale(this->getWidth() / timeScale, this->getHeight() / 6.0f, 1.0f);
+		ofTranslate(-startTime, 0, 1.0f);
 		glPointSize(1.0f);
 		markers.drawVertices();
 		ofPopMatrix();

@@ -12,7 +12,10 @@ namespace ofxMultiTrack {
 
 	//----------
 	bool Server::init() {
+		//this could be moved out to a singleton later
+		ofDisableArbTex(); // all our assets are pow2, and this is required for point sprites
 		ofxAssets::AssetRegister.addAddon("ofxMultiTrack");
+		ofEnableArbTex();
 		return true;
 	}
 
@@ -75,25 +78,21 @@ namespace ofxMultiTrack {
 
 		return currentFrame;
 	}
-
+	
 	//----------
-	void Server::drawViews() const {
-		this->drawViewConeView();
-		auto currentFrame = this->getCurrentFrame();
+	void draw(vector<ServerData::UserSet> & views) {
 		glPushAttrib(GL_POINT_BIT);
 		//glEnable(GL_POINT_SMOOTH);
 		glPointSize(20.0f);
 
 		int nodeIndex = 0;
-		for(auto & view : currentFrame.views) {
+		for(auto & view : views) {
 			//--
 			//point sprites
 			//
 			auto & pointSprite = ofxAssets::image("ofxMultiTrack::" + ofToString(nodeIndex));
 			pointSprite.bind();
 			ofEnablePointSprites();
-			ofDisableArbTex();
-			ofDisableAlphaBlending();
 			//
 			//--
 
@@ -102,7 +101,6 @@ namespace ofxMultiTrack {
 			//--
 			//clear point sprites
 			//
-			ofEnableArbTex();
 			ofDisablePointSprites();
 			pointSprite.unbind();
 			//
@@ -110,15 +108,23 @@ namespace ofxMultiTrack {
 
 			nodeIndex++;
 		}
-
 		glPopAttrib();
 	}
 
 	//----------
+	void Server::drawViews() const {
+		this->drawViewConeView();
+		auto currentFrame = this->getCurrentFrame();
+		draw(currentFrame.views);
+	}
+
+	//----------
 	void Server::drawWorld() const {
-		ofPushStyle();
 		this->drawViewConesWorld();
 		auto currentFrame = this->getCurrentFrame();
+		draw(currentFrame.world);
+
+		ofPushStyle();
 		glPushAttrib(GL_POINT_BIT);
 		glEnable(GL_POINT_SMOOTH);
 
@@ -126,17 +132,11 @@ namespace ofxMultiTrack {
 		glPointSize(30.0f);
 		ofSetColor(255, 0, 0);
 		currentFrame.combined.draw();
+		glPopAttrib();
+		ofPopStyle();
 
-		glPointSize(20.0f);
-		ofSetColor(255);
-		int nodeIndex = 0;
-		for(auto & view : currentFrame.world) {
-			view.draw();
-			nodeIndex++;
-		}
 
 		/*
-
 		// HACK - disabled for time being until we have proper way of selecting things
 
 
@@ -165,8 +165,6 @@ namespace ofxMultiTrack {
 			nodeIndex++;
 		}
 		*/
-		glPopAttrib();
-		ofPopStyle();
 	}
 
 	//----------

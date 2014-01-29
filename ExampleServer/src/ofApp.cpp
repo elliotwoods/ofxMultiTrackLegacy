@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(100.0f);
+	glAlphaFunc(GL_GREATER, 0.1f);
+	glEnable(GL_ALPHA_TEST);
 
 	this->drawMode = View;
 
