@@ -202,8 +202,8 @@ void ofApp::update(){
 	//send data
 	//
 
-	//check if we're calibrated or note
-	if (currentFrame.calibrated) {
+	//check if we have anything in the calibrated reference frame
+	if (!currentFrame.combined.empty()) {
 		//if so, get the combined user set to send
 		userSet = currentFrame.combined;
 	} else {
@@ -223,7 +223,6 @@ void ofApp::update(){
 	for(auto & user : userSet) {
 			for(auto & joint : user) {
 				ofxOscMessage jointMessage;
-				//userIndex = 1;	// MEMO HACK TO MAKE VVVV WORK
 				jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
 				
 				// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)

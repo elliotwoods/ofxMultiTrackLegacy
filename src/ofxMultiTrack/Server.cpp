@@ -68,8 +68,6 @@ namespace ofxMultiTrack {
 			currentFrame.views = this->nodes.getUsersView();
 		}
 
-		currentFrame.calibrated = this->nodes.isCalibrated();
-
 		//get data in world space
 		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
 

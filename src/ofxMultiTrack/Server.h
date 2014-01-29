@@ -27,9 +27,6 @@ namespace ofxMultiTrack {
 			vector<ServerData::UserSet> views;
 			vector<ServerData::UserSet> world;
 			ServerData::CombinedUserSet combined;
-			bool calibrated;
-
-			void draw();
 		};
 
 		Server();

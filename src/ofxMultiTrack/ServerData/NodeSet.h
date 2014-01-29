@@ -24,7 +24,6 @@ namespace ofxMultiTrack {
 			typedef map<NodeUserIndex, vector<NodeUserIndex> > UserMatches;
 
 			NodeSet();
-			bool isCalibrated() const;
 			TransformSet & getTransforms();
 			const TransformSet & getTransforms() const;
 			void setTransform(int nodeIndex, int sourceNodeIndex, Align::Ptr transform);
@@ -39,7 +38,6 @@ namespace ofxMultiTrack {
 			UserMatches getUserMatches(const vector<UserSet> & userWorld) const;
 		protected:
 			TransformSet transforms;
-			bool enableCalibration;
 		};
 	}
 }

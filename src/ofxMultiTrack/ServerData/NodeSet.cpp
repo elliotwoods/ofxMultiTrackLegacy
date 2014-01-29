@@ -21,14 +21,8 @@ namespace ofxMultiTrack {
 #pragma mark NodeSet
 		//----------
 		NodeSet::NodeSet() {
-			this->enableCalibration = false;
 		}
-
-		//----------
-		bool NodeSet::isCalibrated() const {
-			return this->enableCalibration;
-		}
-
+		
 		//----------
 		NodeSet::TransformSet & NodeSet::getTransforms() {
 			return this->transforms;
@@ -45,7 +39,6 @@ namespace ofxMultiTrack {
 			newTransform.source = sourceNodeIndex;
 			newTransform.transform = transform;
 			this->transforms[nodeIndex] = newTransform;
-			this->enableCalibration = true;
 		}
 
 		//----------

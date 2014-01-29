@@ -1,5 +1,6 @@
 #include "User.h"
 #include "ofxCvGui2/src/ofxCvGui/Assets.h"
+#include <numeric>
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -34,27 +35,47 @@ namespace ofxMultiTrack {
 		User::User() {
 			this->alive = true;
 		}
+		
+		//----------
+		struct AccumulationJoint {
+			vector<ofVec3f> trackedPositions;
+			vector<ofVec3f> inferredPositions;
+			vector<ofQuaternion> trackedRotations;
+			vector<ofQuaternion> inferredRotations;
+		};
 
 		//----------
 		User::User(const vector<User> & userSet) {
-			int foundUserCount = 0;
+			map<string, AccumulationJoint> accumulation;
+
 			for(auto & user : userSet) {
-				if (user.size() == 0) {
-					//blank user, carry on
-					continue;
-				}
-
-				foundUserCount++;
 				for(auto & joint : user) {
-					(*this)[joint.first].position += joint.second.position;
-
-					//currently we cheat and use last found rotation
-					(*this)[joint.first].rotation = joint.second.rotation;
+					auto & accumulationJoint = accumulation[joint.first];
+					if(joint.second.tracked) {
+						if(joint.second.inferred) {
+							accumulationJoint.inferredPositions.push_back(joint.second.position);
+							accumulationJoint.inferredRotations.push_back(joint.second.rotation);
+						} else {
+							accumulationJoint.trackedPositions.push_back(joint.second.position);
+							accumulationJoint.trackedRotations.push_back(joint.second.rotation);
+						}
+					}
 				}
 			}
 
-			for(auto & joint : *this) {
-				joint.second.position /= (float) foundUserCount;
+			for(auto & joint : accumulation) {
+				const auto & trackedPositions = joint.second.trackedPositions;
+				const auto & inferredPositions = joint.second.inferredPositions;
+				if (!trackedPositions.empty()) {
+					(*this)[joint.first].position = std::accumulate(trackedPositions.begin(), trackedPositions.end(), ofVec3f()) / (float) joint.second.trackedPositions.size();
+					(*this)[joint.first].rotation = joint.second.trackedRotations.front();
+				} else if (!joint.second.inferredPositions.empty()) {
+					(*this)[joint.first].position = std::accumulate(inferredPositions.begin(), inferredPositions.end(), ofVec3f()) / (float) joint.second.inferredPositions.size();
+					(*this)[joint.first].rotation = joint.second.inferredRotations.front();
+				} else {
+					//we have no tracked data for this joint
+					//we may want to look to the previous frame for data, or use the junk coming from the kinect
+				}
 			}
 		}
 
