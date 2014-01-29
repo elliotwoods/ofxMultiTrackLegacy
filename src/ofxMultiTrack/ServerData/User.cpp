@@ -25,6 +25,7 @@ namespace ofxMultiTrack {
 				this->rotation[i] = json["rotation"][i].asFloat();
 			}
 			this->inferred = json["inferred"].asBool();
+			this->tracked = json["tracked"].asBool();
 			this->connectedTo = json["connectedTo"].asString();
 		}
 
@@ -108,13 +109,17 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void User::draw() {
+		void User::draw(bool enableColors) {
 			ofMesh points;
 			ofMesh lines;
 			if (this->alive) {
 				for(auto & joint : *this) {
 					points.addVertex(joint.second.position);
-					
+					if (enableColors) {
+						auto color = joint.second.tracked ? (joint.second.inferred ? ofColor::blue : ofColor::white) : ofColor::red;
+						points.addColor(color);
+					}
+
 					auto findConnected = this->find(joint.second.connectedTo);
 					if (findConnected != this->end()) {
 						lines.addVertex(joint.second.position);
@@ -124,7 +129,9 @@ namespace ofxMultiTrack {
 			}
 			points.drawVertices();
 			lines.setMode(OF_PRIMITIVE_LINES);
+			glDisable(GL_TEXTURE_2D);
 			lines.draw();
+			glEnable(GL_TEXTURE_2D);
 		}
 
 #pragma mark UserSet
@@ -147,9 +154,9 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void UserSet::draw() {
+		void UserSet::draw(bool enableColors) {
 			for(auto & user : *this) {
-				user.draw();
+				user.draw(enableColors);
 			}
 		}
 

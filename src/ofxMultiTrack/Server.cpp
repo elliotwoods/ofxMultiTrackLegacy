@@ -83,7 +83,7 @@ namespace ofxMultiTrack {
 	void draw(vector<ServerData::UserSet> & views) {
 		glPushAttrib(GL_POINT_BIT);
 		//glEnable(GL_POINT_SMOOTH);
-		glPointSize(20.0f);
+		glPointSize(16.0f);
 
 		int nodeIndex = 0;
 		for(auto & view : views) {
@@ -131,7 +131,7 @@ namespace ofxMultiTrack {
 		//draw combined skeleton
 		glPointSize(30.0f);
 		ofSetColor(255, 0, 0);
-		currentFrame.combined.draw();
+		currentFrame.combined.draw(false);
 		glPopAttrib();
 		ofPopStyle();
 

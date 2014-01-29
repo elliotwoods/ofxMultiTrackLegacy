@@ -149,23 +149,39 @@ namespace ofxMultiTrack {
 
 				//this should really be getEndJoint, but ofxKinectCommonBridge is internally incorrect
 				jointJson["connectedTo"] = indexToName(jointData.getStartJoint());
-				jointJson["inferred"] = false;//find out if its inferred;
+
+				const auto trackingState = jointData.getTrackingState();
+				jointJson["inferred"] = trackingState == SkeletonBone::Inferred;;
+				jointJson["tracked"] = trackingState != SkeletonBone::NotTracked;
 			}
 			return json;
 		}
 
 		//---------
 		void Skeleton::drawOnDepth() {
+			ofPushStyle();
 			for(int i=0; i<skeletons.size(); i++) {
 				this->kinect->drawSkeleton(i);
 				for(auto skeleton : this->skeletons) {
 					for(auto bone : skeleton) {
+						switch(bone.second.getTrackingState()) {
+						case SkeletonBone::Tracked:
+							ofSetColor(255, 255, 255);
+							break;
+						case SkeletonBone::Inferred:
+							ofSetColor(0, 0, 255);
+							break;
+						case SkeletonBone::NotTracked:
+							ofSetColor(255, 0, 0);
+							break;
+						}
 						auto title = indexToName(bone.second.getStartJoint());
 						auto screenPosition = bone.second.getScreenPosition();
 						ofDrawBitmapString(title, screenPosition);
 					}
 				}
 			}
+			ofPopStyle();
 		}
 	}
 }

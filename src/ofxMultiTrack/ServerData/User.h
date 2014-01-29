@@ -16,6 +16,7 @@ namespace ofxMultiTrack {
 			ofVec3f position;
 			ofQuaternion rotation;
 			bool inferred;
+			bool tracked;
 			string connectedTo;
 		};
 
@@ -28,7 +29,7 @@ namespace ofxMultiTrack {
 			void setAlive(bool);
 			bool isAlive() const;
 			float getDistanceTo(const User &) const;
-			void draw();
+			void draw(bool enableColors = true);
 		protected:
 			bool alive;
 		};
@@ -37,7 +38,7 @@ namespace ofxMultiTrack {
 		public:
 			void serialise(Json::Value &) const override;
 			void deserialise(const Json::Value &) override;
-			void draw();
+			void draw(bool enableColors = true);
 		};
 
 		class CombinedUserSet : public UserSet {
