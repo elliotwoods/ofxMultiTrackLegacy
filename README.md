@@ -26,6 +26,8 @@ Requirements
 
 ## ofxAssets
 
+* Repo - https://github.com/elliotwoods/ofxAssets.git
+* Branch - master
 
 Requirements for examples
 -------------------------
