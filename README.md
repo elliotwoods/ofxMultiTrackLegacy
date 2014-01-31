@@ -19,12 +19,12 @@ Requirements
 * Repo - https://github.com/jefftimesten/ofxJSON.git
 * Branch - master
 
-## ofxGraphEdit
+### ofxGraphEdit
 
 * Repo - https://github.com/elliotwoods/ofxGraphEdit.git
 * Branch - master
 
-## ofxAssets
+### ofxAssets
 
 * Repo - https://github.com/elliotwoods/ofxAssets.git
 * Branch - master
