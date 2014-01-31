@@ -8,12 +8,21 @@
 #include "../Modules/Set.h"
 #include "../Modules/Skeleton.h"
 #include "Recording.h"
+#include "../Align/Base.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {
 		class NodeConnection : public ofThread {
 		public:
-			NodeConnection(string address, int index);
+			struct Transform {
+				Transform(unsigned int source, Align::Ptr transform);
+				const unsigned int source;
+				const Align::Ptr transform;
+			};
+
+			typedef vector<shared_ptr<NodeConnection>> Collection;
+
+			NodeConnection(string address, int index, Collection &otherNodes);
 			~NodeConnection();
 			void update();
 			bool isConnected();
@@ -24,6 +33,10 @@ namespace ofxMultiTrack {
 			Recording & getRecording();
 
 			Json::Value getStatus();
+
+			void setTransform(shared_ptr<Transform>);
+			void applyTransform(UserSet & users) const;
+			ofVec3f applyTransform(const ofVec3f &) const;
 		protected:
 			void threadedFunction() override;
 			void performBlocking(function<void()>);
@@ -48,6 +61,9 @@ namespace ofxMultiTrack {
 			ofMutex lockUsers;
 
 			Recording recording;
+			shared_ptr<Transform> transform;
+
+			Collection & otherNodes;
 		};
 	}
 }

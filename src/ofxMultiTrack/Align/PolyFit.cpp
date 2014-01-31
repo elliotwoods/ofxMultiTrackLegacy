@@ -27,7 +27,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		ofVec3f PolyFit::transform(const ofVec3f & thisSpace) const {
+		ofVec3f PolyFit::applyTransform(const ofVec3f & thisSpace) const {
 			* ( (ofVec3f*) this->transformPoint->getInput() ) = thisSpace;
 			this->fit.evaluate(*this->transformPoint);
 			return * (ofVec3f*) this->transformPoint->getOutput();

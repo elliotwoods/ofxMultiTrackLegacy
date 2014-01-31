@@ -13,8 +13,9 @@ namespace ofxMultiTrack {
 			for(int i=0; i<4; i++) {
 				json["rotation"][i] = this->rotation[i];
 			}
-			json["inferred"] = this->inferred;
 			json["connectedTo"] = this->connectedTo;
+			json["tracked"] = this->tracked;
+			json["inferred"] = this->inferred;
 		}
 
 		//----------
@@ -25,9 +26,17 @@ namespace ofxMultiTrack {
 			for(int i=0; i<4; i++) {
 				this->rotation[i] = json["rotation"][i].asFloat();
 			}
-			this->inferred = json["inferred"].asBool();
-			this->tracked = json["tracked"].asBool();
 			this->connectedTo = json["connectedTo"].asString();
+			if(json["tracked"].isNull()) {
+				//if we haven't stored a value for tracked (e.g. old data)
+				//then just mark it as tracked by default.
+				//we will mark it as inferred to show that it's old, unsure
+				this->tracked = true;
+				this->inferred = true;
+			} else {
+				this->tracked = json["tracked"].asBool();
+				this->inferred = json["inferred"].asBool();
+			}
 		}
 
 #pragma mark User
@@ -38,10 +47,16 @@ namespace ofxMultiTrack {
 		
 		//----------
 		struct AccumulationJoint {
+			AccumulationJoint(string connectedTo) :
+				connectedTo(connectedTo) {
+			}
+
 			vector<ofVec3f> trackedPositions;
 			vector<ofVec3f> inferredPositions;
 			vector<ofQuaternion> trackedRotations;
 			vector<ofQuaternion> inferredRotations;
+
+			const string connectedTo;
 		};
 
 		//----------
@@ -50,7 +65,10 @@ namespace ofxMultiTrack {
 
 			for(auto & user : userSet) {
 				for(auto & joint : user) {
-					auto & accumulationJoint = accumulation[joint.first];
+					if (accumulation.find(joint.first) == accumulation.end()) {
+						accumulation.insert(pair<string, AccumulationJoint>(joint.first, AccumulationJoint(joint.second.connectedTo)));
+					}
+					auto & accumulationJoint = accumulation.at(joint.first);
 					if(joint.second.tracked) {
 						if(joint.second.inferred) {
 							accumulationJoint.inferredPositions.push_back(joint.second.position);
@@ -66,16 +84,18 @@ namespace ofxMultiTrack {
 			for(auto & joint : accumulation) {
 				const auto & trackedPositions = joint.second.trackedPositions;
 				const auto & inferredPositions = joint.second.inferredPositions;
+				auto & localJoint = (*this)[joint.first];
 				if (!trackedPositions.empty()) {
-					(*this)[joint.first].position = std::accumulate(trackedPositions.begin(), trackedPositions.end(), ofVec3f()) / (float) joint.second.trackedPositions.size();
-					(*this)[joint.first].rotation = joint.second.trackedRotations.front();
+					localJoint.position = std::accumulate(trackedPositions.begin(), trackedPositions.end(), ofVec3f()) / (float) joint.second.trackedPositions.size();
+					localJoint.rotation = joint.second.trackedRotations.front();
 				} else if (!joint.second.inferredPositions.empty()) {
-					(*this)[joint.first].position = std::accumulate(inferredPositions.begin(), inferredPositions.end(), ofVec3f()) / (float) joint.second.inferredPositions.size();
-					(*this)[joint.first].rotation = joint.second.inferredRotations.front();
+					localJoint.position = std::accumulate(inferredPositions.begin(), inferredPositions.end(), ofVec3f()) / (float) joint.second.inferredPositions.size();
+					localJoint.rotation = joint.second.inferredRotations.front();
 				} else {
 					//we have no tracked data for this joint
 					//we may want to look to the previous frame for data, or use the junk coming from the kinect
 				}
+				localJoint.connectedTo = joint.second.connectedTo;
 			}
 		}
 

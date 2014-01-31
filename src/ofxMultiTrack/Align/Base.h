@@ -11,7 +11,7 @@ namespace ofxMultiTrack {
 			virtual ~Base() { }
 			virtual string getType() const = 0;
 			virtual void calibrate(const vector<ofVec3f> & thisSpace, const vector<ofVec3f> & originSpace) = 0;
-			virtual ofVec3f transform(const ofVec3f &) const = 0; ///<transform a point from this space to parent origin space
+			virtual ofVec3f applyTransform(const ofVec3f &) const = 0; ///<transform a point from this space to parent origin space
 
 			virtual Json::Value serialise() const = 0;
 			virtual void deserialise(const Json::Value &) = 0;

@@ -26,7 +26,7 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::addNode(string address, int index) {
-		auto newNode = new ServerData::NodeConnection(address, index);
+		auto newNode = new ServerData::NodeConnection(address, index, this->nodes);
 		this->nodes.push_back(shared_ptr<ServerData::NodeConnection>(newNode));
 	}
 
@@ -79,10 +79,6 @@ namespace ofxMultiTrack {
 	
 	//----------
 	void draw(vector<ServerData::UserSet> & views) {
-		glPushAttrib(GL_POINT_BIT);
-		//glEnable(GL_POINT_SMOOTH);
-		glPointSize(16.0f);
-
 		int nodeIndex = 0;
 		for(auto & view : views) {
 			//--
@@ -106,32 +102,42 @@ namespace ofxMultiTrack {
 
 			nodeIndex++;
 		}
-		glPopAttrib();
 	}
 
 	//----------
 	void Server::drawViews() const {
 		this->drawViewConeView();
 		auto currentFrame = this->getCurrentFrame();
+
+		glPushAttrib(GL_POINT_BIT);
+		glPointSize(16.0f);
+		
 		draw(currentFrame.views);
+		
+		glPopAttrib();
 	}
 
 	//----------
 	void Server::drawWorld() const {
 		this->drawViewConesWorld();
 		auto currentFrame = this->getCurrentFrame();
+
+		glPushAttrib(GL_POINT_BIT);
+		glPointSize(10.0f);
+
+		//draw sources
 		draw(currentFrame.world);
 
 		ofPushStyle();
-		glPushAttrib(GL_POINT_BIT);
-		glEnable(GL_POINT_SMOOTH);
-
-		//draw combined skeleton
-		glPointSize(30.0f);
 		ofSetColor(255, 0, 0);
+		glEnable(GL_POINT_SMOOTH);
+		glPointSize(16.0f);
+
+		//draw combined in red
 		currentFrame.combined.draw(false);
-		glPopAttrib();
+		
 		ofPopStyle();
+		glPopAttrib();
 
 
 		/*
@@ -169,6 +175,9 @@ namespace ofxMultiTrack {
 	void Server::drawViewConesWorld() const {
 		ofPushStyle();
 		ofEnableAlphaBlending();
+		glPushAttrib(GL_POINT_BIT);
+		glPointSize(32.0f);
+		ofEnablePointSprites();
 
 		const auto fovY = 43.0f;
 		const auto fovX = 57.0f;
@@ -180,15 +189,16 @@ namespace ofxMultiTrack {
 			//a transform goes from kienct view to world, so we can use it to draw our cone
 			ofMesh viewCone;
 
-			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(0,0,0), nodeIndex));
+			const auto position = this->nodes[nodeIndex]->applyTransform(ofVec3f(0,0,0));
+			viewCone.addVertex(position);
 			viewCone.addColor(ofColor(255));
-			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,-gradientY,1), nodeIndex));
+			viewCone.addVertex(this->nodes[nodeIndex]->applyTransform(ofVec3f(-gradientX,-gradientY,1)));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
-			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,-gradientY,1), nodeIndex));
+			viewCone.addVertex(this->nodes[nodeIndex]->applyTransform(ofVec3f(+gradientX,-gradientY,1)));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
-			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(-gradientX,+gradientY,1), nodeIndex));
+			viewCone.addVertex(this->nodes[nodeIndex]->applyTransform(ofVec3f(-gradientX,+gradientY,1)));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
-			viewCone.addVertex(this->nodes.applyTransform(ofVec3f(+gradientX,+gradientY,1), nodeIndex));
+			viewCone.addVertex(this->nodes[nodeIndex]->applyTransform(ofVec3f(+gradientX,+gradientY,1)));
 			viewCone.addColor(ofColor(0, 0, 0, 0));
 
 			const ofIndexType indices[] = {0, 1, 0, 2, 0, 3, 0, 4};
@@ -196,8 +206,19 @@ namespace ofxMultiTrack {
 			viewCone.setMode(OF_PRIMITIVE_LINES);
 			viewCone.draw();
 
+			ofMesh viewIndex;
+			viewIndex.setMode(OF_PRIMITIVE_POINTS);
+			viewIndex.addVertex(position);
+			auto & pointSprite = ofxAssets::image("ofxMultiTrack::" + ofToString(nodeIndex));
+			pointSprite.bind();
+			viewIndex.draw();
+			pointSprite.unbind();
+
 			nodeIndex++;
 		}
+
+		ofDisablePointSprites();
+		glPopAttrib();
 		ofPopStyle();
 	}
 
@@ -208,8 +229,8 @@ namespace ofxMultiTrack {
 
 		const auto fovY = 43.0f;
 		const auto fovX = 57.0f;
-		const auto gradientX = tan(DEG_TO_RAD * fovX);
-		const auto gradientY = tan(DEG_TO_RAD * fovY);
+		const auto gradientX = tan(DEG_TO_RAD * fovX / 2.0f);
+		const auto gradientY = tan(DEG_TO_RAD * fovY / 2.0f);
 
 		int nodeIndex = 0;
 		for(auto node : this->nodes) {
@@ -385,7 +406,8 @@ namespace ofxMultiTrack {
 			routine->calibrate(targetPoints, originPoints);
 
 			//assign the calibration in the NodeSet
-			this->nodes.setTransform(nodeIndex, originNodeIndex, routine);
+			auto transform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(originNodeIndex, routine));
+			this->nodes[nodeIndex]->setTransform(transform);
 
 		} catch (std::exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;

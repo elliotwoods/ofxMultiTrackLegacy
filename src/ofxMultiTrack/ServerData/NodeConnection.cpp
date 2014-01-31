@@ -2,8 +2,16 @@
 
 namespace ofxMultiTrack {
 	namespace ServerData {
+#pragma mark Transform
 		//----------
-		NodeConnection::NodeConnection(string address, int index) {
+		NodeConnection::Transform::Transform(unsigned int source, Align::Ptr transform) :
+		source(source), transform(transform) {
+		}
+
+#pragma mark NodeConnection
+		//----------
+		NodeConnection::NodeConnection(string address, int index, NodeConnection::Collection & otherNodes) :
+		otherNodes(otherNodes) {
 			this->address = address;
 			this->index = index;
 			this->running = true;
@@ -77,6 +85,87 @@ namespace ofxMultiTrack {
 			this->remoteStatusLock.unlock();
 
 			return status;
+		}
+
+		//----------
+		void NodeConnection::setTransform(shared_ptr<Transform> transform) {
+			this->transform = transform;
+		}
+
+		//----------
+		void NodeConnection::applyTransform(UserSet & users) const {
+			//check if we have a transform first
+			if(!this->transform) {
+				//if we don't, then do nothing
+				//this is the case for the root node, and uncalibrated nodes
+				return;
+			}
+
+			//--
+			//apply upstream transforms
+			//
+			//check our upstream transform exists in the set
+			if(this->transform->source >= otherNodes.size()) {
+				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
+				return;
+			}
+			//get the upstream node
+			auto upstreamNode = this->otherNodes[this->transform->source];
+			upstreamNode->applyTransform(users);
+			//
+			//--
+
+
+			//--
+			//apply our transform
+			//
+			//check it exists
+			if (this->transform->transform) {
+				for(auto & user : users) {
+					for(auto & joint : user) {
+						joint.second.position = this->transform->transform->applyTransform(joint.second.position);
+					}
+				}
+			}
+			//
+			//--
+		}
+
+		//----------
+		ofVec3f NodeConnection::applyTransform(const ofVec3f & xyz) const {
+			//check if we have a transform first
+			if(!this->transform) {
+				//if we don't, then do nothing
+				//this is the case for the root node, and uncalibrated nodes
+				return xyz;
+			}
+
+			//--
+			//apply upstream transforms
+			//
+			//check our upstream transform exists in the set
+			if(this->transform->source >= otherNodes.size()) {
+				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
+				return xyz;
+			}
+			//get the upstream node
+			auto upstreamNode = this->otherNodes[this->transform->source];
+			ofVec3f xyzDash = upstreamNode->applyTransform(xyz);
+			//
+			//--
+
+
+			//--
+			//apply our transform
+			//
+			//check it exists
+			if (this->transform->transform) {
+				xyzDash = this->transform->transform->applyTransform(xyzDash);
+			}
+			//
+			//--
+
+			return xyzDash;
 		}
 
 		//----------
