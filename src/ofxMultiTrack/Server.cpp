@@ -123,7 +123,7 @@ namespace ofxMultiTrack {
 		auto currentFrame = this->getCurrentFrame();
 
 		glPushAttrib(GL_POINT_BIT);
-		glPointSize(10.0f);
+		glPointSize(12.0f);
 
 		//draw sources
 		draw(currentFrame.world);
@@ -176,7 +176,7 @@ namespace ofxMultiTrack {
 		ofPushStyle();
 		ofEnableAlphaBlending();
 		glPushAttrib(GL_POINT_BIT);
-		glPointSize(32.0f);
+		glPointSize(24.0f);
 		ofEnablePointSprites();
 
 		const auto fovY = 43.0f;
