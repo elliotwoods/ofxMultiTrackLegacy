@@ -179,6 +179,20 @@ void ofApp::setup(){
 		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;
 		statusElement->setBounds(resizeBounds);
 	};
+
+	//arrange grid on resize
+	auto rootGrid = (ofxCvGui::Panels::Groups::Grid *) gui.getController().getRootGroup().get();
+	rootGrid->onBoundsChange += [rootGrid, leftColumn] (ofxCvGui::BoundsChangeArguments &) {
+		vector<float> widths;
+		widths.push_back(ofGetWidth() - 512);
+		widths.push_back(512);
+		rootGrid->setWidths(widths);
+
+		vector<float> heights;
+		heights.push_back(ofGetHeight() - (768 / 2));
+		heights.push_back(768 / 2);
+		leftColumn->setHeights(heights);
+	};
 	//
 	//--
 }
