@@ -184,13 +184,17 @@ void ofApp::setup(){
 	auto rootGrid = (ofxCvGui::Panels::Groups::Grid *) gui.getController().getRootGroup().get();
 	rootGrid->onBoundsChange += [rootGrid, leftColumn] (ofxCvGui::BoundsChangeArguments &) {
 		vector<float> widths;
-		widths.push_back(ofGetWidth() - 512);
-		widths.push_back(512);
+		if (ofGetWidth() > 1024) {
+			widths.push_back(ofGetWidth() - 512);
+			widths.push_back(512);
+		}
 		rootGrid->setWidths(widths);
 
 		vector<float> heights;
-		heights.push_back(ofGetHeight() - (768 / 2));
-		heights.push_back(768 / 2);
+		if (ofGetHeight() > 768) {
+			heights.push_back(ofGetHeight() - (768 / 2));
+			heights.push_back(768 / 2);
+		}
 		leftColumn->setHeights(heights);
 	};
 	//
