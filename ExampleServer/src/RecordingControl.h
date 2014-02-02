@@ -6,7 +6,7 @@
 
 class RecordingControl : public ofxCvGui::ElementGroup {
 public:
-	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &);
+	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &, ofxMultiTrack::ServerData::NodeConnection::Ptr);
 protected:
 	void update();
 	void update(ofxCvGui::UpdateArguments &);
@@ -15,6 +15,8 @@ protected:
 
 	ofxMultiTrack::ServerData::Recorder & recorder;
 	ofxMultiTrack::ServerData::Recording & recording;
+	ofxMultiTrack::ServerData::NodeConnection::Ptr node;
+
 	ofFbo fbo;
 	bool trackDirty;
 	int cachedCount;

@@ -10,14 +10,15 @@ namespace ofxMultiTrack {
 
 #pragma mark NodeConnection
 		//----------
-		NodeConnection::NodeConnection(string address, int index, NodeConnection::Collection & otherNodes) :
+		NodeConnection::NodeConnection(string address, int remoteIndex, NodeConnection::Collection & otherNodes) :
 		otherNodes(otherNodes) {
 			this->address = address;
-			this->index = index;
+			this->remoteIndex = remoteIndex;
 			this->running = true;
 			this->threadEnded = false;
 			this->cachedConnected = false;
 			this->startThread(true, false);
+			this->enabled = true;
 		}
 
 		//----------
@@ -76,7 +77,7 @@ namespace ofxMultiTrack {
 		Json::Value NodeConnection::getStatus() {
 			Json::Value status;
 			status["address"] = this->address;
-			status["index"] = this->index;
+			status["index"] = this->remoteIndex;
 			status["connected"] = this->isConnected();
 			status["users"] = this->getUserCount();
 
@@ -88,8 +89,36 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void NodeConnection::setTransform(shared_ptr<Transform> transform) {
+		int NodeConnection::getIndex() const {
+			int i=0; 
+			for(auto node : this->otherNodes) {
+				if (node.get() == this) {
+					return i;
+				}
+				i++;
+			}
+			return -1;
+		}
+
+		//----------
+		NodeConnection::Transform::Ptr NodeConnection::getTransform() const {
+			return this->transform;
+		}
+
+		//----------
+		void NodeConnection::setTransform(Transform::Ptr transform) {
 			this->transform = transform;
+		}
+
+		//----------
+		list<int> NodeConnection::getInfluenceList() const {
+			list<int> influence;
+			if (this->transform) {
+				influence.push_back(this->transform->source);
+				auto upstreamInfluences = otherNodes[this->transform->source]->getInfluenceList();
+				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
+			}
+			return influence;
 		}
 
 		//----------
@@ -169,13 +198,28 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		bool NodeConnection::isEnabled() const {
+			return this->enabled;
+		}
+
+		//----------
+		void NodeConnection::setEnabled(bool enabled) {
+			this->enabled = enabled;
+		}
+
+		//----------
+		void NodeConnection::toggleEnabled() {
+			this->enabled = ! this->enabled;
+		}
+
+		//----------
 		void NodeConnection::threadedFunction() {
 			this->client.setVerbose(false);
 			ofSetLogLevel("ofxNetwork", OF_LOG_SILENT);
 			ofSetLogLevel("ofxTCPClient", OF_LOG_SILENT);
 			while(this->running) {
 				if (!this->client.isConnected()) {
-					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + index, false);
+					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + this->remoteIndex, false);
 				}
 				auto response = this->client.receive();
 				if (response.size() > 0) {

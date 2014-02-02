@@ -61,8 +61,12 @@ namespace ofxMultiTrack {
 		if (this->recorder.hasData() && !this->recorder.isRecording()) {
 			//get data from recording
 			for(auto node : this->nodes) {
-				auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
-				currentFrame.views.push_back(nodeFrame);
+				if (node->isEnabled()) {
+					auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
+					currentFrame.views.push_back(nodeFrame);
+				} else {
+					currentFrame.views.push_back(ServerData::UserSet());
+				}
 			}
 		} else {
 			currentFrame.views = this->nodes.getUsersView();
@@ -262,6 +266,7 @@ namespace ofxMultiTrack {
 	Json::Value Server::getStatus() {
 		Json::Value status;
 		status["fps"] = ofGetFrameRate();
+		status["nodeCount"] = this->nodes.size();
 		auto & nodes = status["nodes"];
 		int i = 0;
 		for(auto node : this->nodes) {
@@ -326,9 +331,14 @@ namespace ofxMultiTrack {
 				throw(Exception("No frames recorded for origin node"));
 			}
 
-			cout << "Frames for " << nodeIndex << ":" << userIndex << " with origin defined as" << originNodeIndex << ":" << originUserIndex << "=";
+			cout << "Frames for " << nodeIndex << ":" << userIndex << " with origin defined as" << originNodeIndex << ":" << originUserIndex << " = ";
 			for(auto & targetFrame : targetFrames) {
 				auto targetFrameTimestamp = targetFrame.first;
+
+				if (targetFrameTimestamp < this->recorder.getInPoint() || targetFrameTimestamp > this->recorder.getOutPoint()) {
+					cout << "-";
+					continue;
+				}
 
 				//--
 				//get closest frame
@@ -386,6 +396,16 @@ namespace ofxMultiTrack {
 				//check we have the joints
 				if (targetJoint == targetUser.end() || originJoint == originUser.end()) {
 					cout << "J";
+					continue;
+				}
+
+				//check that we're not using inferred or untracked joints
+				if (targetJoint->second.inferred || originJoint->second.inferred) {
+					cout << "I";
+					continue;
+				}
+				if (!targetJoint->second.tracked || !originJoint->second.tracked) {
+					cout << "N";
 					continue;
 				}
 

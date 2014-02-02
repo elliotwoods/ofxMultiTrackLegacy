@@ -14,15 +14,18 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 		class NodeConnection : public ofThread {
 		public:
+			typedef shared_ptr<NodeConnection> Ptr;
+			typedef vector<shared_ptr<NodeConnection>> Collection;
+
 			struct Transform {
+				typedef shared_ptr<Transform> Ptr;
+
 				Transform(unsigned int source, Align::Ptr transform);
 				const unsigned int source;
 				const Align::Ptr transform;
 			};
 
-			typedef vector<shared_ptr<NodeConnection>> Collection;
-
-			NodeConnection(string address, int index, Collection &otherNodes);
+			NodeConnection(string address, int remoteIndex, Collection &otherNodes);
 			~NodeConnection();
 			void update();
 			bool isConnected();
@@ -33,10 +36,17 @@ namespace ofxMultiTrack {
 			Recording & getRecording();
 
 			Json::Value getStatus();
+			int getIndex() const;
 
+			Transform::Ptr getTransform() const;
 			void setTransform(shared_ptr<Transform>);
+			list<int> getInfluenceList() const;
 			void applyTransform(UserSet & users) const;
 			ofVec3f applyTransform(const ofVec3f &) const;
+
+			bool isEnabled() const;
+			void setEnabled(bool);
+			void toggleEnabled();
 		protected:
 			void threadedFunction() override;
 			void performBlocking(function<void()>);
@@ -47,7 +57,7 @@ namespace ofxMultiTrack {
 			Json::Reader jsonReader;
 			ofxTCPClient client;
 			string address;
-			int index;
+			int remoteIndex;
 			bool running;
 
 			Json::Value remoteStatus;
@@ -61,9 +71,11 @@ namespace ofxMultiTrack {
 			ofMutex lockUsers;
 
 			Recording recording;
-			shared_ptr<Transform> transform;
+			Transform::Ptr transform;
 
 			Collection & otherNodes;
+
+			bool enabled; ///<denotes whether we will supply data
 		};
 	}
 }

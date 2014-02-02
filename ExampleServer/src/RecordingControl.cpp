@@ -4,13 +4,14 @@ using namespace ofxMultiTrack;
 using namespace ofxCvGui;
 
 //---------
-RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::Recording & recording) : recorder(recorder), recording(recording) {
-	this->setBounds(ofRectangle(0,0,100,10));
+RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::Recording & recording, ServerData::NodeConnection::Ptr node)
+	: recorder(recorder), recording(recording), node(node) {
+	this->setBounds(ofRectangle(0,0,100,30));
 
 	this->onDraw += [this] (DrawArguments & args) { this->draw(args); };
 	this->onUpdate += [this] (UpdateArguments & args) { this->update(args); };
 	this->onBoundsChange += [this] (BoundsChangeArguments & args) { this->boundsChange(args); };
-
+	this->onMouseReleased += [this] (MouseArguments &) { this->node->toggleEnabled(); };
 	this->trackDirty = false;
 	this->cachedCount = 0;
 }
@@ -45,6 +46,7 @@ void RecordingControl::update(UpdateArguments &) {
 		ofPopMatrix();
 		this->fbo.end();
 
+		this->cachedCount = this->recording.getFrames().size();
 		this->trackDirty = false;
 	}
 }
@@ -54,9 +56,25 @@ void RecordingControl::draw(DrawArguments & args) {
 	this->fbo.draw(args.localBounds);
 
 	ofPushStyle();
-	ofSetLineWidth(1);
+	auto index = this->node->getIndex();
+	auto notes = ofToString(index) + " :";
+	
+	auto influences = this->node->getInfluenceList();
+	for(auto influence : influences) {
+		notes += " <-- " + ofToString(influence);
+	}
+
 	ofSetColor(100);
+	ofDrawBitmapString(notes, 5, this->getHeight() - 5);
+
+	ofSetLineWidth(1);
 	ofLine(0,this->getHeight(), this->getWidth(), this->getHeight()); 
+
+	if (!this->node->isEnabled()) {
+		ofEnableAlphaBlending();
+		ofSetColor(100,100,100,100);
+		ofRect(args.localBounds);
+	}
 	ofPopStyle();
 }
 

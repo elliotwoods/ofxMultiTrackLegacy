@@ -140,7 +140,7 @@ void ofApp::setup(){
 	recorderPanel->add(this->recorderControl);
 	auto & nodes = this->server.getNodes();
 	for(auto node : nodes) {
-		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording()));
+		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording(), node));
 		recorderPanel->add(track);
 	}
 	auto calibrateButton = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button);
@@ -195,49 +195,33 @@ void ofApp::update(){
 		this->calibrateButton->disable();
 	}
 
-	auto currentFrame = this->server.getCurrentFrame();
-	ofxMultiTrack::ServerData::UserSet userSet;
-
 	//--
 	//send data
 	//
-
-	//check if we have anything in the calibrated reference frame
-	if (!currentFrame.combined.empty()) {
-		//if so, get the combined user set to send
-		userSet = currentFrame.combined;
-	} else {
-		//otherwise just add all users from all views
-		auto data = currentFrame.views;
-		vector<ofxMultiTrack::ServerData::User> userSet;
-		for(auto & node : data) {
-			for(auto & user : node) {
-				userSet.push_back(user);
-			}
-		}
-	}
+	auto currentFrame = this->server.getCurrentFrame();
+	auto userSet = currentFrame.combined;
 
 	//send users
 	auto userIndex = 0;
-	ofxOscBundle oscBundle;
 	for(auto & user : userSet) {
-			for(auto & joint : user) {
-				ofxOscMessage jointMessage;
-				jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
+		ofxOscBundle oscBundle;
+		for(auto & joint : user) {
+			ofxOscMessage jointMessage;
+			jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
 				
-				// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
-				// flip y and z
-				ofVec3f p(joint.second.position[0], joint.second.position[2], joint.second.position[1]);
-				p *= 100.0;// convert to cm
+			// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
+			// flip y and z
+			ofVec3f p(joint.second.position[0], joint.second.position[2], joint.second.position[1]);
+			p *= 100.0;// convert to cm
 
-				for(int i=0; i<3; i++) {
-					jointMessage.addFloatArg(p[i]);
-				}
-				oscBundle.addMessage(jointMessage);
+			for(int i=0; i<3; i++) {
+				jointMessage.addFloatArg(p[i]);
 			}
-			userIndex++;
+			oscBundle.addMessage(jointMessage);
+		}
+		this->oscSender.sendBundle(oscBundle);
+		userIndex++;
 	}
-	this->oscSender.sendBundle(oscBundle);
 	//
 	//--
 }

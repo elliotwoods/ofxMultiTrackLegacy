@@ -29,10 +29,10 @@ namespace ofxMultiTrack {
 			this->connectedTo = json["connectedTo"].asString();
 			if(json["tracked"].isNull()) {
 				//if we haven't stored a value for tracked (e.g. old data)
-				//then just mark it as tracked by default.
-				//we will mark it as inferred to show that it's old, unsure
+				//then we must mark as not-inferred since we don't use
+				//inferred for calibration
 				this->tracked = true;
-				this->inferred = true;
+				this->inferred = false;
 			} else {
 				this->tracked = json["tracked"].asBool();
 				this->inferred = json["inferred"].asBool();

@@ -27,7 +27,11 @@ namespace ofxMultiTrack {
 		vector<UserSet> NodeSet::getUsersView() const {
 			vector<UserSet> usersView;
 			for(auto node : *this) {
-				usersView.push_back(node->getLiveData());
+				if(node->isConnected()) {
+					usersView.push_back(node->getLiveData());
+				} else {
+					usersView.push_back(UserSet());
+				}
 			}
 			return usersView;
 		}
