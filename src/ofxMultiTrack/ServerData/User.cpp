@@ -206,13 +206,28 @@ namespace ofxMultiTrack {
 
 #pragma mark CombinedUserSet
 		//----------
-		void CombinedUserSet::addSourceMapping(const map<int, int> & sourceMapping) { 
-			this->sourceUserMapping.push_back(sourceMapping);
+		CombinedUserSet::NodeUserIndex::NodeUserIndex(int nodeIndex, int userIndex) :
+			nodeIndex(nodeIndex), userIndex(userIndex) {
+
 		}
 
 		//----------
-		const CombinedUserSet::SourceMapping & CombinedUserSet::getSourceMapping() const {
-			return this->sourceUserMapping;
+		bool CombinedUserSet::NodeUserIndex::operator<(const NodeUserIndex & other) const {
+			if (this->nodeIndex != other.nodeIndex) {
+				return this->nodeIndex < other.nodeIndex;
+			} else {
+				return this->userIndex < other.userIndex;
+			}
+		}
+
+		//----------
+		void CombinedUserSet::addSourceMapping(const SourceMapping & sourceMapping) { 
+			this->sourceUserMappings.push_back(sourceMapping);
+		}
+
+		//----------
+		const vector<CombinedUserSet::SourceMapping> & CombinedUserSet::getSourceMappings() const {
+			return this->sourceUserMappings;
 		}
 	}
 }

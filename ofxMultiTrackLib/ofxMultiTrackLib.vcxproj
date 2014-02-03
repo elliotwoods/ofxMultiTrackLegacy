@@ -52,7 +52,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\addons\ofxJSON\libs\jsoncpp\include;..\..\..\addons\ofxJSON\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4250</DisableSpecificWarnings>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <ObjectFileName>$(IntDir)\%(Directory\</ObjectFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -70,7 +70,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\addons\ofxJSON\libs\jsoncpp\include;..\..\..\addons\ofxJSON\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4250</DisableSpecificWarnings>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <ObjectFileName>$(IntDir)\%(Directory\</ObjectFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

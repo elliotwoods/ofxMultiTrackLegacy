@@ -2,23 +2,6 @@
 
 namespace ofxMultiTrack {
 	namespace ServerData {
-#pragma mark NodeUserIndex
-		//----------
-		NodeSet::NodeUserIndex::NodeUserIndex(int nodeIndex, int userIndex) :
-			nodeIndex(nodeIndex), userIndex(userIndex) {
-
-		}
-
-		//----------
-		bool NodeSet::NodeUserIndex::operator<(const NodeUserIndex & other) const {
-			if (this->nodeIndex != other.nodeIndex) {
-				return this->nodeIndex < other.nodeIndex;
-			} else {
-				return this->userIndex < other.userIndex;
-			}
-		}
-
-#pragma mark NodeSet
 		//----------
 		NodeSet::NodeSet() {
 		}
@@ -59,41 +42,27 @@ namespace ofxMultiTrack {
 
 		//----------
 		CombinedUserSet NodeSet::getUsersCombined(const vector<UserSet> & usersWorld) const {
-
-			// HACK!!
-			//combine all users into one
-			vector<User> users;
-			for(auto view : usersWorld) {
-				for(auto user : view) {
-					users.push_back(user);
-				}
-			}
-			CombinedUserSet combined;
-			combined.push_back(User(users));
-			return combined;
-
-
-			/*
-			auto userMatches = this->getUserMatches(usersWorld);
+			auto userMappings = this->makeUserMappings(usersWorld);
 			CombinedUserSet combinedUserSet;
-			for(auto baseUser : userMatches) {
-				vector<User> usersToCombine;
-				map<int, int> sourceMapping;
-				for(auto userToCombineIndex : baseUser.second) {
-					usersToCombine.push_back(usersWorld[userToCombineIndex.nodeIndex][userToCombineIndex.userIndex]);
-					sourceMapping.insert(pair<int, int>(userToCombineIndex.nodeIndex, userToCombineIndex.userIndex));
+			for(auto & sourceMapping : userMappings) {
+				vector<User> sourceUserData;
+				for(auto & sourceUser : sourceMapping.second) {
+					sourceUserData.push_back(usersWorld[sourceUser.first.nodeIndex][sourceUser.first.userIndex]);
 				}
-				combinedUserSet.push_back(User(usersToCombine));
-				combinedUserSet.addSourceMapping(sourceMapping);
+				combinedUserSet.push_back(User(sourceUserData));
+				combinedUserSet.addSourceMapping(sourceMapping.second);
 			}
 			return combinedUserSet;
-			*/
 		}
 
 		//----------
-		NodeSet::UserMatches NodeSet::getUserMatches(const vector<UserSet> & userWorld) const {
+		NodeSet::UserMatches NodeSet::makeUserMappings(const vector<UserSet> & userWorld) const {
+			//pull out some types
+			typedef CombinedUserSet::NodeUserIndex NodeUserIndex;
+			typedef CombinedUserSet::SourceMapping SourceMapping;
+
 			//precache a list of users across all nodes
-			set<NodeSet::NodeUserIndex> userIndices;
+			set<NodeUserIndex> userIndices;
 			int nodeIndex = 0;
 			for(const auto & node : userWorld) {
 				int userIndex = 0;
@@ -104,35 +73,56 @@ namespace ofxMultiTrack {
 				nodeIndex++;
 			}
 
+			//strip out blank users from search
+			for(auto it = userIndices.begin(); it != userIndices.end(); ) {
+				const auto & user = userWorld[it->nodeIndex][it->userIndex];
+				if (user.empty() || !user.isAlive()) {
+					userIndices.erase(it++);
+				} else {
+					++it;
+				}
+			}
+
 			//allocate solution
 			NodeSet::UserMatches matches;
 
 			//perform search
-			User combinedUser;
 			while(!userIndices.empty()) {
+				//start with first user in our set which hasn't been output yet
 				auto & searchUserIndex = * userIndices.begin();
 				const auto & searchUser = userWorld[searchUserIndex.nodeIndex][searchUserIndex.userIndex];
+				auto & searchMapping = matches[searchUserIndex];
 
-				//------do we need this?
-				////make a list of nodes which won't be used for search
-				//set<int> nodesUserSeenIn;
-				//nodesUserSeenIn.insert(searchUserIndex.nodeIndex);
-
+				//check if it includes itself yet
+				if(searchMapping.count(searchUserIndex) == 0) {
+					//if not add it, and it's got zero distance of course
+					searchMapping[searchUserIndex] = 0.0f;
+				}
+				
 				//--
 				//search other users for best matching user
 				//
 				float bestMatchDistance = std::numeric_limits<float>::max(); //lower is better
 				NodeUserIndex * bestMatch = NULL;
 				for(auto otherUserIndex : userIndices) {
-					//don't look within the same node for matching users
-					// (and therefore also don't look at self)
-					if (otherUserIndex.nodeIndex == searchUserIndex.nodeIndex) {
+					//check if we've already got a user from this node
+					bool alreadyHasThisNode = false;
+					for(auto matches : searchMapping) {
+						if(matches.first.nodeIndex == otherUserIndex.nodeIndex) {
+							alreadyHasThisNode = true;
+							break;
+						}
+					}
+					if (alreadyHasThisNode) {
+						//if so, then skip and continue
 						continue;
 					}
 
+					//compare distance score against this other user
 					const auto & otherUser = userWorld[otherUserIndex.nodeIndex][otherUserIndex.userIndex];
 					float matchDistance = searchUser.getDistanceTo(otherUser);
 					
+					//if it's best score so far out of current search, let's keep it
 					if(matchDistance < bestMatchDistance) {
 						bestMatchDistance = matchDistance;
 						bestMatch = & otherUserIndex;
@@ -141,15 +131,13 @@ namespace ofxMultiTrack {
 				//
 				//--
 
+				//if we found anything (useful) at all
 				if(bestMatch != NULL && bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
-					if (matches.count(searchUserIndex) == 0) {
-						//add this base user to the results map indices
-						matches.insert(pair<NodeUserIndex, vector<NodeUserIndex> >(searchUserIndex, vector<NodeUserIndex>()));
-						
-						//add this base user to the results at this index
-						matches.at(searchUserIndex).push_back(searchUserIndex);
-					}
-					matches.at(searchUserIndex).push_back(*bestMatch);
+					//then add it as a source mapping
+					searchMapping[*bestMatch] = bestMatchDistance;
+
+					//and remove it from search
+					userIndices.erase(*bestMatch);
 				} else {
 					//no more matches for this user, remove it from the search
 					userIndices.erase(searchUserIndex);

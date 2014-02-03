@@ -43,13 +43,20 @@ namespace ofxMultiTrack {
 
 		class CombinedUserSet : public UserSet {
 		public:
-			typedef vector<map<int, int> > SourceMapping;
+			struct NodeUserIndex {
+				NodeUserIndex(int nodeIndex, int userIndex);
+				bool operator<(const NodeUserIndex & other) const;
+				int nodeIndex;
+				int userIndex;
+			};
 
-			///add map of origin users (used in tandem with .push_back(user) )
-			void addSourceMapping(const map<int, int> &);
-			const SourceMapping & getSourceMapping() const;
+			typedef float Distance;
+			typedef map<NodeUserIndex, Distance> SourceMapping;
+
+			void addSourceMapping(const SourceMapping &);
+			const vector<SourceMapping> & getSourceMappings() const;
 		protected:
-			SourceMapping sourceUserMapping; /// < mapping of user in this list -> mapping of node -> this user index in node view
+			vector<SourceMapping> sourceUserMappings; /// < mapping of user in this list -> matches used in source set
 		};
 	}
 }
