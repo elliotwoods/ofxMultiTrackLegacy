@@ -241,6 +241,7 @@ namespace ofxMultiTrack {
 							} else {
 								auto & jsonUser = jsonUsers[userIndex];
 								if (jsonUser.size() == 0) {
+									userLocal.clear();
 									userLocal.setAlive(false);
 								} else {
 									userLocal.setAlive(true);

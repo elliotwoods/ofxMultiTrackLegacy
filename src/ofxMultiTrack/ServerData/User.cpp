@@ -64,6 +64,9 @@ namespace ofxMultiTrack {
 			map<string, AccumulationJoint> accumulation;
 
 			for(auto & user : userSet) {
+				if(!user.isAlive()) {
+					continue;
+				}
 				for(auto & joint : user) {
 					if (accumulation.find(joint.first) == accumulation.end()) {
 						accumulation.insert(pair<string, AccumulationJoint>(joint.first, AccumulationJoint(joint.second.connectedTo)));

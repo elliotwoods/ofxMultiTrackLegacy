@@ -277,6 +277,12 @@ void ofApp::keyPressed(int key){
 	case 'a':
 		ofxAssets::AssetRegister.refresh();
 		break;
+	case 'l':
+		this->server.loadCalibration();
+		break;
+	case 's':
+		this->server.saveCalibration();
+		break;
 	}
 }
 

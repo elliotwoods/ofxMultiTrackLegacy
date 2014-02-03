@@ -18,6 +18,7 @@
 
 #include "Align/Base.h"
 #include "Align/PolyFit.h"
+#include "Align/NonLinear.h"
 #include "Align/Default.h" //must be included after other routines
 
 namespace ofxMultiTrack {
@@ -59,6 +60,12 @@ namespace ofxMultiTrack {
 		void autoCalibrate();
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Ptr(new Align::Default()));
+
+		void serialise(Json::Value &) const;
+		void deserialise(const Json::Value &);
+
+		void saveCalibration(string filename = "") const;
+		void loadCalibration(string filenmae = "");
 	protected:
 		ServerData::NodeSet nodes;
 		ServerData::Recorder recorder;

@@ -434,4 +434,85 @@ namespace ofxMultiTrack {
 			ofLogError("ofxMultiTrack") << e.what();
 		}
 	}
+
+	//----------
+	void Server::serialise(Json::Value & json) const {
+		json["nodeCount"] = this->nodes.size();
+		for(int i=0; i<json.size(); i++) {
+			auto & jsonNode = json["nodes"][i];
+			const auto transform = this->nodes[i]->getTransform();
+			bool hasTransform = (transform);
+			jsonNode["hasTransform"] = hasTransform;
+			if (hasTransform) {
+				auto & jsonTransform = jsonNode["transform"];
+				jsonTransform["source"] = transform->source;
+				jsonTransform["parameters"] = transform->transform->serialise();
+			}
+		}
+	}
+
+	//----------
+	void Server::deserialise(const Json::Value & json) {
+		int jsonNodeCount = json["nodeCount"].asInt();
+		for(int i=0; i<jsonNodeCount; i++) {
+			if (i < this->nodes.size()) {
+				auto & jsonNode = json["nodes"][i];
+				bool hasTransform = jsonNode["hasTransform"].asBool();
+				shared_ptr<ServerData::NodeConnection::Transform> newTransform;
+				if (hasTransform) {
+					auto & jsonTransform = jsonNode["transform"];
+					auto source = jsonTransform["source"].asInt();
+					shared_ptr<Align::Default> newAlign(new Align::Default);
+					newAlign->deserialise(jsonTransform["parameters"]);
+					newTransform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(source, newAlign));
+				}
+				this->nodes[i]->setTransform(newTransform);
+			}
+		}
+	}
+
+	//----------
+	void Server::saveCalibration(string filename) const {
+		if (filename=="") {
+			auto response = ofSystemSaveDialog("recording.json", "Save calibration");
+			if (!response.bSuccess) {
+				ofLogWarning("ofxMultiTrack") << "No file selected for save";
+				return;
+			}
+			filename = response.filePath;
+		}
+
+		Json::Value json;
+		this->serialise(json);
+
+		Json::FastWriter writer;
+		ofFile output;
+		output.open(filename, ofFile::WriteOnly, false);
+		output << writer.write(json);
+	}
+
+	//----------
+	void Server::loadCalibration(string filename) {
+		if (filename=="") {
+			auto response = ofSystemLoadDialog("Load calibration");
+			if (!response.bSuccess) {
+				ofLogWarning("ofxMultiTrack") << "No file selected for load";
+				return;
+			}
+			filename = response.filePath;
+		}
+
+		ofFile input;
+		input.open(filename, ofFile::ReadOnly, false);
+		string jsonRaw = input.readToBuffer().getText();
+
+		try {
+			Json::Reader reader;
+			Json::Value json;
+			reader.parse(jsonRaw, json);
+			this->deserialise(json);
+		} catch (std::exception e) {
+			ofSystemAlertDialog(e.what());
+		}
+	}
 }

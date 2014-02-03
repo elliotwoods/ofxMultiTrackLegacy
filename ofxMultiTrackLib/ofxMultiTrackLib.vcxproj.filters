@@ -100,6 +100,27 @@
     <Filter Include="addons\ofxAssets\src">
       <UniqueIdentifier>{6064b4f9-c155-462c-b3e9-0cbbb96b591f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxNonLinearFit">
+      <UniqueIdentifier>{566ac86c-6b86-42ad-aaba-ac7f046e9174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\src">
+      <UniqueIdentifier>{5a703216-adfe-4ec0-9ae5-4eda58a2edbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\src\ofxNonLinearFit">
+      <UniqueIdentifier>{63e2d141-bd0e-43a2-b54a-3a855000b0ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\src\ofxNonLinearFit\Models">
+      <UniqueIdentifier>{2664a84b-cbe7-44fd-ab55-0a7e66a24cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\lib">
+      <UniqueIdentifier>{ea715a2e-552d-4dc2-9aeb-c3be63b79e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\lib\NLopt">
+      <UniqueIdentifier>{7177f174-334c-4ed7-b0ca-0b3caa0a64a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxNonLinearFit\lib\NLopt\include">
+      <UniqueIdentifier>{7ec59e9d-74b7-4783-9ce4-07adbd14c879}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ofxMultiTrack.h">
@@ -272,6 +293,33 @@
     <ClInclude Include="..\..\ofxAssets\src\ofxAssets.h">
       <Filter>addons\ofxAssets\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit.h">
+      <Filter>addons\ofxNonLinearFit\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Algorithm.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Fit.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Model.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Utils.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\RigidBody.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\lib\NLopt\include\nlopt.h">
+      <Filter>addons\ofxNonLinearFit\lib\NLopt\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\lib\NLopt\include\nlopt.hpp">
+      <Filter>addons\ofxNonLinearFit\lib\NLopt\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\NonLinear.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -381,6 +429,15 @@
     </ClCompile>
     <ClCompile Include="..\..\ofxAssets\src\ofxAssets.cpp">
       <Filter>addons\ofxAssets\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Algorithm.cpp">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\RigidBody.cpp">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Align\NonLinear.cpp">
+      <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
