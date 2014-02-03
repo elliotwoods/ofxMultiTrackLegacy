@@ -4,8 +4,8 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 #pragma mark Transform
 		//----------
-		NodeConnection::Transform::Transform(unsigned int source, Align::Ptr transform) :
-		source(source), transform(transform) {
+		NodeConnection::Transform::Transform(unsigned int parent, Align::Ptr transform) :
+		parent(parent), transform(transform) {
 		}
 
 #pragma mark NodeConnection
@@ -114,8 +114,8 @@ namespace ofxMultiTrack {
 		list<int> NodeConnection::getInfluenceList() const {
 			list<int> influence;
 			if (this->transform) {
-				influence.push_back(this->transform->source);
-				auto upstreamInfluences = otherNodes[this->transform->source]->getInfluenceList();
+				influence.push_back(this->transform->parent);
+				auto upstreamInfluences = otherNodes[this->transform->parent]->getInfluenceList();
 				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
 			}
 			return influence;
@@ -134,12 +134,12 @@ namespace ofxMultiTrack {
 			//apply upstream transforms
 			//
 			//check our upstream transform exists in the set
-			if(this->transform->source >= otherNodes.size()) {
+			if(this->transform->parent >= otherNodes.size()) {
 				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
 				return;
 			}
 			//get the upstream node
-			auto upstreamNode = this->otherNodes[this->transform->source];
+			auto upstreamNode = this->otherNodes[this->transform->parent];
 			upstreamNode->applyTransform(users);
 			//
 			//--
@@ -173,12 +173,12 @@ namespace ofxMultiTrack {
 			//apply upstream transforms
 			//
 			//check our upstream transform exists in the set
-			if(this->transform->source >= otherNodes.size()) {
+			if(this->transform->parent >= otherNodes.size()) {
 				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
 				return xyz;
 			}
 			//get the upstream node
-			auto upstreamNode = this->otherNodes[this->transform->source];
+			auto upstreamNode = this->otherNodes[this->transform->parent];
 			ofVec3f xyzDash = upstreamNode->applyTransform(xyz);
 			//
 			//--

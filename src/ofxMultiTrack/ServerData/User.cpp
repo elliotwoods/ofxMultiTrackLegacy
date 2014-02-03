@@ -206,8 +206,14 @@ namespace ofxMultiTrack {
 
 #pragma mark CombinedUserSet
 		//----------
+		CombinedUserSet::NodeUserIndex::NodeUserIndex() :
+			nodeIndex(0), userIndex(0), valid(false) {
+
+		}
+
+		//----------
 		CombinedUserSet::NodeUserIndex::NodeUserIndex(int nodeIndex, int userIndex) :
-			nodeIndex(nodeIndex), userIndex(userIndex) {
+			nodeIndex(nodeIndex), userIndex(userIndex), valid(true) {
 
 		}
 

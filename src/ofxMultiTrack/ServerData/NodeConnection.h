@@ -20,8 +20,8 @@ namespace ofxMultiTrack {
 			struct Transform {
 				typedef shared_ptr<Transform> Ptr;
 
-				Transform(unsigned int source, Align::Ptr transform);
-				const unsigned int source;
+				Transform(unsigned int parent, Align::Ptr transform);
+				const unsigned int parent;
 				const Align::Ptr transform;
 			};
 

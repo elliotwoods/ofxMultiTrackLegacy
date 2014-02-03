@@ -103,7 +103,7 @@ namespace ofxMultiTrack {
 				//search other users for best matching user
 				//
 				float bestMatchDistance = std::numeric_limits<float>::max(); //lower is better
-				NodeUserIndex * bestMatch = NULL;
+				NodeUserIndex bestMatch;
 				for(auto otherUserIndex : userIndices) {
 					//check if we've already got a user from this node
 					bool alreadyHasThisNode = false;
@@ -125,19 +125,19 @@ namespace ofxMultiTrack {
 					//if it's best score so far out of current search, let's keep it
 					if(matchDistance < bestMatchDistance) {
 						bestMatchDistance = matchDistance;
-						bestMatch = & otherUserIndex;
+						bestMatch = otherUserIndex;
 					}
 				}
 				//
 				//--
 
 				//if we found anything (useful) at all
-				if(bestMatch != NULL && bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
+				if(bestMatch.valid && bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
 					//then add it as a source mapping
-					searchMapping[*bestMatch] = bestMatchDistance;
+					searchMapping[bestMatch] = bestMatchDistance;
 
 					//and remove it from search
-					userIndices.erase(*bestMatch);
+					userIndices.erase(bestMatch);
 				} else {
 					//no more matches for this user, remove it from the search
 					userIndices.erase(searchUserIndex);

@@ -445,7 +445,7 @@ namespace ofxMultiTrack {
 			jsonNode["hasTransform"] = hasTransform;
 			if (hasTransform) {
 				auto & jsonTransform = jsonNode["transform"];
-				jsonTransform["source"] = transform->source;
+				jsonTransform["parent"] = transform->parent;
 				jsonTransform["parameters"] = transform->transform->serialise();
 			}
 		}
@@ -461,10 +461,10 @@ namespace ofxMultiTrack {
 				shared_ptr<ServerData::NodeConnection::Transform> newTransform;
 				if (hasTransform) {
 					auto & jsonTransform = jsonNode["transform"];
-					auto source = jsonTransform["source"].asInt();
+					auto parent = jsonTransform["parent"].asInt();
 					shared_ptr<Align::Default> newAlign(new Align::Default);
 					newAlign->deserialise(jsonTransform["parameters"]);
-					newTransform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(source, newAlign));
+					newTransform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(parent, newAlign));
 				}
 				this->nodes[i]->setTransform(newTransform);
 			}
@@ -485,7 +485,7 @@ namespace ofxMultiTrack {
 		Json::Value json;
 		this->serialise(json);
 
-		Json::FastWriter writer;
+		Json::StyledWriter writer;
 		ofFile output;
 		output.open(filename, ofFile::WriteOnly, false);
 		output << writer.write(json);

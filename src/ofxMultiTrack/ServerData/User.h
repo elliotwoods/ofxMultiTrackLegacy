@@ -44,10 +44,12 @@ namespace ofxMultiTrack {
 		class CombinedUserSet : public UserSet {
 		public:
 			struct NodeUserIndex {
+				NodeUserIndex();
 				NodeUserIndex(int nodeIndex, int userIndex);
 				bool operator<(const NodeUserIndex & other) const;
 				int nodeIndex;
 				int userIndex;
+				bool valid;
 			};
 
 			typedef float Distance;

@@ -33,7 +33,7 @@ namespace ofxMultiTrack {
 
 			double residual = 0.0;
 			fit.optimise(this->model, &dataSet, &residual);
-			cout << "Residual : " << sqrt(residual) << "m" << endl;
+			cout << "Residual : " << sqrt(residual / (double) dataSet.size()) << "m" << endl;
 		}
 
 		//----------
@@ -51,12 +51,12 @@ namespace ofxMultiTrack {
 			if (ready) {
 				const auto parameters = this->model.getParameters();
 				
-				auto jsonTranslate = json["translate"];
+				auto & jsonTranslate = json["translate"];
 				for(int i=0; i<3; i++) {
 					jsonTranslate[i] = parameters[i];
 				}
 
-				auto jsonRotate = json["rotate"];
+				auto & jsonRotate = json["rotate"];
 				for(int i=0; i<3; i++) {
 					jsonRotate[i] = parameters[i + 3];
 				}
