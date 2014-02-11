@@ -40,6 +40,7 @@ namespace ofxMultiTrack {
 
 			Transform::Ptr getTransform() const;
 			void setTransform(shared_ptr<Transform>);
+			void clearTransform();
 			list<int> getInfluenceList() const;
 			void applyTransform(UserSet & users) const;
 			ofVec3f applyTransform(const ofVec3f &) const;

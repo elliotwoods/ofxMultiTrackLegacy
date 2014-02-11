@@ -96,10 +96,11 @@ namespace ofxMultiTrack {
 			bool newFormat = ! json.isArray(); //old format would just be an array here
 			
 			const auto & nodesJson = newFormat ? json["nodes"] : json;
-
-			if (nodesJson.size() != this->nodes.size()) {
-				string errorMsg = "Mismatch on deserialise : number of nodes connected [" + ofToString(this->nodes.size()) + "] does not equal number of nodes in file to load [" + ofToString(nodesJson.size()) + "]";
-				throw(Exception(errorMsg.c_str()));
+			int countToDeserialise = nodesJson.size();
+			if (countToDeserialise != this->nodes.size()) {
+				ofLogWarning() << "Mismatch on deserialise : number of nodes connected [" << this->nodes.size() << "] does not equal number of nodes in file to load [" << nodesJson.size() << "]";
+				countToDeserialise = min(countToDeserialise, (int) this->nodes.size());
+				ofLogWarning() << "We will load data for the first [" << countToDeserialise << "] nodes.";
 			}
 
 			this->clear();
@@ -111,7 +112,8 @@ namespace ofxMultiTrack {
 
 			cout << "Loading";
 
-			for(auto node : this->nodes) {
+			for(int i=0; i<countToDeserialise; i++) {
+				auto & node = this->nodes[i];
 				auto & nodeJson = nodesJson[nodeIndex++];
 				auto & recording = node->getRecording();
 				auto & frameSet = recording.getFrames();

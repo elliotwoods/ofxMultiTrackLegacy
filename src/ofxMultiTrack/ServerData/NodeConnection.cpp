@@ -111,6 +111,11 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		void NodeConnection::clearTransform() {
+			this->transform.reset();
+		}
+
+		//----------
 		list<int> NodeConnection::getInfluenceList() const {
 			list<int> influence;
 			if (this->transform) {
@@ -131,21 +136,6 @@ namespace ofxMultiTrack {
 			}
 
 			//--
-			//apply upstream transforms
-			//
-			//check our upstream transform exists in the set
-			if(this->transform->parent >= otherNodes.size()) {
-				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
-				return;
-			}
-			//get the upstream node
-			auto upstreamNode = this->otherNodes[this->transform->parent];
-			upstreamNode->applyTransform(users);
-			//
-			//--
-
-
-			//--
 			//apply our transform
 			//
 			//check it exists
@@ -156,6 +146,20 @@ namespace ofxMultiTrack {
 					}
 				}
 			}
+			//
+			//--
+
+			//--
+			//apply upstream transforms
+			//
+			//check our upstream transform exists in the set
+			if(this->transform->parent >= otherNodes.size()) {
+				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
+				return;
+			}
+			//get the upstream node
+			auto upstreamNode = this->otherNodes[this->transform->parent];
+			upstreamNode->applyTransform(users);
 			//
 			//--
 		}
@@ -169,28 +173,29 @@ namespace ofxMultiTrack {
 				return xyz;
 			}
 
+
+			//--
+			//apply our transform
+			//
+			auto xyzDash = xyz;
+			if (this->transform->transform) { //check if we have one
+				xyzDash = this->transform->transform->applyTransform(xyzDash);
+			}
+			//
+			//--
+
+
 			//--
 			//apply upstream transforms
 			//
 			//check our upstream transform exists in the set
 			if(this->transform->parent >= otherNodes.size()) {
-				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
-				return xyz;
+				ofLogError("ofxMultiTrack") << "Cannot apply upstream transforms for node, as parent node does not exist";
+				return xyzDash;
 			}
 			//get the upstream node
 			auto upstreamNode = this->otherNodes[this->transform->parent];
-			ofVec3f xyzDash = upstreamNode->applyTransform(xyz);
-			//
-			//--
-
-
-			//--
-			//apply our transform
-			//
-			//check it exists
-			if (this->transform->transform) {
-				xyzDash = this->transform->transform->applyTransform(xyzDash);
-			}
+			xyzDash = upstreamNode->applyTransform(xyzDash);
 			//
 			//--
 

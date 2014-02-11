@@ -425,10 +425,17 @@ namespace ofxMultiTrack {
 			//perform the calibration. target points will be transformed to match origin space
 			routine->calibrate(targetPoints, originPoints);
 
+			//check if the new parent would reference this node
+			const auto parentInfluenceList = this->nodes[originNodeIndex]->getInfluenceList();
+			const auto findInList = std::find(parentInfluenceList.begin(), parentInfluenceList.end(), nodeIndex);
+			if (findInList != parentInfluenceList.end()) {
+				//if so, clear all influences from parent
+				this->nodes[originNodeIndex]->clearTransform();
+			}
+
 			//assign the calibration in the NodeSet
 			auto transform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(originNodeIndex, routine));
 			this->nodes[nodeIndex]->setTransform(transform);
-
 		} catch (std::exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;
 			ofLogError("ofxMultiTrack") << e.what();
@@ -438,7 +445,7 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::serialise(Json::Value & json) const {
 		json["nodeCount"] = this->nodes.size();
-		for(int i=0; i<json.size(); i++) {
+		for(int i=0; i<this->nodes.size(); i++) {
 			auto & jsonNode = json["nodes"][i];
 			const auto transform = this->nodes[i]->getTransform();
 			bool hasTransform = (transform);
