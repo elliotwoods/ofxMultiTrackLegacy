@@ -110,7 +110,7 @@
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit.h" />
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Algorithm.h" />
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Fit.h" />
-    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Model.h" />
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\Base.h" />
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\RigidBody.h" />
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Utils.h" />
     <ClInclude Include="..\..\ofxPolyfit\libs\PolyNFit\src\basisTransformIndices.h" />

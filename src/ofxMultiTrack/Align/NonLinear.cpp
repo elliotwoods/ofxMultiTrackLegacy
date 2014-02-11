@@ -84,5 +84,23 @@ namespace ofxMultiTrack {
 				this->model.setParameters(&parameters[0]);
 			}
 		}
+
+		//----------
+		/*
+		void NonLinear::Model::cacheModel() {
+			const auto & parameters = this->parameters;
+
+			if (parameters == NULL) {
+				this->transform = ofMatrix4x4();
+			} else {
+				const auto translate = ofMatrix4x4::newTranslationMatrix(parameters[0], parameters[1], parameters[2]);
+			
+				const auto eulerAngles = ofVec3f(parameters[3], parameters[4], parameters[5]);
+				const auto rotate = ofMatrix4x4::newRotationMatrix(eulerAngles.x, ofVec3f(1, 0, 0), eulerAngles.y, ofVec3f(0, 1, 0), eulerAngles.z, ofVec3f(0, 0, 1));
+
+				this->transform = rotate * translate;
+			}
+		}
+		*/
 	}
 }

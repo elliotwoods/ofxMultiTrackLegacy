@@ -302,9 +302,6 @@
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Fit.h">
       <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Model.h">
-      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Utils.h">
       <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit</Filter>
     </ClInclude>
@@ -319,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Align\NonLinear.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\Base.h">
+      <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit\Models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

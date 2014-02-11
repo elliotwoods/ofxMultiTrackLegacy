@@ -51,7 +51,7 @@ namespace ofxMultiTrack {
 			void threadedFunction() override;
 			void performBlocking(function<void()>);
 
-			deque<function<void()>> actionQueue;
+			deque<function<void()>> actionQueue; // a list of actions to be performed on the network thread
 			ofMutex lockActionQueue;
 
 			Json::Reader jsonReader;
