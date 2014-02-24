@@ -320,6 +320,12 @@
     <ClInclude Include="..\src\ofxMultiTrack\Align\RigidBodyFit.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\OutputFrame.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Parameters.h">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -441,6 +447,9 @@
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp">
       <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Parameters.cpp">
+      <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,18 +15,13 @@
 #include "ServerData/NodeSet.h"
 #include "ServerData/Recorder.h"
 #include "ServerData/User.h"
+#include "ServerData/OutputFrame.h"
 
 #include "Align/Factory.h"
 
 namespace ofxMultiTrack {
 	class Server {
 	public:
-		struct OutputFrame {
-			vector<ServerData::UserSet> views;
-			vector<ServerData::UserSet> world;
-			ServerData::CombinedUserSet combined;
-		};
-
 		Server();
 		~Server();
 
@@ -42,7 +37,7 @@ namespace ofxMultiTrack {
 		const ServerData::NodeSet & getNodes() const;
 		ServerData::Recorder & getRecorder();
 
-		OutputFrame getCurrentFrame() const;
+		ServerData::OutputFrame getCurrentFrame() const;
 
 		/// Draw untransformed view
 		void drawViews() const;
@@ -66,5 +61,7 @@ namespace ofxMultiTrack {
 	protected:
 		ServerData::NodeSet nodes;
 		ServerData::Recorder recorder;
+		ServerData::OutputFrame currentFrame;
+		ServerData::OutputFrame previousFrame;
 	};
 }

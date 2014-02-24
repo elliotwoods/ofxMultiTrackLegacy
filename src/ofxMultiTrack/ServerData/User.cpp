@@ -1,6 +1,8 @@
 #include "User.h"
-#include "ofxCvGui2/src/ofxCvGui/Assets.h"
+#include "Parameters.h"
+#include "../../ofxAssets/src/ofxAssets.h"
 #include <numeric>
+#include <set>
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -41,8 +43,12 @@ namespace ofxMultiTrack {
 
 #pragma mark User
 		//----------
+		User::GlobalIndex User::nextGlobalIndex = 0;
+
+		//----------
 		User::User() {
 			this->alive = true;
+			this->globalIndex = -1;
 		}
 		
 		//----------
@@ -100,6 +106,9 @@ namespace ofxMultiTrack {
 				}
 				localJoint.connectedTo = joint.second.connectedTo;
 			}
+
+			this->alive = true;
+			this->globalIndex = -1;
 		}
 
 		//----------
@@ -153,7 +162,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void User::draw(bool enableColors) {
+		void User::draw(bool enableColors) const {
 			ofMesh points;
 			ofMesh lines;
 			if (this->alive) {
@@ -176,6 +185,68 @@ namespace ofxMultiTrack {
 			glDisable(GL_TEXTURE_2D);
 			lines.draw();
 			glEnable(GL_TEXTURE_2D);
+
+			if (this->globalIndex != -1) {
+				//--
+				//draw globalIndex label
+				//
+				ofPushMatrix();
+				ofTranslate(this->begin()->second.position);
+				float scaleFactor = 2.0f / ofGetCurrentViewport().height;
+				ofScale(-scaleFactor, scaleFactor, scaleFactor);
+
+				auto & font = ofxAssets::AssetRegister.getFont("ofxMultiTrack::swisop3", 36);
+				auto message = ofToString(this->globalIndex);
+				auto textBounds = font.getStringBoundingBox(message, 0, 0);
+				auto rectBounds = textBounds;
+
+				//fix for getStringBoundingBox not matching oF hacks
+				rectBounds.y = 0.0f;
+
+				//buffer the height by 10%
+				float bufferHeight = rectBounds.height * 0.2f;
+				rectBounds.y -= bufferHeight;
+				rectBounds.x -= bufferHeight;
+				rectBounds.height += bufferHeight * 2.0f;
+				rectBounds.width += bufferHeight * 2.0f;
+
+				//draw background
+				ofPath background;
+				background.setFillColor(ofColor(0));
+				background.setStrokeWidth(1.0f);
+				background.setStrokeColor(ofGetStyle().color);
+				background.rectRounded(rectBounds, bufferHeight);
+				background.draw();
+
+				//draw text
+				ofTranslate(0.0f, 0.0f, -1.0f / 100.0f);
+				font.drawString(message, 0, 0);
+
+				//draw text on flip side
+				ofTranslate(textBounds.width, 0.0f, +2.0f / 100.0f);
+				ofScale(-1.0f, 1.0f, 1.0f);
+				font.drawString(message, 0, 0);
+
+				ofPopMatrix();
+				//--
+			}
+		}
+
+		//----------
+		void User::setGlobalIndex(GlobalIndex globalIndex) {
+			this->globalIndex = globalIndex;
+		}
+
+		//----------
+		void User::assignForEmptyGlobalIndex() {
+			if (this->globalIndex == -1) {
+				this->globalIndex = User::nextGlobalIndex++;
+			}
+		}
+
+		//----------
+		User::GlobalIndex User::getGlobalIndex() const {
+			return this->globalIndex;
 		}
 
 #pragma mark UserSet
@@ -198,7 +269,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void UserSet::draw(bool enableColors) {
+		void UserSet::draw(bool enableColors) const {
 			for(auto & user : *this) {
 				user.draw(enableColors);
 			}
@@ -227,6 +298,11 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		bool CombinedUserSet::NodeUserIndex::operator==(const NodeUserIndex & other) const {
+			return this->nodeIndex == other.nodeIndex && this->userIndex == other.userIndex;
+		}
+
+		//----------
 		void CombinedUserSet::addSourceMapping(const SourceMapping & sourceMapping) { 
 			this->sourceUserMappings.push_back(sourceMapping);
 		}
@@ -234,6 +310,57 @@ namespace ofxMultiTrack {
 		//----------
 		const vector<CombinedUserSet::SourceMapping> & CombinedUserSet::getSourceMappings() const {
 			return this->sourceUserMappings;
+		}
+
+		//----------
+		void CombinedUserSet::matchFromPreviousFrame(const CombinedUserSet & previousFrame) {
+			set<const User*> availablePreviousUsers;
+			for(auto & user : previousFrame) {
+				availablePreviousUsers.insert(&user);
+			}
+
+			//check whether a user was seen in a previous frame
+			// by checking to see if we share a NodeUserIndex with a user from
+			// previous frame.
+			int index = 0;
+			for(auto & user : * this) {
+				const auto & sourceMapping = this->sourceUserMappings[index];
+				int previousIndex = 0;
+				const User * foundPrevious = nullptr;
+				for(auto previousUser : availablePreviousUsers) {
+					const auto & previousSourceMapping = previousFrame.getSourceMappings()[previousIndex];
+
+					//now search for any matches
+					for(auto nodeUserIndex : sourceMapping) {
+						for(auto previousNodeUserIndex : previousSourceMapping) {
+							if (nodeUserIndex.first == previousNodeUserIndex.first) {
+								foundPrevious = previousUser;
+							}
+						}
+						if (foundPrevious) {
+							break;
+						}
+					}
+					if (foundPrevious) {
+						break;
+					}
+					previousIndex++;
+				}
+				if (foundPrevious) {
+					user.setGlobalIndex(foundPrevious->getGlobalIndex());
+					availablePreviousUsers.erase(foundPrevious);
+				}
+				index++;
+			}
+		}
+
+		//----------
+		void CombinedUserSet::assignForEmptyGlobalIndices() {
+			for(auto & user : * this) {
+				//internally, ask User to check if it already has a global index
+				//and if not, assign itself a new one
+				user.assignForEmptyGlobalIndex();
+			}
 		}
 	}
 }

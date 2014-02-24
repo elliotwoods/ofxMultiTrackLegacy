@@ -1,4 +1,5 @@
 #include "NodeSet.h"
+#include "Parameters.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -132,7 +133,7 @@ namespace ofxMultiTrack {
 				//--
 
 				//if we found anything (useful) at all
-				if(bestMatch.valid && bestMatchDistance < OFXMULTITRACK_SERVER_COMBINE_DISTANCE_THRESHOLD) {
+				if(bestMatch.valid && bestMatchDistance < Parameters.combineDistanceThreshold) {
 					//then add it as a source mapping
 					searchMapping[bestMatch] = bestMatchDistance;
 

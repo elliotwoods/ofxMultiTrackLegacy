@@ -22,6 +22,36 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::update() {
 		this->recorder.update();
+		
+		//make a copy of previous frame
+		this->previousFrame = this->currentFrame;
+
+		//get data in view spaces
+		ServerData::OutputFrame frame;
+		int nodeIndex = 0;
+		if (this->recorder.hasData() && !this->recorder.isRecording()) {
+			//get data from recording
+			for(auto node : this->nodes) {
+				if (node->isEnabled()) {
+					auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
+					frame.views.push_back(nodeFrame);
+				} else {
+					frame.views.push_back(ServerData::UserSet());
+				}
+			}
+		} else {
+			frame.views = this->nodes.getUsersView();
+		}
+
+		//get data in world space
+		frame.world = this->nodes.getUsersWorld(currentFrame.views);
+
+		//get combined user set
+		frame.combined = this->nodes.getUsersCombined(currentFrame.world);
+		frame.combined.matchFromPreviousFrame(this->previousFrame.combined);
+		frame.combined.assignForEmptyGlobalIndices();
+
+		this->currentFrame = frame;
 	}
 
 	//----------
@@ -53,36 +83,12 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	Server::OutputFrame Server::getCurrentFrame() const {
-		OutputFrame currentFrame;
-
-		//get data in view spaces
-		int nodeIndex = 0;
-		if (this->recorder.hasData() && !this->recorder.isRecording()) {
-			//get data from recording
-			for(auto node : this->nodes) {
-				if (node->isEnabled()) {
-					auto nodeFrame = node->getRecording().getFrame(this->recorder.getPlayHead());
-					currentFrame.views.push_back(nodeFrame);
-				} else {
-					currentFrame.views.push_back(ServerData::UserSet());
-				}
-			}
-		} else {
-			currentFrame.views = this->nodes.getUsersView();
-		}
-
-		//get data in world space
-		currentFrame.world = this->nodes.getUsersWorld(currentFrame.views);
-
-		//get combined user set
-		currentFrame.combined = this->nodes.getUsersCombined(currentFrame.world);
-
-		return currentFrame;
+	ServerData::OutputFrame Server::getCurrentFrame() const {
+		return this->currentFrame;
 	}
 	
 	//----------
-	void draw(vector<ServerData::UserSet> & views) {
+	void draw(const vector<ServerData::UserSet> & views) {
 		int nodeIndex = 0;
 		for(auto & view : views) {
 			//--
@@ -111,12 +117,11 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::drawViews() const {
 		this->drawViewConeView();
-		auto currentFrame = this->getCurrentFrame();
-
+		
 		glPushAttrib(GL_POINT_BIT);
 		glPointSize(16.0f);
 		
-		draw(currentFrame.views);
+		draw(this->currentFrame.views);
 		
 		glPopAttrib();
 	}
@@ -124,55 +129,22 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::drawWorld() const {
 		this->drawViewConesWorld();
-		auto currentFrame = this->getCurrentFrame();
 
 		glPushAttrib(GL_POINT_BIT);
 		glPointSize(12.0f);
 
 		//draw sources
-		draw(currentFrame.world);
+		draw(this->currentFrame.world);
 
+		//draw combined in geen
 		ofPushStyle();
-		ofSetColor(255, 0, 0);
+		ofSetColor(0, 255, 0);
 		glEnable(GL_POINT_SMOOTH);
 		glPointSize(16.0f);
+		this->currentFrame.combined.draw(false);
 
-		//draw combined in red
-		currentFrame.combined.draw(false);
-		
 		ofPopStyle();
 		glPopAttrib();
-
-
-		/*
-		// HACK - disabled for time being until we have proper way of selecting things
-
-
-		//draw world space skeletons per view
-		// it would be nice to also draw lines
-		// but then we need to know which user
-		// index in each view matches each
-		// combined index
-		auto & sourceMapping = currentFrame.combined.getSourceMapping();
-		glPointSize(2.0f);
-		ofMesh lines;
-		ofMesh points;
-		int nodeIndex = 0;
-		for(auto & node : currentFrame.world) {
-			int userIndex = 0;
-			for(auto & user : node) {
-				auto combinedUserIndex = sourceMapping.at(userIndex).at(nodeIndex);
-				auto & combinedUser = currentFrame.combined[combinedUserIndex];
-				for(auto & joint : user) {
-					points.addVertex(joint.second.position);
-					lines.addVertex(joint.second.position);
-					lines.addVertex(combinedUser[joint.first].position);
-				}
-				userIndex++;
-			}
-			nodeIndex++;
-		}
-		*/
 	}
 
 	//----------
