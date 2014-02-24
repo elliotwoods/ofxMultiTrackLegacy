@@ -260,9 +260,6 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxMultiTrack\Align\Default.h">
-      <Filter>src\ofxMultiTrack\Align</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
@@ -314,11 +311,14 @@
     <ClInclude Include="..\..\ofxNonLinearFit\lib\NLopt\include\nlopt.hpp">
       <Filter>addons\ofxNonLinearFit\lib\NLopt\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxMultiTrack\Align\NonLinear.h">
-      <Filter>src\ofxMultiTrack\Align</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\Base.h">
       <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\Factory.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Align\RigidBodyFit.h">
+      <Filter>src\ofxMultiTrack\Align</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -436,7 +436,10 @@
     <ClCompile Include="..\..\ofxNonLinearFit\src\ofxNonLinearFit\Models\RigidBody.cpp">
       <Filter>addons\ofxNonLinearFit\src\ofxNonLinearFit\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxMultiTrack\Align\NonLinear.cpp">
+    <ClCompile Include="..\src\ofxMultiTrack\Align\Factory.cpp">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
   </ItemGroup>

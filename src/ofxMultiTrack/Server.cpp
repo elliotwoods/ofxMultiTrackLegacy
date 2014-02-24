@@ -452,6 +452,7 @@ namespace ofxMultiTrack {
 			if (hasTransform) {
 				auto & jsonTransform = jsonNode["transform"];
 				jsonTransform["parent"] = transform.getParent();
+				jsonTransform["type"] = transform.getTransform()->getType();
 				jsonTransform["parameters"] = transform.getTransform()->serialise();
 			}
 		}
@@ -468,7 +469,8 @@ namespace ofxMultiTrack {
 				if (hasTransform) {
 					auto & jsonTransform = jsonNode["transform"];
 					auto parent = jsonTransform["parent"].asInt();
-					shared_ptr<Align::Default> newAlign(new Align::Default);
+					auto type = jsonTransform["type"].asString();
+					auto newAlign = Align::Factory::make(type);
 					newAlign->deserialise(jsonTransform["parameters"]);
 					newTransform = ServerData::NodeConnection::Transform(parent, newAlign);
 				}

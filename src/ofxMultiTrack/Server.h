@@ -16,10 +16,7 @@
 #include "ServerData/Recorder.h"
 #include "ServerData/User.h"
 
-#include "Align/Base.h"
-#include "Align/PolyFit.h"
-#include "Align/NonLinear.h"
-#include "Align/Default.h" //must be included after other routines
+#include "Align/Factory.h"
 
 namespace ofxMultiTrack {
 	class Server {
@@ -59,7 +56,7 @@ namespace ofxMultiTrack {
 
 		void autoCalibrate();
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
-			Align::Ptr routine = Align::Ptr(new Align::Default()));
+			Align::Ptr routine = Align::Factory::makeDefault());
 
 		void serialise(Json::Value &) const;
 		void deserialise(const Json::Value &);
