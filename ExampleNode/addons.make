@@ -1,4 +1,0 @@
-ofxNetwork
-ofxJSON
-ofxKinectCommonBridge
-ofxMultiTrack

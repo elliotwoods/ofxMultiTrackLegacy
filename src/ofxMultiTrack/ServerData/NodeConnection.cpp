@@ -4,8 +4,22 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 #pragma mark Transform
 		//----------
+		NodeConnection::Transform::Transform() : parent(-1) {
+		}
+
+		//----------
 		NodeConnection::Transform::Transform(unsigned int parent, Align::Ptr transform) :
 		parent(parent), transform(transform) {
+		}
+
+		//----------
+		unsigned int NodeConnection::Transform::getParent() const {
+			return this->parent;
+		}
+
+		//----------
+		Align::Ptr NodeConnection::Transform::getTransform() const {
+			return this->transform;
 		}
 
 #pragma mark NodeConnection
@@ -101,26 +115,29 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		NodeConnection::Transform::Ptr NodeConnection::getTransform() const {
+		const NodeConnection::Transform & NodeConnection::getTransform() const {
 			return this->transform;
 		}
 
 		//----------
-		void NodeConnection::setTransform(Transform::Ptr transform) {
+		void NodeConnection::setTransform(const Transform & transform) {
 			this->transform = transform;
 		}
 
 		//----------
 		void NodeConnection::clearTransform() {
-			this->transform.reset();
+			this->transform = Transform();
 		}
 
 		//----------
 		list<int> NodeConnection::getInfluenceList() const {
 			list<int> influence;
-			if (this->transform) {
-				influence.push_back(this->transform->parent);
-				auto upstreamInfluences = otherNodes[this->transform->parent]->getInfluenceList();
+			const auto ourParent = this->transform.getParent();
+			if (ourParent != -1) {
+				//if we're not root, add our parent
+				influence.push_back(ourParent);
+				//and ask our parent
+				auto upstreamInfluences = otherNodes[this->transform.getParent()]->getInfluenceList();
 				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
 			}
 			return influence;
@@ -128,21 +145,17 @@ namespace ofxMultiTrack {
 
 		//----------
 		void NodeConnection::applyTransform(UserSet & users) const {
-			//check if we have a transform first
-			if(!this->transform) {
-				//if we don't, then do nothing
-				//this is the case for the root node, and uncalibrated nodes
-				return;
-			}
+			const auto ourTransform = this->transform.getTransform();
+			const auto ourParent = this->transform.getParent();
 
 			//--
 			//apply our transform
 			//
 			//check it exists
-			if (this->transform->transform) {
+			if (ourTransform) {
 				for(auto & user : users) {
 					for(auto & joint : user) {
-						joint.second.position = this->transform->transform->applyTransform(joint.second.position);
+						joint.second.position = ourTransform->applyTransform(joint.second.position);
 					}
 				}
 			}
@@ -152,13 +165,17 @@ namespace ofxMultiTrack {
 			//--
 			//apply upstream transforms
 			//
+			//check we're not a root branch
+			if(ourParent == -1) {
+				return;
+			}
 			//check our upstream transform exists in the set
-			if(this->transform->parent >= otherNodes.size()) {
+			if(ourParent >= otherNodes.size()) {
 				ofLogError("ofxMultiTrack") << "Cannot apply transform for node, as parent node does not exist";
 				return;
 			}
 			//get the upstream node
-			auto upstreamNode = this->otherNodes[this->transform->parent];
+			auto upstreamNode = this->otherNodes[ourParent];
 			upstreamNode->applyTransform(users);
 			//
 			//--
@@ -166,20 +183,15 @@ namespace ofxMultiTrack {
 
 		//----------
 		ofVec3f NodeConnection::applyTransform(const ofVec3f & xyz) const {
-			//check if we have a transform first
-			if(!this->transform) {
-				//if we don't, then do nothing
-				//this is the case for the root node, and uncalibrated nodes
-				return xyz;
-			}
-
+			const auto ourTransform = this->transform.getTransform();
+			const auto ourParent = this->transform.getParent();
 
 			//--
 			//apply our transform
 			//
 			auto xyzDash = xyz;
-			if (this->transform->transform) { //check if we have one
-				xyzDash = this->transform->transform->applyTransform(xyzDash);
+			if (ourTransform) { //check if we have one
+				xyzDash = ourTransform->applyTransform(xyzDash);
 			}
 			//
 			//--
@@ -188,13 +200,17 @@ namespace ofxMultiTrack {
 			//--
 			//apply upstream transforms
 			//
+			//check we're not a root branch
+			if(ourParent == -1) {
+				return xyzDash;
+			}
 			//check our upstream transform exists in the set
-			if(this->transform->parent >= otherNodes.size()) {
+			if(ourParent >= otherNodes.size()) {
 				ofLogError("ofxMultiTrack") << "Cannot apply upstream transforms for node, as parent node does not exist";
 				return xyzDash;
 			}
 			//get the upstream node
-			auto upstreamNode = this->otherNodes[this->transform->parent];
+			auto upstreamNode = this->otherNodes[ourParent];
 			xyzDash = upstreamNode->applyTransform(xyzDash);
 			//
 			//--

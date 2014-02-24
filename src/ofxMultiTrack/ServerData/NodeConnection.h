@@ -17,12 +17,18 @@ namespace ofxMultiTrack {
 			typedef shared_ptr<NodeConnection> Ptr;
 			typedef vector<shared_ptr<NodeConnection>> Collection;
 
-			struct Transform {
+			class Transform {
+			public:
 				typedef shared_ptr<Transform> Ptr;
 
+				Transform();
 				Transform(unsigned int parent, Align::Ptr transform);
-				const unsigned int parent;
-				const Align::Ptr transform;
+
+				unsigned int getParent() const;
+				Align::Ptr getTransform() const;
+			protected:
+				unsigned int parent;
+				Align::Ptr transform;
 			};
 
 			NodeConnection(string address, int remoteIndex, Collection &otherNodes);
@@ -38,8 +44,8 @@ namespace ofxMultiTrack {
 			Json::Value getStatus();
 			int getIndex() const;
 
-			Transform::Ptr getTransform() const;
-			void setTransform(shared_ptr<Transform>);
+			const Transform & getTransform() const;
+			void setTransform(const Transform &);
 			void clearTransform();
 			list<int> getInfluenceList() const;
 			void applyTransform(UserSet & users) const;
@@ -72,7 +78,7 @@ namespace ofxMultiTrack {
 			ofMutex lockUsers;
 
 			Recording recording;
-			Transform::Ptr transform;
+			Transform transform;
 
 			Collection & otherNodes;
 

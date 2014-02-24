@@ -434,8 +434,7 @@ namespace ofxMultiTrack {
 			}
 
 			//assign the calibration in the NodeSet
-			auto transform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(originNodeIndex, routine));
-			this->nodes[nodeIndex]->setTransform(transform);
+			this->nodes[nodeIndex]->setTransform(ServerData::NodeConnection::Transform(originNodeIndex, routine));
 		} catch (std::exception e) {
 			ofLogError("ofxMultiTrack") << "Failed to create alignment for node #" << nodeIndex << " from origin node #" << originNodeIndex;
 			ofLogError("ofxMultiTrack") << e.what();
@@ -448,12 +447,12 @@ namespace ofxMultiTrack {
 		for(int i=0; i<this->nodes.size(); i++) {
 			auto & jsonNode = json["nodes"][i];
 			const auto transform = this->nodes[i]->getTransform();
-			bool hasTransform = (transform);
+			bool hasTransform = (transform.getParent() != -1);
 			jsonNode["hasTransform"] = hasTransform;
 			if (hasTransform) {
 				auto & jsonTransform = jsonNode["transform"];
-				jsonTransform["parent"] = transform->parent;
-				jsonTransform["parameters"] = transform->transform->serialise();
+				jsonTransform["parent"] = transform.getParent();
+				jsonTransform["parameters"] = transform.getTransform()->serialise();
 			}
 		}
 	}
@@ -465,13 +464,13 @@ namespace ofxMultiTrack {
 			if (i < this->nodes.size()) {
 				auto & jsonNode = json["nodes"][i];
 				bool hasTransform = jsonNode["hasTransform"].asBool();
-				shared_ptr<ServerData::NodeConnection::Transform> newTransform;
+				ServerData::NodeConnection::Transform newTransform;
 				if (hasTransform) {
 					auto & jsonTransform = jsonNode["transform"];
 					auto parent = jsonTransform["parent"].asInt();
 					shared_ptr<Align::Default> newAlign(new Align::Default);
 					newAlign->deserialise(jsonTransform["parameters"]);
-					newTransform = shared_ptr<ServerData::NodeConnection::Transform>(new ServerData::NodeConnection::Transform(parent, newAlign));
+					newTransform = ServerData::NodeConnection::Transform(parent, newAlign);
 				}
 				this->nodes[i]->setTransform(newTransform);
 			}
