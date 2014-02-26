@@ -73,7 +73,7 @@ namespace ofxMultiTrack {
 			//remove dead users from set to send
 			UserSet::size_type i = 0;
 			while (i < users.size()) {
-				if(!users[i].isAlive()) {
+				if(!users[i].isAlive() || !users[i].hasTrackedJoints()) {
 					users.erase(users.begin() + i);
 				} else {
 					i++;
@@ -267,10 +267,15 @@ namespace ofxMultiTrack {
 								} else {
 									userLocal.setAlive(true);
 									auto jointNames = jsonUser.getMemberNames();
+									bool foundANonZero = false;
 									for(auto & jointName : jointNames) {
 										auto & joint = jsonUser[jointName];
 										auto & jointLocal = userLocal[jointName];
 										jointLocal.deserialise(joint);
+										foundANonZero |= jointLocal.position.lengthSquared() > 0.0f;
+									}
+									if (!foundANonZero) {
+										userLocal.setAlive(false);
 									}
 								}
 							}

@@ -30,6 +30,7 @@ namespace ofxMultiTrack {
 			void deserialise(const Json::Value &) override;
 			void setAlive(bool);
 			bool isAlive() const;
+			bool hasTrackedJoints() const;
 			float getDistanceTo(const User &) const;
 			void draw(bool enableColors = true) const;
 			void setGlobalIndex(GlobalIndex);
@@ -56,6 +57,8 @@ namespace ofxMultiTrack {
 				NodeUserIndex(int nodeIndex, int userIndex);
 				bool operator<(const NodeUserIndex &) const;
 				bool operator==(const NodeUserIndex &) const;
+				friend ostream& operator<<(ostream&, const NodeUserIndex&);
+
 				int nodeIndex;
 				int userIndex;
 				bool valid;

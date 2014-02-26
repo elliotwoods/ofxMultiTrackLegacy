@@ -135,6 +135,11 @@ void ofApp::setup(){
 		}
 	};
 
+	//set the initial view positio to be standing up next to the first kinect
+	auto & camera = worldPanel->getCamera();
+	camera.setPosition(ofVec3f(0.5f, 1.0f, -1.0f));
+	camera.lookAt(ofVec3f(0.0f, 0.0f, 3.0f));
+
 	//draw recorder tracks in interactive scrollable panel
 	this->recorderControl = ofPtr<RecorderControl>(new RecorderControl(server.getRecorder()));
 	recorderPanel->add(this->recorderControl);

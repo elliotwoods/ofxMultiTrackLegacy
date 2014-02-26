@@ -138,6 +138,16 @@ namespace ofxMultiTrack {
 		bool User::isAlive() const {
 			return this->alive;
 		}
+
+		//----------
+		bool User::hasTrackedJoints() const {
+			for(auto joint : *this) {
+				if(joint.second.tracked && joint.second.position.lengthSquared() > 0.0f) {
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		//----------
 		float User::getDistanceTo(const User & other) const {
@@ -275,7 +285,7 @@ namespace ofxMultiTrack {
 			}
 		}
 
-#pragma mark CombinedUserSet
+#pragma mark CombinedUserSet::NodeUserIndex
 		//----------
 		CombinedUserSet::NodeUserIndex::NodeUserIndex() :
 			nodeIndex(0), userIndex(0), valid(false) {
@@ -303,6 +313,13 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		ostream& operator<<(ostream& os, const CombinedUserSet::NodeUserIndex& nodeUserIndex) {
+			os << "[" << nodeUserIndex.nodeIndex << ":" << nodeUserIndex.userIndex << "]";
+			return os;
+		}
+
+#pragma mark CombinedUserSet
+		//----------
 		void CombinedUserSet::addSourceMapping(const SourceMapping & sourceMapping) { 
 			this->sourceUserMappings.push_back(sourceMapping);
 		}
@@ -314,10 +331,44 @@ namespace ofxMultiTrack {
 
 		//----------
 		void CombinedUserSet::matchFromPreviousFrame(const CombinedUserSet & previousFrame) {
-			set<const User*> availablePreviousUsers;
-			for(auto & user : previousFrame) {
-				availablePreviousUsers.insert(&user);
+			//the intention of this function is to pick up any ID's from the previous frame
+
+			map<int, int> availablePreviousUserIndices;
+			{
+				int index = 0;
+				for(auto & user : previousFrame) {
+					availablePreviousUserIndices.insert(pair<int, int>(user.getGlobalIndex(), index++));
+				}
 			}
+
+//			{
+//				cout << "Current : " << endl;
+//				int i = 0;
+//				for(auto user : *this) {
+//					cout << "\t" << i << ": ";
+//					const auto & sourceMappings = this->sourceUserMappings[i];
+//					for(auto mapping : sourceMappings) {
+//						cout << mapping.first << " ";
+//					}
+//					cout << endl;
+//					i++;
+//				}
+//				cout << endl;
+//			}
+//			{
+//				cout << "Previous : " << endl;
+//				int i = 0;
+//				for(auto user : *this) {
+//					cout << "\t" << i << ": ";
+//					const auto & sourceMappings = this->sourceUserMappings[i];
+//					for(auto mapping : sourceMappings) {
+//						cout << mapping.first << " ";
+//					}
+//					cout << endl;
+//					i++;
+//				}
+//				cout << endl;
+//			}
 
 			//check whether a user was seen in a previous frame
 			// by checking to see if we share a NodeUserIndex with a user from
@@ -325,32 +376,55 @@ namespace ofxMultiTrack {
 			int index = 0;
 			for(auto & user : * this) {
 				const auto & sourceMapping = this->sourceUserMappings[index];
-				int previousIndex = 0;
-				const User * foundPrevious = nullptr;
-				for(auto previousUser : availablePreviousUsers) {
-					const auto & previousSourceMapping = previousFrame.getSourceMappings()[previousIndex];
-
+				set<int> matchingPreviousUser;
+				for(auto previousIndex : availablePreviousUserIndices) {
+					const auto & previousUser = previousFrame[previousIndex.second];
+					const auto & previousSourceMapping = previousFrame.getSourceMappings()[previousIndex.second];
 					//now search for any matches
 					for(auto nodeUserIndex : sourceMapping) {
 						for(auto previousNodeUserIndex : previousSourceMapping) {
 							if (nodeUserIndex.first == previousNodeUserIndex.first) {
-								foundPrevious = previousUser;
+								//we've found a user in the previous frame which maatches the user in this frame
+								
+								//if this global user index is unset, or is newer than the one we found
+								if (user.getGlobalIndex() == -1 || user.getGlobalIndex() > previousUser.getGlobalIndex()) {
+									user.setGlobalIndex(previousUser.getGlobalIndex());
+
+									//don't allow any other of the current users to be able to match with this
+									//previous user. also update our iterator
+									matchingPreviousUser.insert(previousIndex.second);
+//									cout << "Current " << index << ": " << nodeUserIndex.first << " <-> Previous " << previousIndex << ": " << previousNodeUserIndex.first << endl;
+									goto weFoundAMatch; //break the double loop and skip the iterator increment
+								}
 							}
 						}
-						if (foundPrevious) {
-							break;
-						}
 					}
-					if (foundPrevious) {
-						break;
-					}
-					previousIndex++;
 				}
-				if (foundPrevious) {
-					user.setGlobalIndex(foundPrevious->getGlobalIndex());
-					availablePreviousUsers.erase(foundPrevious);
+
+				weFoundAMatch:
+				for(auto previousIndexToRemove : matchingPreviousUser) {
+					availablePreviousUserIndices.erase(previousIndexToRemove);
 				}
 				index++;
+			}
+//			cout << endl << endl;
+
+			//Check if any global ID's are duplicated
+			// This will be the case where 2 users are considered as combined in the previous frame
+			// but in this frame they are considered as 2 separate users. We decide to work this way
+			// to avoid accidental indefinite 'welding' of users.
+			// The play off is of course that sometimes a user may split into 2 (e.g. bad calibration
+			// or bad tracking). However, we can assume that means we would have 1 bad skeleton rather
+			// than 1 good and 1 bad, so benefits don't seem worth the downsides.
+			for(auto A = this->begin(); A != this->end(); A++) {
+				auto B = A;
+				B++;
+				for(; B != this->end(); B++) {
+					if (A->getGlobalIndex() == B->getGlobalIndex()) {
+						B->setGlobalIndex(-1);
+						B->assignForEmptyGlobalIndex();
+					}
+				}
 			}
 		}
 
