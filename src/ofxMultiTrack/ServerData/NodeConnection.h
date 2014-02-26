@@ -47,9 +47,12 @@ namespace ofxMultiTrack {
 			const Transform & getTransform() const;
 			void setTransform(const Transform &);
 			void clearTransform();
-			list<int> getInfluenceList() const;
 			void applyTransform(UserSet & users) const;
 			ofVec3f applyTransform(const ofVec3f &) const;
+			void applyOriginPose(const User &);
+
+			list<int> getInfluenceList() const;
+			bool isRoot() const;
 
 			bool isEnabled() const;
 			void setEnabled(bool);

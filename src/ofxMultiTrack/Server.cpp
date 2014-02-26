@@ -413,6 +413,45 @@ namespace ofxMultiTrack {
 		}
 	}
 
+	// Taken from ofxRay
+	ofVec3f closestPointOnLineToPoint(const ofVec3f & s, const ofVec3f & t, const ofVec3f & p) {
+		return s + (t * (p - s).dot(t) / t.lengthSquared());
+	}
+	float distanceLineToPoint(const ofVec3f & s, const ofVec3f & t, const ofVec3f & p) {
+		return (p - s).cross(p - (s+t)).length() / t.length();
+	}
+
+	//----------
+	void Server::applyOriginPose() {
+		auto const & nodeViews = this->currentFrame.views;
+		for(int nodeIndex = 0; nodeIndex < this->nodes.size(); nodeIndex++) {
+			auto const & nodeView = nodeViews[nodeIndex];
+			auto & node = this->nodes[nodeIndex];
+
+			//check if there's a user in this node
+			if (node->isRoot()) {
+				//count seen users
+				int seenUsers = 0;
+				int firstSeenUser = -1;
+				for(const auto & user : nodeView) {
+					if (seenUsers == 0) {
+						firstSeenUser++;
+					}
+
+					if (user.isAlive() && user.hasTrackedJoints()) {
+						seenUsers++;
+					}
+				}
+				if (seenUsers == 1) {
+					const auto & user = nodeView[firstSeenUser];
+					node->applyOriginPose(user);
+				} else {
+					ofLogWarning("ofxMultiTrack") << "Cannot calibrate node [" << nodeIndex << "] as it does not have 1 user seen (" << nodeView.size() << " users seen)";
+				}
+			}
+		}
+	}
+
 	//----------
 	void Server::serialise(Json::Value & json) const {
 		json["nodeCount"] = this->nodes.size();

@@ -1,4 +1,5 @@
 #include "NodeConnection.h"
+#include "../Align/Factory.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -130,20 +131,6 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		list<int> NodeConnection::getInfluenceList() const {
-			list<int> influence;
-			const auto ourParent = this->transform.getParent();
-			if (ourParent != -1) {
-				//if we're not root, add our parent
-				influence.push_back(ourParent);
-				//and ask our parent
-				auto upstreamInfluences = otherNodes[this->transform.getParent()]->getInfluenceList();
-				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
-			}
-			return influence;
-		}
-
-		//----------
 		void NodeConnection::applyTransform(UserSet & users) const {
 			const auto ourTransform = this->transform.getTransform();
 			const auto ourParent = this->transform.getParent();
@@ -216,6 +203,63 @@ namespace ofxMultiTrack {
 			//--
 
 			return xyzDash;
+		}
+
+		//----------
+		void NodeConnection::applyOriginPose(const User & user) {
+			const auto & head = user.at(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_UP).position;
+			const auto & rightHand = user.at(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_RIGHT).position;
+			const auto & leftFoot = user.at(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_FLOOR_LEFT).position;
+			const auto & rightFoot = user.at(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_FLOOR_RIGHT).position;
+
+			ofMatrix4x4 transform;
+
+			//0. start with left foot as origin
+			transform.preMultTranslate(-leftFoot);
+
+			//1. rotate right foot to be (+x, 0, 0)
+			// i.e. set ground plane
+			ofQuaternion groundPlaneRotate;
+			groundPlaneRotate.makeRotate((rightFoot * transform).getNormalized(), ofVec3f(1.0f, 0.0f, 0.0f));
+			transform.preMultRotate(groundPlaneRotate);
+
+			//2. rotate head to be (x, +y, 0);
+			ofQuaternion upVectorRotate;
+			const ofVec3f headWithoutX = (head * transform) * ofVec3f(0.0f, 1.0f, 1.0f);
+			upVectorRotate.makeRotate(headWithoutX.getNormalized(), ofVec3f(0.0f, 1.0f, 0.0f));
+			//transform.preMultRotate(upVectorRotate);
+
+			//3. translate head to be (0, +y, 0)
+			const auto headOffset = (head * transform) * ofVec3f(1.0f, 0.0f, 1.0f);
+			//transform.preMultTranslate(-headOffset);
+
+			//4. rotate right hand to be (+, y, 0)
+			ofQuaternion rightVectorRotate;
+			const ofVec3f rightHandWithoutY = (rightHand * transform) * ofVec3f(1.0f, 0.0f, 1.0f);
+			rightVectorRotate.makeRotate(rightHandWithoutY.getNormalized(), ofVec3f(1.0f, 0.0f, 0.0f));
+			//transform.preMultRotate(rightVectorRotate);
+
+			//set our transform to be a calibrated as a root
+			this->transform = Transform(-1, Align::Factory::make(transform));
+		}
+
+		//----------
+		list<int> NodeConnection::getInfluenceList() const {
+			list<int> influence;
+			const auto ourParent = this->transform.getParent();
+			if (ourParent != -1) {
+				//if we're not root, add our parent
+				influence.push_back(ourParent);
+				//and ask our parent
+				auto upstreamInfluences = otherNodes[this->transform.getParent()]->getInfluenceList();
+				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
+			}
+			return influence;
+		}
+
+		//----------
+		bool NodeConnection::isRoot() const {
+			return this->transform.getParent() == -1;
 		}
 
 		//----------

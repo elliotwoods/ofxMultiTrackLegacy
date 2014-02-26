@@ -52,6 +52,9 @@ namespace ofxMultiTrack {
 		void autoCalibrate();
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Factory::makeDefault());
+		
+		/// Call this when you are standing in the world origin pose to calibrate any root nodes
+		void applyOriginPose();
 
 		void serialise(Json::Value &) const;
 		void deserialise(const Json::Value &);

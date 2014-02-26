@@ -233,7 +233,7 @@ namespace ofxMultiTrack {
 				font.drawString(message, 0, 0);
 
 				//draw text on flip side
-				ofTranslate(textBounds.width, 0.0f, +2.0f / 100.0f);
+				ofTranslate(textBounds.width - bufferHeight, 0.0f, +2.0f / 100.0f);
 				ofScale(-1.0f, 1.0f, 1.0f);
 				font.drawString(message, 0, 0);
 

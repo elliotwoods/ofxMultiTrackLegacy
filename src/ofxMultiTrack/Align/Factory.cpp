@@ -35,5 +35,12 @@ namespace ofxMultiTrack {
 			ofLogError("ofxMultiTrack::Align::Factory") << "Align type [" << type << "] is not available, making a default one instead";
 			return makeDefault();
 		}
+
+		//----------
+		Align::Ptr Factory::make(const ofMatrix4x4 & transform) {
+			auto align = shared_ptr<Align::RigidBodyFit>(new Align::RigidBodyFit());
+			align->setTransform(transform);
+			return align;
+		}
 	}
 }

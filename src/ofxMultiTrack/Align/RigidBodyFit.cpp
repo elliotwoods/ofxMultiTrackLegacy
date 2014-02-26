@@ -82,7 +82,26 @@ namespace ofxMultiTrack {
 				}
 
 				this->model.setParameters(&parameters[0]);
+			} else {
+				this->model.clearParameters();
 			}
+		}
+
+		//----------
+		void RigidBodyFit::setTransform(const ofMatrix4x4 & transform) {
+			ofVec3f translate = transform.getRowAsVec3f(3);
+			auto tempTransform = transform;
+			tempTransform.setTranslation(ofVec3f()); //strip translation so just rotation now
+			ofVec3f rotate = transform.getRotate().getEuler();
+
+			Model::Parameter parameters[6];
+			for(int i=0; i<3; i++) {
+				parameters[i] = (Model::Parameter) translate[i];
+			}
+			for(int i=0; i<3; i++) {
+				parameters[i + 3] = (Model::Parameter) rotate[i];
+			}
+			this->model.setParameters(parameters);
 		}
 	}
 }

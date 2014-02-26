@@ -7,7 +7,7 @@ void ofApp::setup(){
 	glAlphaFunc(GL_GREATER, 0.1f);
 	glEnable(GL_ALPHA_TEST);
 
-	this->drawMode = View;
+	this->drawMode = World;
 
 	//read config
 	auto configText = ofFile("config.json").readToBuffer().getText();
@@ -288,6 +288,8 @@ void ofApp::keyPressed(int key){
 	case 's':
 		this->server.saveCalibration();
 		break;
+	case 'o':
+		this->server.applyOriginPose();
 	}
 }
 

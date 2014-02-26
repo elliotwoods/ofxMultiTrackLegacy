@@ -15,6 +15,8 @@ namespace ofxMultiTrack {
 
 			Json::Value serialise() const override;
 			void deserialise(const Json::Value &) override;
+
+			void setTransform(const ofMatrix4x4 &);
 		protected:
 			typedef ofxNonLinearFit::Models::RigidBody Model;
 
