@@ -1,2 +1,2 @@
-#pragma once                                                  
-#define VERSION_BUILD_NUMBER            43
+#pragma once                                                    
+#define VERSION_BUILD_NUMBER            45

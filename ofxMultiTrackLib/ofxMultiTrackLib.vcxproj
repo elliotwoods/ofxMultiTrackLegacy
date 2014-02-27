@@ -132,6 +132,7 @@
     <ClInclude Include="..\..\ofxTSP\src\ofxTSP\Solver.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\Base.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\Factory.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Align\MatrixTransform.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\PolyFit.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Align\RigidBodyFit.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Base.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Route.cpp" />
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\RouteFind.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\Factory.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Align\MatrixTransform.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />

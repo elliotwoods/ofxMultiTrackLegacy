@@ -5,10 +5,8 @@
 
 namespace ofxMultiTrack {
 	namespace Align {
-		class RigidBodyFit : public Base {
+		class MatrixTransform : public Base {
 		public:
-			RigidBodyFit();
-			~RigidBodyFit();
 			string getType() const override;
 			void calibrate(const vector<ofVec3f> & thisSpace, const vector<ofVec3f> & originSpace) override;
 			ofVec3f applyTransform(const ofVec3f &) const override;
@@ -16,12 +14,10 @@ namespace ofxMultiTrack {
 			Json::Value serialise() const override;
 			void deserialise(const Json::Value &) override;
 
+			void setTransform(const ofMatrix4x4 &);
 			const ofMatrix4x4 & getTransform() const;
 		protected:
-			typedef ofxNonLinearFit::Models::RigidBody Model;
-
-			Model model;
-			ofxNonLinearFit::Fit<Model> fit;
+			ofMatrix4x4 transform;
 		};
 	}
 }

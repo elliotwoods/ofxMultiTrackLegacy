@@ -215,29 +215,31 @@ namespace ofxMultiTrack {
 			ofMatrix4x4 transform;
 
 			//0. start with left foot as origin
-			transform.preMultTranslate(-leftFoot);
+			transform.postMultTranslate(-leftFoot);
 
 			//1. rotate right foot to be (+x, 0, 0)
 			// i.e. set ground plane
 			ofQuaternion groundPlaneRotate;
 			groundPlaneRotate.makeRotate((rightFoot * transform).getNormalized(), ofVec3f(1.0f, 0.0f, 0.0f));
-			transform.preMultRotate(groundPlaneRotate);
+			transform.postMultRotate(groundPlaneRotate);
 
-			//2. rotate head to be (x, +y, 0);
+			//2. rotate around x to make head (x, +y, 0);
+			ofVec3f headDash = (head * transform);
+			float upVectorRotateTheta = atan2f(headDash.z, headDash.y);
 			ofQuaternion upVectorRotate;
-			const ofVec3f headWithoutX = (head * transform) * ofVec3f(0.0f, 1.0f, 1.0f);
-			upVectorRotate.makeRotate(headWithoutX.getNormalized(), ofVec3f(0.0f, 1.0f, 0.0f));
-			//transform.preMultRotate(upVectorRotate);
+			upVectorRotate.makeRotate((-upVectorRotateTheta) * RAD_TO_DEG, 1.0f, 0.0f, 0.0f);
+			transform.postMultRotate(upVectorRotate);
 
 			//3. translate head to be (0, +y, 0)
-			const auto headOffset = (head * transform) * ofVec3f(1.0f, 0.0f, 1.0f);
-			//transform.preMultTranslate(-headOffset);
+			headDash = head * transform;
+			transform.postMultTranslate((-headDash) * ofVec3f(1.0f, 0.0f, 1.0f));
 
 			//4. rotate right hand to be (+, y, 0)
+			const ofVec3f rightHandDash = (rightHand * transform);
+			float rightVectorRotateTheta = atan2(rightHandDash.z, rightHandDash.x);
 			ofQuaternion rightVectorRotate;
-			const ofVec3f rightHandWithoutY = (rightHand * transform) * ofVec3f(1.0f, 0.0f, 1.0f);
-			rightVectorRotate.makeRotate(rightHandWithoutY.getNormalized(), ofVec3f(1.0f, 0.0f, 0.0f));
-			//transform.preMultRotate(rightVectorRotate);
+			rightVectorRotate.makeRotate(rightVectorRotateTheta * RAD_TO_DEG, 0.0f, 1.0f, 0.0f);
+			transform.postMultRotate(rightVectorRotate);
 
 			//set our transform to be a calibrated as a root
 			this->transform = Transform(-1, Align::Factory::make(transform));

@@ -54,6 +54,8 @@ void ofApp::setup(){
 		ofDrawGridPlane(8.0f, 8.0f, true);
 		ofPopMatrix();
 		ofPopStyle();
+
+		ofDrawAxis(1.0f);
 	};
 	worldPanel->setGridEnabled(false);
 

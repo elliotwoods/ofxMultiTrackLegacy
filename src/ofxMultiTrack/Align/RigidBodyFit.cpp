@@ -88,20 +88,8 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void RigidBodyFit::setTransform(const ofMatrix4x4 & transform) {
-			ofVec3f translate = transform.getRowAsVec3f(3);
-			auto tempTransform = transform;
-			tempTransform.setTranslation(ofVec3f()); //strip translation so just rotation now
-			ofVec3f rotate = transform.getRotate().getEuler();
-
-			Model::Parameter parameters[6];
-			for(int i=0; i<3; i++) {
-				parameters[i] = (Model::Parameter) translate[i];
-			}
-			for(int i=0; i<3; i++) {
-				parameters[i + 3] = (Model::Parameter) rotate[i];
-			}
-			this->model.setParameters(parameters);
+		const ofMatrix4x4 & RigidBodyFit::getTransform() const {
+			return this->model.getCachedTransform();
 		}
 	}
 }

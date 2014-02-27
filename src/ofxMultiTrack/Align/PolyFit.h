@@ -9,7 +9,7 @@ namespace ofxMultiTrack {
 		public:
 			PolyFit();
 			~PolyFit();
-			string getType() const;
+			string getType() const override;
 			void calibrate(const vector<ofVec3f> & thisSpace, const vector<ofVec3f> & originSpace) override;
 			ofVec3f applyTransform(const ofVec3f &) const override;
 

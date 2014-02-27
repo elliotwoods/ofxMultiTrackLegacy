@@ -2,6 +2,7 @@
 
 #include "RigidBodyFit.h"
 #include "PolyFit.h"
+#include "MatrixTransform.h"
 
 namespace ofxMultiTrack {
 	namespace Align {
@@ -32,13 +33,16 @@ namespace ofxMultiTrack {
 			if (checkAndMake<PolyFit>(type, align)) {
 				return align;
 			}
+			if (checkAndMake<MatrixTransform>(type, align)) {
+				return align;
+			}
 			ofLogError("ofxMultiTrack::Align::Factory") << "Align type [" << type << "] is not available, making a default one instead";
 			return makeDefault();
 		}
 
 		//----------
 		Align::Ptr Factory::make(const ofMatrix4x4 & transform) {
-			auto align = shared_ptr<Align::RigidBodyFit>(new Align::RigidBodyFit());
+			auto align = shared_ptr<Align::MatrixTransform>(new Align::MatrixTransform());
 			align->setTransform(transform);
 			return align;
 		}
