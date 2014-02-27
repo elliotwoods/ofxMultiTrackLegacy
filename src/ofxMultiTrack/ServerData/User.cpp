@@ -1,5 +1,6 @@
 #include "User.h"
 #include "Parameters.h"
+#include "../Utils/Constants.h"
 #include "../../ofxAssets/src/ofxAssets.h"
 #include <numeric>
 #include <set>
@@ -201,7 +202,30 @@ namespace ofxMultiTrack {
 				//draw globalIndex label
 				//
 				ofPushMatrix();
-				ofTranslate(this->begin()->second.position);
+
+				bool onFoot = true;
+				const auto foot = this->find(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_FLOOR_LEFT);
+				if (foot != this->end()) {
+					const auto footPosition = foot->second.position;
+					//if we're near the floor
+					if  (abs(footPosition.y) < 1.0f) {
+						//then put it on the floor under the head
+						const auto head = this->find(OFXMULTITRACK_SERVER_ORIGIN_REFERENCE_JOINT_UP);
+						const auto userPosition = (head != this->end()) ? head->second.position : footPosition;
+						
+						ofTranslate(userPosition * ofVec3f(1.0f, 0.0f, 1.0f));
+						ofRotate(90, 1.0f, 0.0f, 0.0f);
+						ofScale(2.0f, 2.0f, 2.0f);
+						onFoot = false;
+					} else {
+						//otherwise attach to foot
+						ofTranslate(footPosition);
+					}
+				} else if (!this->empty()) {
+					//if there is no foot, then let's use first available joint
+					ofTranslate(this->begin()->second.position);
+				}
+
 				float scaleFactor = 2.0f / ofGetCurrentViewport().height;
 				ofScale(-scaleFactor, scaleFactor, scaleFactor);
 
@@ -220,6 +244,10 @@ namespace ofxMultiTrack {
 				rectBounds.height += bufferHeight * 2.0f;
 				rectBounds.width += bufferHeight * 2.0f;
 
+				if (!onFoot) {
+					ofTranslate(-rectBounds.getCenter());
+				}
+
 				//draw background
 				ofPath background;
 				background.setFillColor(ofColor(0));
@@ -233,8 +261,13 @@ namespace ofxMultiTrack {
 				font.drawString(message, 0, 0);
 
 				//draw text on flip side
-				ofTranslate(textBounds.width - bufferHeight, 0.0f, +2.0f / 100.0f);
-				ofScale(-1.0f, 1.0f, 1.0f);
+				if (onFoot) {
+					ofTranslate(rectBounds.width - bufferHeight, 0.0f, +2.0f / 100.0f);
+					ofScale(-1.0f, 1.0f, 1.0f);
+				} else {
+					ofTranslate(0.0f, textBounds.height, +2.0f / 100.0f);
+					ofScale(1.0f, -1.0f, 1.0f);
+				}
 				font.drawString(message, 0, 0);
 
 				ofPopMatrix();

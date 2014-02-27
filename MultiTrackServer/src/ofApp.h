@@ -8,6 +8,8 @@
 #include "RecordingControl.h"
 #include "RecorderControl.h"
 
+#define USER_SLOT_COUNT 6
+
 class ofApp : public ofBaseApp{
 	struct NodeUser {
 		NodeUser() {
@@ -49,7 +51,9 @@ public:
 	vector<Target> targets;
 	ofPtr<RecorderControl> recorderControl;
 	ofxCvGui::ElementPtr calibrateButton;
+	
 	ofxOscSender oscSender;
+	int userSlots[USER_SLOT_COUNT];
 
 	DrawMode drawMode;
 };

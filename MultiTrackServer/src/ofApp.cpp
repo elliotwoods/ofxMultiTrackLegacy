@@ -8,6 +8,7 @@ void ofApp::setup(){
 	glEnable(GL_ALPHA_TEST);
 
 	this->drawMode = World;
+	std::fill(this->userSlots, this->userSlots + 6, -1); //set the user slots to be blank
 
 	//read config
 	auto configText = ofFile("config.json").readToBuffer().getText();
@@ -220,32 +221,83 @@ void ofApp::update(){
 		this->calibrateButton->disable();
 	}
 
+	const auto currentFrame = this->server.getCurrentFrame();
+	const auto userSet = currentFrame.combined;
+
 	//--
-	//send data
-	//
-	auto currentFrame = this->server.getCurrentFrame();
-	auto userSet = currentFrame.combined;
+	//update userSlots
 
-	//send users
-	auto userIndex = 0;
-	for(auto & user : userSet) {
-		ofxOscBundle oscBundle;
-		for(auto & joint : user) {
-			ofxOscMessage jointMessage;
-			jointMessage.setAddress("/daikon/user/" + ofToString(userIndex) + "/skeleton/" + joint.first + "/pos");
-				
-			// MEMO HACK (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
-			// flip y and z
-			ofVec3f p(joint.second.position[0], joint.second.position[2], joint.second.position[1]);
-			p *= 100.0;// convert to cm
+	//get a list of globalIndices available
+	set<ofxMultiTrack::ServerData::User::GlobalIndex> currentGlobalIndices;
+	for(const auto user : userSet) {
+		currentGlobalIndices.insert(user.getGlobalIndex());
+	}
+	auto unusedGlobalIndices = currentGlobalIndices;
 
-			for(int i=0; i<3; i++) {
-				jointMessage.addFloatArg(p[i]);
+	//clear out dead users
+	for(int i=0; i < USER_SLOT_COUNT; i++) {
+		bool nowDead = true;
+		for(const auto user : userSet) {
+			if (user.getGlobalIndex() == this->userSlots[i]) {
+				unusedGlobalIndices.erase(user.getGlobalIndex());
+				nowDead = false;
+				break; //this won't be true for anything else, so don't waste time
 			}
-			oscBundle.addMessage(jointMessage);
 		}
-		this->oscSender.sendBundle(oscBundle);
-		userIndex++;
+		if (nowDead) {
+			this->userSlots[i] = -1;
+		}
+	}
+
+	//assign any empty slots
+	for(int i=0; i < USER_SLOT_COUNT; i++) {
+		if (this->userSlots[i] == -1) {
+			//we have an empty slot
+			if (!unusedGlobalIndices.empty()) {
+				//we have a user to put in this slot
+				auto globalIndex = * unusedGlobalIndices.begin();
+				this->userSlots[i] = globalIndex;
+				unusedGlobalIndices.erase(globalIndex);
+			}
+		}
+	}
+
+	//fill empty slots with users where available
+	//--
+
+	//--
+	//send users
+	//
+	for(auto slot = 0; slot < USER_SLOT_COUNT; slot++) {
+		for(auto & user : userSet) {
+			if (user.getGlobalIndex() == this->userSlots[slot]) {
+				ofxOscBundle oscBundle;
+
+				ofxOscMessage indexMessage;
+				indexMessage.setAddress("/daikon/user/" + ofToString(slot) + "/index");
+				indexMessage.addIntArg(user.getGlobalIndex());
+				oscBundle.addMessage(indexMessage);
+
+				for(auto & joint : user) {
+					ofxOscMessage jointMessage;
+					jointMessage.setAddress("/daikon/user/" + ofToString(slot) + "/skeleton/" + joint.first + "/pos");
+				
+					auto jointPosition = joint.second.position;
+
+					// flip y and z to match mocap data
+					// memo : (to make coordinate system same as mocap data, worldup == +ve z, 1 unit == cm)
+					// elliotwoods : i'd prefer to stick with our coords, and have any hacks like this on client side
+					// elliotwoods : i'd prefer to stick with meters
+					jointPosition = ofVec3f(jointPosition.x, jointPosition.z, jointPosition.y) * 100.0f;
+
+					for(int i=0; i<3; i++) {
+						jointMessage.addFloatArg(jointPosition[i]);
+					}
+					oscBundle.addMessage(jointMessage);
+				}
+				this->oscSender.sendBundle(oscBundle);
+			}
+		}
 	}
 	//
 	//--
