@@ -11,7 +11,7 @@ namespace ofxMultiTrack {
 		vector<UserSet> NodeSet::getUsersView() const {
 			vector<UserSet> usersView;
 			for(auto node : *this) {
-				if(node->isConnected()) {
+				if(node->isConnected() && node->isEnabled()) {
 					usersView.push_back(node->getLiveData());
 				} else {
 					usersView.push_back(UserSet());
@@ -50,8 +50,11 @@ namespace ofxMultiTrack {
 				for(auto & sourceUser : sourceMapping.second) {
 					sourceUserData.push_back(usersWorld[sourceUser.first.nodeIndex][sourceUser.first.userIndex]);
 				}
-				combinedUserSet.push_back(User(sourceUserData));
-				combinedUserSet.addSourceMapping(sourceMapping.second);
+				const auto combinedUser = User(sourceUserData);
+				if (combinedUser.isAlive()) {
+					combinedUserSet.push_back(combinedUser);
+					combinedUserSet.addSourceMapping(sourceMapping.second);
+				}
 			}
 			return combinedUserSet;
 		}

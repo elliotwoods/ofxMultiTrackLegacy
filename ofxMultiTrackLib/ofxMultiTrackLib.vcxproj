@@ -98,6 +98,7 @@
     <ClInclude Include="..\..\ofxJSON\libs\jsoncpp\src\json_tool.h" />
     <ClInclude Include="..\..\ofxJSON\src\ofxJSONElement.h" />
     <ClInclude Include="..\..\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h" />
+    <ClInclude Include="..\..\ofxKinectCommonBridge\libs\KinectCommonBridge\include\SensorManager.h" />
     <ClInclude Include="..\..\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxNetwork.h" />
     <ClInclude Include="..\..\ofxNetwork\src\ofxNetworkUtils.h" />

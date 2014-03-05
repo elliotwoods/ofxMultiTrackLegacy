@@ -91,10 +91,13 @@ namespace ofxMultiTrack {
 				}
 			}
 
+			bool allDead = true;
+
 			for(auto & joint : accumulation) {
 				const auto & trackedPositions = joint.second.trackedPositions;
 				const auto & inferredPositions = joint.second.inferredPositions;
 				auto & localJoint = (*this)[joint.first];
+				bool noJoints = false;
 				if (!trackedPositions.empty()) {
 					localJoint.position = std::accumulate(trackedPositions.begin(), trackedPositions.end(), ofVec3f()) / (float) joint.second.trackedPositions.size();
 					localJoint.rotation = joint.second.trackedRotations.front();
@@ -104,11 +107,14 @@ namespace ofxMultiTrack {
 				} else {
 					//we have no tracked data for this joint
 					//we may want to look to the previous frame for data, or use the junk coming from the kinect
+					noJoints = true;
 				}
 				localJoint.connectedTo = joint.second.connectedTo;
+				localJoint.tracked = ! noJoints;
+				allDead &= noJoints;
 			}
 
-			this->alive = true;
+			this->alive = ! allDead;
 			this->globalIndex = -1;
 		}
 

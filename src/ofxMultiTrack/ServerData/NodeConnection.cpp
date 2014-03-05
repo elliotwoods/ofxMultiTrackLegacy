@@ -280,6 +280,13 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		void NodeConnection::send(const Json::Value & value) {
+			this->toSendMutex.lock();
+			this->toSend[this->toSend.size()] = value;
+			this->toSendMutex.unlock();
+		}
+
+		//----------
 		void NodeConnection::threadedFunction() {
 			ofSetLogLevel("ofxNetwork", OF_LOG_SILENT);
 			ofSetLogLevel("ofxTCPClient", OF_LOG_SILENT);
@@ -287,60 +294,9 @@ namespace ofxMultiTrack {
 				if (!this->client.isConnected()) {
 					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + this->remoteIndex, false);
 				}
-				auto response = this->client.receive();
-				if (response.size() > 0) {
-					try
-					{
-						Json::Value json;
-						jsonReader.parse(response, json);
-						auto & jsonSkeletons = json["modules"][0]["data"];
-						bool newSkeleton = jsonSkeletons["isNewSkeleton"].asBool();
-						auto & jsonUsers = jsonSkeletons["users"];
-						this->lockUsers.lock();
-						int userIndex = 0;
-						if (this->users.size() < jsonUsers.size()) {
-							this->users.resize(jsonUsers.size());
-						}
-						for(auto & userLocal : this->users) {
-							if (userIndex >= jsonUsers.size() || jsonUsers.isNull()) {
-								userLocal.setAlive(false);
-							} else {
-								auto & jsonUser = jsonUsers[userIndex];
-								if (jsonUser.size() == 0) {
-									userLocal.clear();
-									userLocal.setAlive(false);
-								} else {
-									userLocal.setAlive(true);
-									auto jointNames = jsonUser.getMemberNames();
-									bool foundANonZero = false;
-									for(auto & jointName : jointNames) {
-										auto & joint = jsonUser[jointName];
-										auto & jointLocal = userLocal[jointName];
-										jointLocal.deserialise(joint);
-										foundANonZero |= jointLocal.position.lengthSquared() > 0.0f;
-									}
-									if (!foundANonZero) {
-										userLocal.setAlive(false);
-									}
-								}
-							}
-							userIndex++;
-						}
-						if (newSkeleton) {
-							this->recording.addIncoming(this->users);
-						}
-
-						this->remoteStatusLock.lock();
-						this->remoteStatus = json["status"];
-						this->remoteStatusLock.unlock();
-
-					}
-					catch(std::exception e)
-					{
-						ofLogError("ofxMultiTrack") << e.what();
-					}
-					lockUsers.unlock();
-				}
+				
+				this->receiveMessages();
+				this->sendMessages();
 
 				this->cachedConnected = this->client.isConnected();
 
@@ -353,6 +309,77 @@ namespace ofxMultiTrack {
 				}
 			}
 			this->threadEnded = true;
+		}
+
+		//----------
+		void NodeConnection::receiveMessages() {
+			auto response = this->client.receive();
+			if (response.size() > 0) {
+				try
+				{
+					Json::Value json;
+					jsonReader.parse(response, json);
+					auto & jsonSkeletons = json["modules"][0]["data"];
+					bool newSkeleton = jsonSkeletons["isNewSkeleton"].asBool();
+					auto & jsonUsers = jsonSkeletons["users"];
+					this->lockUsers.lock();
+					int userIndex = 0;
+					if (this->users.size() < jsonUsers.size()) {
+						this->users.resize(jsonUsers.size());
+					}
+					for(auto & userLocal : this->users) {
+						if (userIndex >= jsonUsers.size() || jsonUsers.isNull()) {
+							userLocal.setAlive(false);
+						} else {
+							auto & jsonUser = jsonUsers[userIndex];
+							if (jsonUser.size() == 0) {
+								userLocal.clear();
+								userLocal.setAlive(false);
+							} else {
+								userLocal.setAlive(true);
+								auto jointNames = jsonUser.getMemberNames();
+								bool foundANonZero = false;
+								for(auto & jointName : jointNames) {
+									auto & joint = jsonUser[jointName];
+									auto & jointLocal = userLocal[jointName];
+									jointLocal.deserialise(joint);
+									foundANonZero |= jointLocal.position.lengthSquared() > 0.0f;
+								}
+								if (!foundANonZero) {
+									userLocal.setAlive(false);
+								}
+							}
+						}
+						userIndex++;
+					}
+					if (newSkeleton) {
+						this->recording.addIncoming(this->users);
+					}
+
+					this->remoteStatusLock.lock();
+					this->remoteStatus = json["status"];
+					this->remoteStatusLock.unlock();
+
+				}
+				catch(std::exception e)
+				{
+					ofLogError("ofxMultiTrack") << e.what();
+				}
+				lockUsers.unlock();
+			}
+		}
+
+		//----------
+		void NodeConnection::sendMessages() {
+			this->toSendMutex.lock();
+			if (!this->toSend.empty()) {
+				Json::Value send;
+				Json::FastWriter writer;
+				const auto toSendString = writer.write(this->toSend);
+				this->toSend.clear();
+				client.send(toSendString);
+			}
+			this->toSendMutex.unlock();
 		}
 
 		//----------

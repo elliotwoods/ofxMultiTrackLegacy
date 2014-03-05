@@ -27,6 +27,8 @@ namespace ofxMultiTrack {
 		string getStatusString();
 
 	protected:
+		void parseIncoming(const Json::Value &);
+
 		ofxTCPServer server;
 		NodeSettings settings;
 

@@ -37,7 +37,6 @@ void ofApp::setup(){
 	//
 	gui.init();
 	auto leftColumn = gui.addGrid();
-	auto statusPanel = gui.addScroll("Status");
 
 	auto worldPanel = gui.makeWorld("View");
 	this->worldPanel = worldPanel;
@@ -183,7 +182,9 @@ void ofApp::setup(){
 		}
 	};
 
+	/*
 	//draw status in a scrollable panel
+	auto statusPanel = gui.addScroll("Status");
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
 	statusPanel->add(statusElement);
 	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
@@ -193,6 +194,18 @@ void ofApp::setup(){
 		auto resizeBounds = statusElement->getBounds();
 		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;
 		statusElement->setBounds(resizeBounds);
+	};
+	*/
+
+	auto inspector = gui.addInspector();
+	inspector->onClear += [this] (ofxCvGui::ElementGroupPtr & elements) {
+		elements->add(shared_ptr<ofxCvGui::Widgets::Title>(new ofxCvGui::Widgets::Title("Global", ofxCvGui::Widgets::Title::Level::H2)));
+		
+		auto buildValue = shared_ptr<ofxCvGui::Widgets::LiveValue<float> >(new ofxCvGui::Widgets::LiveValue<float>("Build number", [] () { return getBuildNumber(); }));
+		elements->add(buildValue);
+
+		auto fpsValue = shared_ptr<ofxCvGui::Widgets::LiveValue<float> >(new ofxCvGui::Widgets::LiveValue<float>("fps", [] () { return ofGetFrameRate(); }));
+		elements->add(shared_ptr<ofxCvGui::Widgets::Spacer>(new ofxCvGui::Widgets::Spacer()));
 	};
 
 	//arrange grid on resize
@@ -276,18 +289,21 @@ void ofApp::update(){
 	//send users
 	//
 	for(auto slot = 0; slot < USER_SLOT_COUNT; slot++) {
+		bool foundUser = false;
+		ofxOscBundle oscBundle;
+		string baseUserAddress = "/daikon/user/" + ofToString(slot);
 		for(auto & user : userSet) {
 			if (user.getGlobalIndex() == this->userSlots[slot]) {
-				ofxOscBundle oscBundle;
+				foundUser = true;
 
 				ofxOscMessage indexMessage;
-				indexMessage.setAddress("/daikon/user/" + ofToString(slot) + "/index");
+				indexMessage.setAddress(baseUserAddress + "/index");
 				indexMessage.addIntArg(user.getGlobalIndex());
 				oscBundle.addMessage(indexMessage);
 
 				for(auto & joint : user) {
 					ofxOscMessage jointMessage;
-					jointMessage.setAddress("/daikon/user/" + ofToString(slot) + "/skeleton/" + joint.first + "/pos");
+					jointMessage.setAddress(baseUserAddress + "/skeleton/" + joint.first + "/pos");
 				
 					auto jointPosition = joint.second.position;
 
@@ -302,9 +318,14 @@ void ofApp::update(){
 					}
 					oscBundle.addMessage(jointMessage);
 				}
-				this->oscSender.sendBundle(oscBundle);
 			}
 		}
+		ofxOscMessage activeMessage;
+		activeMessage.setAddress(baseUserAddress + "/active");
+		activeMessage.addIntArg(foundUser ? 1 : 0);
+		oscBundle.addMessage(activeMessage);
+
+		this->oscSender.sendBundle(oscBundle);
 	}
 	//
 	//--

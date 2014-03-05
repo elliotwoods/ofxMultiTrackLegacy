@@ -11,14 +11,22 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 	this->onDraw += [this] (DrawArguments & args) { this->draw(args); };
 	this->onUpdate += [this] (UpdateArguments & args) { this->update(args); };
 	this->onBoundsChange += [this] (BoundsChangeArguments & args) { this->boundsChange(args); };
-	this->onMouseReleased += [this] (MouseArguments &) { this->node->toggleEnabled(); };
+	this->onMouseReleased += [this] (MouseArguments &) { 
+		ofxCvGui::Panels::Inspector::select(*this);
+	};
 	this->trackDirty = false;
 	this->cachedCount = 0;
+
+	this->tilt.set("Tilt [°]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
+
 }
 
 //---------
 void RecordingControl::update(UpdateArguments &) {
-	if(this->cachedCount != this->recording.getFrames().size()) {
+	
+	this->status = this->node->getStatus();
+
+	if(this->cachedCount != this->recording.getFrames().size() || this->recorder.isRecording()) {
 		this->trackDirty = true;
 	}
 
@@ -70,11 +78,21 @@ void RecordingControl::draw(DrawArguments & args) {
 	ofSetLineWidth(1);
 	ofLine(0,this->getHeight(), this->getWidth(), this->getHeight()); 
 
+	if (ofxCvGui::Panels::Inspector::isSelected(*this)) {
+		ofFill();
+	} else {
+		ofNoFill();
+	}
+
+	ofCircle(9, 8, 3);
+		
 	if (!this->node->isEnabled()) {
 		ofEnableAlphaBlending();
 		ofSetColor(100,100,100,100);
 		ofRect(args.localBounds);
 	}
+
+
 	ofPopStyle();
 }
 
@@ -82,4 +100,37 @@ void RecordingControl::draw(DrawArguments & args) {
 void RecordingControl::boundsChange(BoundsChangeArguments & args) {
 	this->fbo.allocate(this->getWidth(), this->getHeight(), GL_RGBA);
 	this->trackDirty = true;
+}
+
+using namespace ofxCvGui::Widgets;
+
+//---------
+void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
+	auto header = shared_ptr<Title>(new Title("Node #" + ofToString(this->node->getIndex()), Title::Level::H2));
+	
+	auto addressValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Address", [this] () {
+		return this->status["address"].asString();
+	}));
+
+	auto connectedValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Connected", [this] () {
+		return this->status["connected"].asBool() ? "true" : "false";
+	}));
+
+	auto fpsValue = shared_ptr<LiveValue<float> >(new LiveValue<float>("Remote fps", [this] () {
+		return this->status["remoteStatus"]["fps"].asFloat();
+	}));
+
+	auto tiltSlider = shared_ptr<Slider>(new Slider(this->tilt));
+	tiltSlider->onChange += [this] (const float & value) {
+		Json::Value tiltMessage;
+		tiltMessage["type"] = "tilt";
+		tiltMessage["value"] = value;
+		this->node->send(tiltMessage);
+	};
+
+	inspector->add(header);
+	inspector->add(addressValue);
+	inspector->add(connectedValue);
+	inspector->add(fpsValue);
+	inspector->add(tiltSlider);
 }

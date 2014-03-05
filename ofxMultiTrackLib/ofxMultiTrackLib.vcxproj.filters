@@ -332,6 +332,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Modules\PreviewRGB.h">
       <Filter>src\ofxMultiTrack\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxKinectCommonBridge\libs\KinectCommonBridge\include\SensorManager.h">
+      <Filter>addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">

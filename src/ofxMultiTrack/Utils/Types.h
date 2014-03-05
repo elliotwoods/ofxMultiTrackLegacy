@@ -24,9 +24,5 @@ namespace ofxMultiTrack {
 		int localIndex;
 	};
 
-	struct ServerToNodeHeader {
-
-	};
-
 	typedef long long Timestamp;
 }

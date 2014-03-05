@@ -2,9 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxCvGui2/src/ofxCvGui.h"
+#include "ofxCvGui2/src/ofxCvGui.h"
 #include "ofxMultiTrack/src/ofxMultiTrack/Server.h"
 
-class RecordingControl : public ofxCvGui::ElementGroup {
+class RecordingControl : public ofxCvGui::Element, public ofxCvGui::Widgets::IInspectable {
 public:
 	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &, ofxMultiTrack::ServerData::NodeConnection::Ptr);
 protected:
@@ -13,6 +14,8 @@ protected:
 	void draw(ofxCvGui::DrawArguments &);
 	void boundsChange(ofxCvGui::BoundsChangeArguments &);
 
+	void populate(ofxCvGui::ElementGroupPtr) override;
+
 	ofxMultiTrack::ServerData::Recorder & recorder;
 	ofxMultiTrack::ServerData::Recording & recording;
 	ofxMultiTrack::ServerData::NodeConnection::Ptr node;
@@ -20,4 +23,8 @@ protected:
 	ofFbo fbo;
 	bool trackDirty;
 	int cachedCount;
+
+	ofParameter<float> tilt;
+
+	Json::Value status;
 };

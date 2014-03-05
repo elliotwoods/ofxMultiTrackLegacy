@@ -68,26 +68,6 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Node::update() {
-		//check for instructions from any connected ofxMultiTrack::Server's
-		for(int iClient = 0; iClient < this->server.getNumClients(); iClient++) {
-			if (!this->server.isClientConnected(iClient)) {
-				continue;
-			}
-			size_t numBytes = this->server.getNumReceivedBytes(iClient);
-			while(numBytes > 0) {
-				ofBuffer rx;
-				rx.allocate(numBytes);
-				char* bytes = rx.getBinaryBuffer();
-				
-				this->server.receiveRawBytes(iClient, bytes, rx.size());
-				
-				if (numBytes >= sizeof(ServerToNodeHeader)) {
-					auto * header = (ServerToNodeHeader*) (void*) bytes;
-					bytes += sizeof(ServerToNodeHeader);
-				}
-			}
-		}
-
 		//update devices
 		for(auto device : this->devices) {
 			device->update();
@@ -116,6 +96,25 @@ namespace ofxMultiTrack {
 
 			//send payload to all clients
 			server.sendToAll(result); //always sends a [/TCP] from oF (note for other clients, e.g. VVVV)
+		}
+
+		Json::Value received;
+		for(int iClient = 0; iClient < this->server.getNumClients(); iClient++) {
+			if (!this->server.isClientConnected(iClient)) {
+				continue;
+			}
+			Json::Reader reader;
+			auto rxString = server.receive(iClient);
+			if (!rxString.empty()) {
+				Json::Value serverJson;
+				reader.parse(rxString, serverJson);
+				for(const auto & message : serverJson) {
+					received[received.size()] = message;
+				}
+			}
+		}
+		if (!received.empty()) {
+			this->parseIncoming(received);
 		}
 	}
 
@@ -184,5 +183,19 @@ namespace ofxMultiTrack {
 	string Node::getStatusString() {
 		Json::StyledWriter writer;
 		return "status = " + writer.write(this->getStatus());
+	}
+
+	//----------
+	void Node::parseIncoming(const Json::Value & json) {
+		for(auto message : json) {
+			if (!message.empty()) {
+				if (message["type"].asString() == "tilt") {
+					auto kinect = this->devices.get<Devices::KinectSDK>();
+					if (kinect) {
+						kinect->setElevation(message["value"].asFloat());
+					}
+				}
+			}
+		}
 	}
 }

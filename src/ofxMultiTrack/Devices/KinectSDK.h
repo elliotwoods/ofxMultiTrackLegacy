@@ -26,10 +26,12 @@ namespace ofxMultiTrack {
 			bool isFrameNew() override;
 			Json::Value getStatus() override;
 
+			void setElevation(float angle);
 			ofxKinectCommonBridge& getDevice();
 		protected:
 			int deviceID;
 			ofxKinectCommonBridge kinect;
+			INuiSensor * sensor;
 		};
 	}
 }

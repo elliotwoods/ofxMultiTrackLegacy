@@ -57,8 +57,13 @@ namespace ofxMultiTrack {
 			bool isEnabled() const;
 			void setEnabled(bool);
 			void toggleEnabled();
+
+			void send(const Json::Value &);
 		protected:
 			void threadedFunction() override;
+			void receiveMessages();
+			void sendMessages();
+
 			void performBlocking(function<void()>);
 
 			deque<function<void()>> actionQueue; // a list of actions to be performed on the network thread
@@ -69,6 +74,9 @@ namespace ofxMultiTrack {
 			string address;
 			int remoteIndex;
 			bool running;
+
+			Json::Value toSend;
+			ofMutex toSendMutex;
 
 			Json::Value remoteStatus;
 			ofMutex remoteStatusLock;

@@ -7,6 +7,7 @@ namespace ofxMultiTrack {
 		//---------
 		KinectSDK::KinectSDK() {
 			this->deviceID = 0;
+			this->sensor = 0;
 		}
 
 		//---------
@@ -41,6 +42,8 @@ namespace ofxMultiTrack {
 				string error = "Cannot start Kinect sensor ID " + ofToString(this->deviceID);
 				throw(Exception(error));
 			}
+
+			this->sensor = & kinect.getNuiSensor();
 		}
 
 		//---------
@@ -59,6 +62,15 @@ namespace ofxMultiTrack {
 			status["Device ID"] = ofToString(deviceID);
 			status["isFrameNew"] = this->kinect.isFrameNew();
 			return status;
+		}
+
+		//---------
+		void KinectSDK::setElevation(float angle) {
+			if (!this->sensor) {
+				ofLogError("ofxMultiTrack::Devices::Kinect") << "Cannot set elevation, no device present";
+			}
+			long longAngle = ofClamp(angle, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
+			const auto result = this->sensor->NuiCameraElevationSetAngle(longAngle);
 		}
 
 		//---------
