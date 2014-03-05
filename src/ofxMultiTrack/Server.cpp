@@ -458,7 +458,7 @@ namespace ofxMultiTrack {
 		for(int i=0; i<this->nodes.size(); i++) {
 			auto & jsonNode = json["nodes"][i];
 			const auto transform = this->nodes[i]->getTransform();
-			bool hasTransform = (transform.getParent() != -1);
+			bool hasTransform = (transform.getTransform());
 			jsonNode["hasTransform"] = hasTransform;
 			if (hasTransform) {
 				auto & jsonTransform = jsonNode["transform"];
@@ -493,7 +493,7 @@ namespace ofxMultiTrack {
 	//----------
 	void Server::saveCalibration(string filename) const {
 		if (filename=="") {
-			auto response = ofSystemSaveDialog("recording.json", "Save calibration");
+			auto response = ofSystemSaveDialog("calibration.json", "Save calibration");
 			if (!response.bSuccess) {
 				ofLogWarning("ofxMultiTrack") << "No file selected for save";
 				return;
@@ -522,7 +522,7 @@ namespace ofxMultiTrack {
 		}
 
 		ofFile input;
-		input.open(filename, ofFile::ReadOnly, false);
+		input.open(ofToDataPath(filename, true), ofFile::ReadOnly, false);
 		string jsonRaw = input.readToBuffer().getText();
 
 		try {

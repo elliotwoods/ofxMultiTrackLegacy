@@ -139,6 +139,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\Devices\KinectSDK.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Base.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\PreviewRGB.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Skeleton.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Node.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Modules\PreviewRGB.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />

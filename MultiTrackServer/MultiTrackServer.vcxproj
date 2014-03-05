@@ -107,8 +107,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.cpp" />
-    <ClCompile Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.cpp" />
     <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\IpEndpointName.cpp" />
     <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\win32\NetworkingUtilsWin.cpp" />
     <ClCompile Include="..\..\ofxOsc\libs\oscpack\src\ip\win32\UdpSocketWin.cpp" />
@@ -128,11 +126,6 @@
     <ClCompile Include="src\Version.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Canvas.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Graph.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Link.h" />
-    <ClInclude Include="..\..\ofxGraphEdit\src\ofxGraphEdit\Node.h" />
     <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\IpEndpointName.h" />
     <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\NetworkingUtils.h" />
     <ClInclude Include="..\..\ofxOsc\libs\oscpack\src\ip\PacketListener.h" />

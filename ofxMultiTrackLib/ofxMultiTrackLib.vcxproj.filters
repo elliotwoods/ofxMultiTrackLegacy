@@ -329,6 +329,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Align\MatrixTransform.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\PreviewRGB.h">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -456,6 +459,9 @@
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Align\MatrixTransform.cpp">
       <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Modules\PreviewRGB.cpp">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

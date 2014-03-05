@@ -10,8 +10,8 @@ namespace ofxMultiTrack {
 		class Skeleton : public Base {
 		public:
 			string getType() const override;
-			Skeleton() { } ///< use this constructor for ofxMultiTrack::Server
-			Skeleton(shared_ptr<Devices::KinectSDK> kinect); ///< use this constructor for ofxMultiTrack::Node
+			Skeleton() { };
+			Skeleton(shared_ptr<Devices::KinectSDK> kinect);
 			void init() override;
 			void update() override;
 			Json::Value serialize() override;

@@ -14,7 +14,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		unsigned int NodeConnection::Transform::getParent() const {
+		int NodeConnection::Transform::getParent() const {
 			return this->parent;
 		}
 
@@ -281,7 +281,6 @@ namespace ofxMultiTrack {
 
 		//----------
 		void NodeConnection::threadedFunction() {
-			this->client.setVerbose(false);
 			ofSetLogLevel("ofxNetwork", OF_LOG_SILENT);
 			ofSetLogLevel("ofxTCPClient", OF_LOG_SILENT);
 			while(this->running) {

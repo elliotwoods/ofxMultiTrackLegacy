@@ -110,7 +110,7 @@ void ofApp::draw(){
 	switch(state) {
 		case FirstFrame:
 		case Initialising:
-			ofxCvGui::AssetRegister.drawText("Initialising...", 0, 0, "", true, ofGetHeight(), ofGetWidth());
+			ofxCvGui::Utils::drawText("Initialising...", 0, 0, true, ofGetHeight(), ofGetWidth());
 			break;
 	}
 }

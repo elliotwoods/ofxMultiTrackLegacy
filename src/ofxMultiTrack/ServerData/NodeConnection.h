@@ -24,10 +24,10 @@ namespace ofxMultiTrack {
 				Transform();
 				Transform(unsigned int parent, Align::Ptr transform);
 
-				unsigned int getParent() const;
+				int getParent() const;
 				Align::Ptr getTransform() const;
 			protected:
-				unsigned int parent;
+				int parent;
 				Align::Ptr transform;
 			};
 

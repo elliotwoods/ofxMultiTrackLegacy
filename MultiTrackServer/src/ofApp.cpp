@@ -4,6 +4,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(100.0f);
+
+	//turn on alpha testing
 	glAlphaFunc(GL_GREATER, 0.1f);
 	glEnable(GL_ALPHA_TEST);
 
@@ -23,7 +25,12 @@ void ofApp::setup(){
 	}
 
 	//setup osc sender
-	this->oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
+	oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
+
+	//load calibration file if defined in config
+	if(configJson["calibrationFile"].isString()) {
+		server.loadCalibration(configJson["calibrationFile"].asString());
+	}
 
 	//--
 	//gui code
@@ -79,7 +86,7 @@ void ofApp::setup(){
 				if (user.find(markerJointName) != user.end()) {
 					//draw label
 					string label = ofToString(nodeIndex) + " : " + ofToString(userIndex);
-					auto textBounds = ofxCvGui::AssetRegister.drawText(label, 20, y, "", true, 20, 100);
+					auto textBounds = ofxCvGui::Utils::drawText(label, 20, y, true, 20, 100);
 					y+=40;
 
 					//save label as hit target
@@ -154,7 +161,7 @@ void ofApp::setup(){
 	auto calibrateButton = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button);
 	calibrateButton->setBounds(ofRectangle(0,0,100,30));
 	calibrateButton->onDraw += [calibrateButton] (ofxCvGui::DrawArguments &) {
-		ofxCvGui::AssetRegister.drawText("Calibrate", 0, 0, "", true, 30, 100);
+		ofxCvGui::Utils::drawText("Calibrate", 0, 0, true, 30, 100);
 		ofPushStyle();
 		ofNoFill();
 		ofSetLineWidth(calibrateButton->getMouseState() == ofxCvGui::Element::Down ? 2.0f : 1.0f);

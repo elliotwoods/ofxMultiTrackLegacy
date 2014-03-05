@@ -1,7 +1,9 @@
 #include "RecorderControl.h"
+#include "../../../addons/ofxAssets/src/ofxAssets.h"
 
 using namespace ofxMultiTrack;
 using namespace ofxCvGui;
+using namespace ofxAssets;
 
 //---------
 RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(recorder) {
@@ -30,7 +32,7 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 	auto drawButton = [] (ofPtr<Utils::Button> button, string title) {
 		auto width = button->getWidth();
 		auto height = button->getHeight();
-		auto bounds = AssetRegister.drawText(title, 0, 0, "", false, height, width);
+		auto bounds = ofxCvGui::Utils::drawText(title, 0, 0, false, height, width);
 		ofPushStyle();
 		ofEnableSmoothing();
 		ofNoFill();
@@ -78,11 +80,11 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 	};
 	saveButton->onDraw += [=] (DrawArguments &) {
 		drawButton(saveButton, "");
-		AssetRegister.getImage("save").draw(0,0);
+		image("ofxCvGui::save").draw(0,0);
 	};
 	loadButton->onDraw += [=] (DrawArguments &) {
 		drawButton(loadButton, "");
-		AssetRegister.getImage("load").draw(0,0);
+		image("ofxCvGui::load").draw(0,0);
 	};
 	timeTrack->onDraw += [=] (DrawArguments &) {
 		float width = timeTrack->getWidth();
