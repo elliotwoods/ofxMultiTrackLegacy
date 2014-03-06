@@ -70,7 +70,20 @@ namespace ofxMultiTrack {
 				ofLogError("ofxMultiTrack::Devices::Kinect") << "Cannot set elevation, no device present";
 			}
 			long longAngle = ofClamp(angle, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
-			const auto result = this->sensor->NuiCameraElevationSetAngle(longAngle);
+			bool waitAndTry = true;
+			int tries = 0;
+			while (waitAndTry) {
+				if (tries > 10) {
+					break;
+				}
+				const auto result = this->sensor->NuiCameraElevationSetAngle(longAngle);
+				if (result == ERROR_RETRY || result == ERROR_TOO_MANY_CMDS) {
+					ofSleepMillis(100);
+					tries++;
+				} else {
+					waitAndTry = false;
+				}
+			}
 		}
 
 		//---------
