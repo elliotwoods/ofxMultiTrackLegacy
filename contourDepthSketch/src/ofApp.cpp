@@ -11,10 +11,8 @@ void ofApp::setup(){
 	auto scroll = this->gui.addScroll();
 	auto world = this->gui.addWorld();
 
-	this->ddepth.set("depth format", -1, -1, 3);
-	this->ddx.set("ddx", 1, 1, 32);
+	this->cannyThreshold.set("Canny threshold", 46, 0, 255);
 	this->ksize.set("ksize", 3, 1, 32);
-	this->threshold.set("threshold", 46, 0, 255);
 	this->dilateIterations.set("dilate iterations", 3, 0, 10);
 	this->erodeIterations.set("erode iterations", 3, 0, 10);
 	this->erodeDepth.set("erode depth", 1, 0, 32);
@@ -31,9 +29,8 @@ void ofApp::setup(){
 		scroll->add(slider);
 	};
 
-	addIntSlider(this->ddx);
+	addIntSlider(this->cannyThreshold);
 	addIntSlider(this->ksize);
-	addIntSlider(this->threshold);
 	addIntSlider(this->dilateIterations);
 	addIntSlider(this->erodeIterations);
 	scroll->add(shared_ptr<Widgets::Spacer>(new Widgets::Spacer()));
@@ -104,15 +101,15 @@ void ofApp::update(){
 		this->kinect.update();
 	}
 
-	auto depthImage = ofxCv::toCv(this->kinect.getDepthPixelsRef());
-
+	auto depthImage = ofxCv::toCv(this->kinect.getRawDepthPixelsRef());
 	try {
 		cv::Mat result;
-		cv::Sobel(depthImage, result, (int) this->ddepth, (int) this->ddx, (int) this->ddx, (int) this->ksize);
-		result = result > this->threshold;
+		cv::Mat depthImage8;
+		depthImage.convertTo(depthImage8, CV_8UC1, 0.25);
+		cv::Canny(depthImage8, result, this->cannyThreshold, this->cannyThreshold * 3.0f, this->ksize);
 		cv::dilate(result, result, cv::Mat(), cvPoint(-1,-1), this->dilateIterations);
 		cv::erode(result, result, cv::Mat(), cvPoint(-1,-1), this->erodeIterations);
-		result = depthImage - result;
+		result = depthImage8 - result;
 		result = result > 0;
 		cv::erode(result, result, cv::Mat(), cvPoint(-1,-1), this->erodeDepth);
 		ofxCv::copy(result, previewImage);

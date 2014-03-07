@@ -36,12 +36,14 @@
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
     <Import Project="..\..\ofxKinectCommonBridge\ofxKinectCommonBridge.props" />
     <Import Project="..\..\ofxNonLinearFit\ofxNonLinearFit.props" />
+    <Import Project="..\..\ofxCv\ofxCvLib\ofxCv.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
     <Import Project="..\..\ofxKinectCommonBridge\ofxKinectCommonBridge.props" />
     <Import Project="..\..\ofxNonLinearFit\ofxNonLinearFit.props" />
+    <Import Project="..\..\ofxCv\ofxCvLib\ofxCv.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -140,6 +142,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\Devices\KinectSDK.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Devices\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Base.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\Mesh.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\PreviewRGB.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Modules\Skeleton.h" />
@@ -188,6 +191,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Devices\KinectSDK.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Modules\Mesh.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\PreviewRGB.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Modules\Skeleton.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Node.cpp" />

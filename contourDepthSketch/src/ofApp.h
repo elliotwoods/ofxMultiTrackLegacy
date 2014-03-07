@@ -33,10 +33,8 @@ class ofApp : public ofBaseApp{
 
 
 		ofImage previewImage;
-		ofParameter<float> ddepth;
-		ofParameter<float> ddx;
 		ofParameter<float> ksize;
-		ofParameter<float> threshold;
+		ofParameter<float> cannyThreshold;
 		ofParameter<float> dilateIterations;
 		ofParameter<float> erodeIterations;
 		ofParameter<float> areaThreshold;

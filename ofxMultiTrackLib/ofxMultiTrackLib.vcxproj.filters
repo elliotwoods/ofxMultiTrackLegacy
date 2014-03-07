@@ -335,6 +335,9 @@
     <ClInclude Include="..\..\ofxKinectCommonBridge\libs\KinectCommonBridge\include\SensorManager.h">
       <Filter>addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Modules\Mesh.h">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -464,6 +467,9 @@
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Modules\PreviewRGB.cpp">
+      <Filter>src\ofxMultiTrack\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Modules\Mesh.cpp">
       <Filter>src\ofxMultiTrack\Modules</Filter>
     </ClCompile>
   </ItemGroup>
