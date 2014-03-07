@@ -64,7 +64,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\addons\ofxDelaunay\libs\Delaunay;..\..\..\addons\ofxDelaunay\src;%(AdditionalIncludeDirectories);..\..\..\addons\ofxAssets\libs;..\..\..\addons\ofxAssets\src;..\..\..\addons\ofxCvGui2\libs;..\..\..\addons\ofxCvGui2\src;..\..\..\addons\ofxCvGui2\libs\ofxCvGui;..\..\..\addons\ofxCvGui2\libs\ofxCvGui\vs2010;..\..\..\addons\ofxCvGui2\src\ofxCvGui;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels\Groups;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Utils;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Widgets;..\..\..\addons\ofxGrabCam\libs;..\..\..\addons\ofxGrabCam\src;..\..\..\addons\ofxKinectCommonBridge\libs;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows;..\..\..\addons\ofxLiquidEvent\libs;..\..\..\addons\ofxLiquidEvent\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\addons\ofxTriangle\libs\Triangle\include;..\..\..\addons\ofxTriangle\src;%(AdditionalIncludeDirectories);..\..\..\addons\ofxAssets\libs;..\..\..\addons\ofxAssets\src;..\..\..\addons\ofxCvGui2\libs;..\..\..\addons\ofxCvGui2\src;..\..\..\addons\ofxCvGui2\libs\ofxCvGui;..\..\..\addons\ofxCvGui2\libs\ofxCvGui\vs2010;..\..\..\addons\ofxCvGui2\src\ofxCvGui;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels\Groups;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Utils;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Widgets;..\..\..\addons\ofxGrabCam\libs;..\..\..\addons\ofxGrabCam\src;..\..\..\addons\ofxKinectCommonBridge\libs;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows;..\..\..\addons\ofxLiquidEvent\libs;..\..\..\addons\ofxLiquidEvent\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4250</DisableSpecificWarnings>
     </ClCompile>
@@ -83,7 +83,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\..\addons\ofxDelaunay\libs\Delaunay;..\..\..\addons\ofxDelaunay\src;%(AdditionalIncludeDirectories);..\..\..\addons\ofxAssets\libs;..\..\..\addons\ofxAssets\src;..\..\..\addons\ofxCvGui2\libs;..\..\..\addons\ofxCvGui2\src;..\..\..\addons\ofxCvGui2\libs\ofxCvGui;..\..\..\addons\ofxCvGui2\libs\ofxCvGui\vs2010;..\..\..\addons\ofxCvGui2\src\ofxCvGui;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels\Groups;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Utils;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Widgets;..\..\..\addons\ofxGrabCam\libs;..\..\..\addons\ofxGrabCam\src;..\..\..\addons\ofxKinectCommonBridge\libs;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows;..\..\..\addons\ofxLiquidEvent\libs;..\..\..\addons\ofxLiquidEvent\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\addons\ofxTriangle\libs\Triangle\include;..\..\..\addons\ofxTriangle\src;%(AdditionalIncludeDirectories);..\..\..\addons\ofxAssets\libs;..\..\..\addons\ofxAssets\src;..\..\..\addons\ofxCvGui2\libs;..\..\..\addons\ofxCvGui2\src;..\..\..\addons\ofxCvGui2\libs\ofxCvGui;..\..\..\addons\ofxCvGui2\libs\ofxCvGui\vs2010;..\..\..\addons\ofxCvGui2\src\ofxCvGui;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Panels\Groups;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Utils;..\..\..\addons\ofxCvGui2\src\ofxCvGui\Widgets;..\..\..\addons\ofxGrabCam\libs;..\..\..\addons\ofxGrabCam\src;..\..\..\addons\ofxKinectCommonBridge\libs;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib;..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\lib\windows;..\..\..\addons\ofxLiquidEvent\libs;..\..\..\addons\ofxLiquidEvent\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4250</DisableSpecificWarnings>
     </ClCompile>
@@ -99,15 +99,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\addons\ofxDelaunay\libs\Delaunay\Delaunay.cpp" />
-    <ClCompile Include="..\..\..\addons\ofxDelaunay\src\ofxDelaunay.cpp" />
+    <ClCompile Include="..\..\ofxTriangle\libs\Triangle\src\assert.cpp" />
+    <ClCompile Include="..\..\ofxTriangle\libs\Triangle\src\del_impl.cpp" />
+    <ClCompile Include="..\..\ofxTriangle\src\ofxTriangle.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\addons\ofxDelaunay\libs\Delaunay\Delaunay.h" />
-    <ClInclude Include="..\..\..\addons\ofxDelaunay\src\ofxDelaunay.h" />
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\assert.hpp" />
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\del_interface.hpp" />
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\dpoint.hpp" />
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\triangle.h" />
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\triangle_impl.hpp" />
+    <ClInclude Include="..\..\ofxTriangle\src\ofxTriangle.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h" />

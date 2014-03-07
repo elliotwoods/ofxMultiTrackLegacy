@@ -17,7 +17,7 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 	this->trackDirty = false;
 	this->cachedCount = 0;
 
-	this->tilt.set("Tilt [°]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
+	this->tilt.set("Tilt [degrees]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
 
 }
 
@@ -92,6 +92,10 @@ void RecordingControl::draw(DrawArguments & args) {
 		ofRect(args.localBounds);
 	}
 
+	//draw connection indicator
+	ofFill();
+	ofSetColor(this->node->isConnected() ? ofColor(100, 255, 100) : ofColor(255, 100, 100));
+	ofCircle(20, 8, 3);
 
 	ofPopStyle();
 }
@@ -121,10 +125,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	}));
 
 	auto tiltSlider = shared_ptr<Slider>(new Slider(this->tilt));
-	tiltSlider->onChange += [this] (const float & value) {
+	tiltSlider->onValueChange += [this] (const ofParameter<float> & value) {
 		Json::Value tiltMessage;
 		tiltMessage["type"] = "tilt";
-		tiltMessage["value"] = value;
+		tiltMessage["value"] = value.get();
 		this->node->send(tiltMessage);
 	};
 

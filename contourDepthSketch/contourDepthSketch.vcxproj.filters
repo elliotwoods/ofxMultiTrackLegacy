@@ -10,11 +10,14 @@
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp">
       <Filter>addons\ofxKinectCommonBridge\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxDelaunay\src\ofxDelaunay.cpp">
-      <Filter>addons\ofxDelauney\src</Filter>
+    <ClCompile Include="..\..\ofxTriangle\src\ofxTriangle.cpp">
+      <Filter>addons\ofxTriangle\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxDelaunay\libs\Delaunay\Delaunay.cpp">
-      <Filter>addons\ofxDelauney\libs</Filter>
+    <ClCompile Include="..\..\ofxTriangle\libs\Triangle\src\del_impl.cpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxTriangle\libs\Triangle\src\assert.cpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,14 +42,23 @@
     <Filter Include="addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include">
       <UniqueIdentifier>{eb8368c2-9593-7054-3e4e-054e2eb01386}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxDelauney">
-      <UniqueIdentifier>{86cd5b40-01e6-4b1a-b88e-b8a03469b7ef}</UniqueIdentifier>
+    <Filter Include="addons\ofxTriangle">
+      <UniqueIdentifier>{f95a4868-388a-4921-b22f-dbc8444dc706}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxDelauney\src">
-      <UniqueIdentifier>{2a9332c1-d1e6-4d2e-a52e-cf57d5a53b56}</UniqueIdentifier>
+    <Filter Include="addons\ofxTriangle\src">
+      <UniqueIdentifier>{cc64b562-48f1-45b9-905f-67c555ac12de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxDelauney\libs">
-      <UniqueIdentifier>{1eaff5e0-dad7-4921-a545-c4143ff8db9d}</UniqueIdentifier>
+    <Filter Include="addons\ofxTriangle\libs">
+      <UniqueIdentifier>{6cd60786-f6ad-406e-8801-8b58fa502148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTriangle\libs\Triangle">
+      <UniqueIdentifier>{971b8819-2037-4172-b485-8ab738acf59c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTriangle\libs\Triangle\src">
+      <UniqueIdentifier>{e2e753d5-ce83-458e-95cb-cd55fd7fd7fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTriangle\libs\Triangle\include">
+      <UniqueIdentifier>{b8c09d73-8ccc-473a-b8d1-4df29916ccbc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -59,11 +71,23 @@
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h">
       <Filter>addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxDelaunay\src\ofxDelaunay.h">
-      <Filter>addons\ofxDelauney\src</Filter>
+    <ClInclude Include="..\..\ofxTriangle\src\ofxTriangle.h">
+      <Filter>addons\ofxTriangle\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxDelaunay\libs\Delaunay\Delaunay.h">
-      <Filter>addons\ofxDelauney\libs</Filter>
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\dpoint.hpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\triangle.h">
+      <Filter>addons\ofxTriangle\libs\Triangle\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\triangle_impl.hpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\assert.hpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxTriangle\libs\Triangle\include\del_interface.hpp">
+      <Filter>addons\ofxTriangle\libs\Triangle\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

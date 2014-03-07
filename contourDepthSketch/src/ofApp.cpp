@@ -47,7 +47,7 @@ void ofApp::setup(){
 		for(auto & contour : this->contours) {
 			const auto area = cv::contourArea(contour);
 			ofColor color(255, 0, 0, 100);
-			color.setHue(area * 0.01f);
+			color.setHue(((int) (area * 0.001f)) % 360);
 			ofSetColor(color);
 			ofBeginShape();
 			for(auto & point : contour) {
@@ -64,9 +64,10 @@ void ofApp::setup(){
 		ofSetLineWidth(3.0f);
 		for(auto & worldContour : this->worldContours) {
 			ofColor color(255, 0, 0);
-			color.setHue(cv::contourArea(this->contours[contourIndex]) * 0.01f);
+			const auto area = cv::contourArea(this->contours[contourIndex]);
+			color.setHue(((int) (area * 0.001f)) % 360);
 			ofSetColor(color);
-			worldContour.draw();
+			worldContour.drawWireframe();
 			contourIndex++;
 		}
 
@@ -85,6 +86,16 @@ void ofApp::setup(){
 	this->kinect.initDepthStream(640, 480);
 	this->kinect.start();
 	this->sensor = & this->kinect.getNuiSensor();
+}
+
+ofVec3f depthToWorld(int x, int y, const ofShortPixels & depthData, INuiCoordinateMapper * mapper) {
+	NUI_DEPTH_IMAGE_POINT depthPoint;
+	depthPoint.x = x;
+	depthPoint.y = y;
+	depthPoint.depth = depthData[x + y * 640] << 1;
+	Vector4 skeletonPoint;
+	mapper->MapDepthPointToSkeletonPoint(NUI_IMAGE_RESOLUTION_640x480, & depthPoint, & skeletonPoint);
+	return ofVec3f(skeletonPoint.x, skeletonPoint.y, skeletonPoint.z) / skeletonPoint.w;
 }
 
 //--------------------------------------------------------------
@@ -143,28 +154,25 @@ void ofApp::update(){
 			int iPoint = 0;
 			vector<ofVec3f> depthPoints;
 			for(auto & point : contour) {
-				if (iPoint++ % (int) this->decimateContour == 0) {
+				if (this->decimateContour > 1 ? (iPoint++ % (int) this->decimateContour == 0) : true) {
 					depthPoints.push_back(ofVec3f(point.x, point.y, 0));
 				}
 			}
 
+			if (depthPoints.size() < 3)	 {
+				continue;
+			}
+
 			//triangulate
-			ofxDelaunay triangulate;
-			triangulate.addPoints(depthPoints);
-			triangulate.triangulate();
-			const auto & meshInDepth = triangulate.triangleMesh;
-			auto meshInWorld = meshInDepth;
+			ofxTriangle triangulate;
+			triangulate.triangulate(depthPoints);
 
 			//transform to skeleton space
-			auto & vertices = meshInWorld.getVertices();
-			for(auto & vertex : vertices) {
-				NUI_DEPTH_IMAGE_POINT depthPoint;
-				depthPoint.x = vertex.x;
-				depthPoint.y = vertex.y;
-				depthPoint.depth = depthData[vertex.x + vertex.y * 640] << 1;
-				Vector4 skeletonPoint;
-				mapper->MapDepthPointToSkeletonPoint(NUI_IMAGE_RESOLUTION_640x480, & depthPoint, & skeletonPoint);
-				vertex = ofVec3f(skeletonPoint.x, skeletonPoint.y, skeletonPoint.z) / skeletonPoint.w;
+			ofMesh meshInWorld;
+			for(auto triangle : triangulate.triangles) {
+				meshInWorld.addVertex(depthToWorld(triangle.a.x, triangle.a.y, depthData, mapper));
+				meshInWorld.addVertex(depthToWorld(triangle.b.x, triangle.b.y, depthData, mapper));
+				meshInWorld.addVertex(depthToWorld(triangle.c.x, triangle.c.y, depthData, mapper));
 			}
 			
 			this->worldContours.push_back(meshInWorld);

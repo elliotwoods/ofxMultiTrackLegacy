@@ -4,7 +4,7 @@
 #include "ofxKinectCommonBridge.h"
 #include "ofxCvGui.h"
 #include "ofxCv.h"
-#include "ofxDelaunay.h"
+#include "ofxTriangle.h"
 
 using namespace cv;
 using namespace ofxCv;

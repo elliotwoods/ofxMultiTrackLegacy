@@ -363,11 +363,20 @@ namespace ofxMultiTrack {
 				auto & targetUser = targetUserSet[userIndex];
 				auto & originUser = sourceUserSet[originUserIndex];
 				auto & targetJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
+				auto & targetOtherJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
+				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				auto & originOtherJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
 
 				//check we have the joints
-				if (targetJoint == targetUser.end() || originJoint == originUser.end()) {
+				if (targetJoint == targetUser.end() || originJoint == originUser.end() || targetOtherJoint == targetUser.end() || originOtherJoint == originUser.end()) {
 					cout << "J";
+					continue;
+				}
+
+				//check if right hand is above left hand
+				//generally a back-to-front checker
+				if(targetOtherJoint->second.position.y < targetJoint->second.position.y || originOtherJoint->second.position.y < originOtherJoint->second.position.y) {
+					cout << "U";
 					continue;
 				}
 
