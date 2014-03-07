@@ -42,6 +42,7 @@ namespace ofxMultiTrack {
 
 			//add modules
 			this->modules.push_back(shared_ptr<Modules::Skeleton>(new Modules::Skeleton(kinect)));
+			this->modules.push_back(shared_ptr<Modules::Mesh>(new Modules::Mesh(kinect, localNodeIndex)));
 
 			//initialise modules
 			for(auto module : this->modules) {
@@ -189,10 +190,16 @@ namespace ofxMultiTrack {
 	void Node::parseIncoming(const Json::Value & json) {
 		for(auto message : json) {
 			if (!message.empty()) {
-				if (message["type"].asString() == "tilt") {
+				const string messageType = message["type"].asString();
+				if (messageType == "tilt") {
 					auto kinect = this->devices.get<Devices::KinectSDK>();
 					if (kinect) {
 						kinect->setElevation(message["value"].asFloat());
+					}
+				} else if (messageType == "meshOscSetup") {
+					auto mesh = this->modules.get<Modules::Mesh>();
+					if (mesh) {
+						mesh->setTarget(message["address"].asString(), message["port"].asInt());
 					}
 				}
 			}

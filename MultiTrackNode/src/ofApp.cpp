@@ -13,13 +13,7 @@ void ofApp::setup(){
 	//--
 	//
 	gui.init();
-	auto leftColumn = gui.addGrid();
-	leftColumn->add(gui.makeInstructions());
 	auto statusPanel = gui.addScroll();
-
-	//set the left grid to be a single column and store for later
-	leftColumn->setColsCount(1);
-	this->leftColumn = leftColumn;
 
 	//status renders to a gui element on a scrollable panel
 	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
@@ -72,8 +66,9 @@ void ofApp::update(){
 			auto colorPanel = gui.makePanel(this->kinect->getColorTexture(), "RGB");
 
 			//add these panels to the left column
-			this->leftColumn->add(depthPanel);
-			this->leftColumn->add(colorPanel);
+			this->gui.add(depthPanel);
+			this->gui.add(colorPanel);
+			auto worldPanel = this->gui.addWorld();
 
 			//override the depth draw to draw skeletons also
 			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
@@ -85,6 +80,13 @@ void ofApp::update(){
 				}
 				ofPopMatrix();
 			};
+
+			auto meshModule = this->node.getModules().get<ofxMultiTrack::Modules::Mesh>();
+			if (meshModule) {
+				worldPanel->onDrawWorld += [meshModule] (ofCamera &) {
+					meshModule->drawWorld();
+				};
+			}
 
 			//disable the alpha channel whilst renderering color frame by adding early and late listeners to the draw call
 			colorPanel->onDraw.addListener([this] (ofxCvGui::DrawArguments&) { ofDisableAlphaBlending(); }, -100, this);

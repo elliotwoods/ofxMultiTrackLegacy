@@ -27,6 +27,13 @@ void ofApp::setup(){
 	//setup osc sender
 	oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
 
+	//setup mesh osc senders from nodes
+	Json::Value setupOscMessage;
+	setupOscMessage["type"] = "meshOscSetup";
+	setupOscMessage["address"] = configJson["osc"]["address"];
+	setupOscMessage["port"] = configJson["osc"]["meshPort"];
+	this->server.addNodeInitialiseMessage(setupOscMessage);
+
 	//load calibration file if defined in config
 	if(configJson["calibrationFile"].isString()) {
 		server.loadCalibration(configJson["calibrationFile"].asString());

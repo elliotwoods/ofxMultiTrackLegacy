@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxMultiTrackLib", "..\ofxM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxCvGuiLib", "..\..\ofxCvGui2\ofxCvGuiLib\ofxCvGuiLib.vcxproj", "{6F0DDB4F-4014-4433-919B-9D956C034BAD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxCvLib", "..\..\ofxCv\ofxCvLib\ofxCvLib.vcxproj", "{FAA73572-FD12-41FA-8FBE-CB47482D2D87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +32,10 @@ Global
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Debug|Win32.Build.0 = Debug|Win32
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Release|Win32.ActiveCfg = Release|Win32
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Release|Win32.Build.0 = Release|Win32
+		{FAA73572-FD12-41FA-8FBE-CB47482D2D87}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FAA73572-FD12-41FA-8FBE-CB47482D2D87}.Debug|Win32.Build.0 = Debug|Win32
+		{FAA73572-FD12-41FA-8FBE-CB47482D2D87}.Release|Win32.ActiveCfg = Release|Win32
+		{FAA73572-FD12-41FA-8FBE-CB47482D2D87}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

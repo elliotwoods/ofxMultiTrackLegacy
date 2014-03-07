@@ -23,7 +23,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 		ofxCvGui::Builder gui;
-		ofxCvGui::PanelGroupPtr leftColumn;
 
 		ofxMultiTrack::Node node;
 		ofxKinectCommonBridge * kinect;

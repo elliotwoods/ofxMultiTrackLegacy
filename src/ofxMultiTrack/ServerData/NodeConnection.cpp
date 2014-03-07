@@ -280,6 +280,10 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		void NodeConnection::addInitialiseMessage(const Json::Value & message) {
+			this->initialiseMessages[this->initialiseMessages.size()] = message;
+		}
+		//----------
 		void NodeConnection::send(const Json::Value & value) {
 			this->toSendMutex.lock();
 			this->toSend[this->toSend.size()] = value;
@@ -293,6 +297,9 @@ namespace ofxMultiTrack {
 			while(this->running) {
 				if (!this->client.isConnected()) {
 					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + this->remoteIndex, false);
+					for(auto message : this->initialiseMessages) {
+						this->send(message);
+					}
 				}
 				
 				this->receiveMessages();

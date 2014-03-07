@@ -9,6 +9,7 @@
 #include "Devices/KinectSDK.h"
 #include "Modules/Set.h"
 #include "Modules/Skeleton.h"
+#include "Modules/Mesh.h"
 
 namespace ofxMultiTrack {
 	class Node {

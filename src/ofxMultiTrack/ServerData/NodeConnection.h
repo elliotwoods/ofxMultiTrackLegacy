@@ -58,6 +58,7 @@ namespace ofxMultiTrack {
 			void setEnabled(bool);
 			void toggleEnabled();
 
+			void addInitialiseMessage(const Json::Value &);
 			void send(const Json::Value &);
 		protected:
 			void threadedFunction() override;
@@ -75,6 +76,7 @@ namespace ofxMultiTrack {
 			int remoteIndex;
 			bool running;
 
+			Json::Value initialiseMessages;
 			Json::Value toSend;
 			ofMutex toSendMutex;
 
@@ -92,6 +94,8 @@ namespace ofxMultiTrack {
 			Transform transform;
 
 			Collection & otherNodes;
+
+			ofxTCPClient meshClient;
 
 			bool enabled; ///<denotes whether we will supply data
 		};

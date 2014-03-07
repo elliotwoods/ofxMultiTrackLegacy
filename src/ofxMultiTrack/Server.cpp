@@ -543,4 +543,11 @@ namespace ofxMultiTrack {
 			ofSystemAlertDialog(e.what());
 		}
 	}
+
+	//----------
+	void Server::addNodeInitialiseMessage(const Json::Value & message) const {
+		for(auto node : this->nodes) {
+			node->addInitialiseMessage(message);
+		}
+	}
 }
