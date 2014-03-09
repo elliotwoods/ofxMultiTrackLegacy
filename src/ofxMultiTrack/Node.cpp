@@ -189,18 +189,16 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Node::parseIncoming(const Json::Value & json) {
+		cout << "incoming = " << json.toStyledString() << endl << endl;
+
 		for(auto message : json) {
-			if (!message.empty()) {
-				const string messageType = message["type"].asString();
-				if (messageType == "tilt") {
-					auto kinect = this->devices.get<Devices::KinectSDK>();
-					if (kinect) {
-						kinect->setElevation(message["value"].asFloat());
-					}
-				} else if (messageType == "meshOscSetup") {
-					auto mesh = this->modules.get<Modules::Mesh>();
-					if (mesh) {
-						mesh->setTarget(message["address"].asString(), message["port"].asInt());
+			if (message.isObject()) {
+				const auto categories = message.getMemberNames();
+				for(auto category : categories) {
+					if (category == "Devices") {
+						this->devices.setConfig(message[category]);
+					} else if (category == "Modules") {
+						this->modules.setConfig(message[category]);
 					}
 				}
 			}

@@ -15,7 +15,7 @@ namespace ofxMultiTrack {
 			void deserialise(const Json::Value &) override;
 
 			void setTransform(const ofMatrix4x4 &);
-			const ofMatrix4x4 & getTransform() const;
+			const ofMatrix4x4 getMatrixTransform() const override;
 		protected:
 			ofMatrix4x4 transform;
 		};

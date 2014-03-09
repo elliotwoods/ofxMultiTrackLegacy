@@ -184,6 +184,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\User.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +230,7 @@
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Problem.cpp" />
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\Route.cpp" />
     <ClCompile Include="..\..\ofxTSP\src\ofxTSP\RouteFind.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Align\Base.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\Factory.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\MatrixTransform.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Align\PolyFit.cpp" />
@@ -245,6 +247,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\User.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Set.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
   </ItemGroup>
   <ItemGroup>

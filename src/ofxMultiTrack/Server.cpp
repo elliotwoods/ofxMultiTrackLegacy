@@ -364,8 +364,8 @@ namespace ofxMultiTrack {
 				auto & targetUser = targetUserSet[userIndex];
 				auto & originUser = sourceUserSet[originUserIndex];
 				auto & targetJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & targetOtherJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				auto & targetOtherJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
 				auto & originOtherJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
 
 				//check we have the joints
@@ -376,10 +376,10 @@ namespace ofxMultiTrack {
 
 				//check if right hand is above left hand
 				//generally a back-to-front checker
-				if(targetOtherJoint->second.position.y < targetJoint->second.position.y || originOtherJoint->second.position.y < originOtherJoint->second.position.y) {
+				/*if(targetOtherJoint->second.position.y < targetJoint->second.position.y || originOtherJoint->second.position.y < originOtherJoint->second.position.y) {
 					cout << "U";
 					continue;
-				}
+				}*/
 
 				//check that we're not using inferred or untracked joints
 				if (targetJoint->second.inferred || originJoint->second.inferred) {
@@ -546,9 +546,9 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::addNodeInitialiseMessage(const Json::Value & message) const {
+	void Server::addNodeConfig(const Json::Value & message) const {
 		for(auto node : this->nodes) {
-			node->addInitialiseMessage(message);
+			node->addNodeConfig(message);
 		}
 	}
 }

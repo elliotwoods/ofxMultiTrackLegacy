@@ -88,7 +88,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		const ofMatrix4x4 & RigidBodyFit::getTransform() const {
+		const ofMatrix4x4 RigidBodyFit::getMatrixTransform() const {
 			return this->model.getCachedTransform();
 		}
 	}

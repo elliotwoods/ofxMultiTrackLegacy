@@ -28,6 +28,7 @@ namespace ofxMultiTrack {
 
 			void setElevation(float angle);
 			ofxKinectCommonBridge& getDevice();
+			void setConfig(const Json::Value &) override;
 		protected:
 			int deviceID;
 			ofxKinectCommonBridge kinect;

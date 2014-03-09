@@ -12,7 +12,7 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 	this->setBounds(ofRectangle(0,0,50,50));
 
 	auto newBlankButton = [=] () {
-		auto button = ofPtr<Utils::Button>(new Utils::Button());
+		auto button = make_shared<ofxCvGui::Utils::Button>();
 		this->add(button);
 		return button;
 	};
@@ -29,7 +29,7 @@ RecorderControl::RecorderControl(ServerData::Recorder & recorder) : recorder(rec
 	auto timeTrack = ElementPtr(new Element());
 	this->add(timeTrack);
 
-	auto drawButton = [] (ofPtr<Utils::Button> button, string title) {
+	auto drawButton = [] (shared_ptr<ofxCvGui::Utils::Button> button, string title) {
 		auto width = button->getWidth();
 		auto height = button->getHeight();
 		auto bounds = ofxCvGui::Utils::drawText(title, 0, 0, false, height, width);

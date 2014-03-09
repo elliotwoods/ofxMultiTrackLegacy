@@ -22,6 +22,11 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 }
 
 //---------
+ofxMultiTrack::ServerData::NodeConnection::Ptr RecordingControl::getNode() {
+	return this->node;
+}
+
+//---------
 void RecordingControl::update(UpdateArguments &) {
 	
 	this->status = this->node->getStatus();
@@ -126,10 +131,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 
 	auto tiltSlider = shared_ptr<Slider>(new Slider(this->tilt));
 	tiltSlider->onValueChange += [this] (const ofParameter<float> & value) {
-		Json::Value tiltMessage;
-		tiltMessage["type"] = "tilt";
-		tiltMessage["value"] = value.get();
-		this->node->send(tiltMessage);
+		Json::Value json;
+		auto & jsonMessage = json["Devices"]["KinectSDK"]["tilt"];
+		jsonMessage = value.get();
+		this->node->addNodeConfig(json);
 	};
 
 	inspector->add(header);

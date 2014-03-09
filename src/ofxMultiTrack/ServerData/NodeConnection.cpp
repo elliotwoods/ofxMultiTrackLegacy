@@ -124,11 +124,23 @@ namespace ofxMultiTrack {
 		//----------
 		void NodeConnection::setTransform(const Transform & transform) {
 			this->transform = transform;
+
+			const auto align = transform.getTransform();
+			ofMatrix4x4 matrixTransform;
+			if (align) {
+				matrixTransform = align->getMatrixTransform();
+			}
+			Json::Value json;
+			auto & jsonMesh = json["Modules"]["Mesh"]["Transform"];
+			for(int i=0; i<16; i++) {
+				jsonMesh[i] = matrixTransform.getPtr()[i];
+			}
+			this->send(jsonMesh);
 		}
 
 		//----------
 		void NodeConnection::clearTransform() {
-			this->transform = Transform();
+			this->setTransform(Transform());
 		}
 
 		//----------
@@ -281,8 +293,22 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		void NodeConnection::addInitialiseMessage(const Json::Value & message) {
-			this->initialiseMessages[this->initialiseMessages.size()] = message;
+		//helper
+		void merge(Json::Value & base, const Json::Value & addition) {
+			if (addition.isObject()) {
+				const auto memberNames = addition.getMemberNames();
+				for(auto memberName : memberNames) {
+					merge(base[memberName], addition[memberName]);
+				}
+			} else {
+				base = addition;
+			}
+		}
+
+		//----------
+		void NodeConnection::addNodeConfig(const Json::Value & message) {
+			this->send(message);
+			merge(this->remoteConfig, message);
 		}
 		//----------
 		void NodeConnection::send(const Json::Value & value) {
@@ -298,9 +324,7 @@ namespace ofxMultiTrack {
 			while(this->running) {
 				if (!this->client.isConnected()) {
 					this->client.setup(this->address, OFXMULTITRACK_NODE_LISTEN_PORT + this->remoteIndex, false);
-					for(auto message : this->initialiseMessages) {
-						this->send(message);
-					}
+					this->send(this->remoteConfig);
 				}
 				
 				this->receiveMessages();

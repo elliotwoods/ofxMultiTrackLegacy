@@ -73,12 +73,12 @@ namespace ofxMultiTrack {
 					this->contourAreas.push_back(cv::contourArea(depthContour));
 				}
 
-				this->worldContours.clear();
 				INuiCoordinateMapper * mapper;
 				this->sensor->NuiGetCoordinateMapper(&mapper);
 
 				const int decimateContour = 3;
 
+				this->worldContours.clear();
 				for(auto depthContour : depthContours) {
 					//decimate and reformat
 					int iPoint = 0;
@@ -104,7 +104,14 @@ namespace ofxMultiTrack {
 						meshInWorld.addVertex(depthToWorld(triangle.b.x, triangle.b.y, rawDepthPixels, mapper));
 						meshInWorld.addVertex(depthToWorld(triangle.c.x, triangle.c.y, rawDepthPixels, mapper));
 					}
-			
+					auto numIndices = meshInWorld.getNumVertices();
+					vector<ofIndexType> newIndices(numIndices);
+					for(int iIndex = 0; iIndex < numIndices; iIndex++) {
+						newIndices[iIndex] = iIndex;
+					}
+					meshInWorld.addIndices(newIndices);
+
+					meshInWorld.mergeDuplicateVertices(); //<--this function (surprise surprise) doesn't work
 					this->worldContours.push_back(meshInWorld);
 				}
 			} catch(std::exception e) {
@@ -117,7 +124,7 @@ namespace ofxMultiTrack {
 		//----------
 		Json::Value Mesh::serialize() {
 			Json::Value json;
-			json["contourCount"] = this->worldContours.size();
+			json["meshCount"] = this->worldContours.size();
 			return json;
 		}
 
@@ -125,10 +132,27 @@ namespace ofxMultiTrack {
 		void Mesh::deserialize(const Json::Value & data) {
 
 		}
+		
+		//----------
+		void Mesh::setConfig(const Json::Value & json) {
+			const auto parameterNames = json.getMemberNames();
+			for(auto parameterName : parameterNames) {
+				const auto jsonParameter = json[parameterName];
+				if (parameterName == "client") {
+					this->setTarget(jsonParameter["address"].asString(), jsonParameter["port"].asInt());
+				} else if (parameterName == "transform") {
+					if (jsonParameter.size() == 16) {
+						for(int i=0; i<16; i++) {
+							this->transform.getPtr()[i] = jsonParameter[i].asFloat();
+						}
+					}
+				}
+			}
+		}
 
 		//----------
 		Json::Value Mesh::getStatus() {
-			return Json::Value();
+			return this->status;
 		}
 
 		//----------
@@ -136,6 +160,8 @@ namespace ofxMultiTrack {
 			this->sender.setup(address, port);
 			this->udpSender = shared_ptr<UdpTransmitSocket>(new UdpTransmitSocket(IpEndpointName(address.c_str(), 4445)));
 			this->isOscTargetSet = true;
+			this->status["clientAddress"] = address;
+			this->status["clientPort"] = port;
 		}
 
 		//----------
@@ -160,15 +186,39 @@ namespace ofxMultiTrack {
 			if (udpSender) {
 				auto writeLocation = sendBuffer.getBinaryBuffer();
 				int totalSize = 0;
-				for(const auto & worldContour : this->worldContours) {
-					const auto vertices = worldContour.getVertices();
-					auto size = vertices.size() * sizeof(ofVec3f);
-					memcpy(writeLocation, &vertices[0], size);
-					writeLocation += size;
-					totalSize += size;
+
+				memcpy(writeLocation, & this->globalIndex, sizeof(int));
+				totalSize += sizeof(int);
+				writeLocation += sizeof(int);
+
+				memcpy(writeLocation, this->transform.getPtr(), sizeof(ofMatrix4x4));
+				totalSize += sizeof(ofMatrix4x4);
+				writeLocation += sizeof(ofMatrix4x4);
+
+				ofMesh combinedMesh;
+				for(auto mesh : this->worldContours) {
+					combinedMesh.append(mesh);
 				}
 
-				cout << "sending " << totalSize << endl;
+				const int numIndices = combinedMesh.getNumIndices();
+				memcpy(writeLocation, & numIndices, sizeof(int));
+				totalSize += sizeof(int);
+				writeLocation += sizeof(int);
+
+				memcpy(writeLocation, combinedMesh.getIndexPointer(), combinedMesh.getNumIndices() * sizeof(ofIndexType));
+				totalSize += combinedMesh.getNumIndices() * sizeof(ofIndexType);
+				writeLocation += combinedMesh.getNumIndices() * sizeof(ofIndexType);
+
+				const int numVertices = combinedMesh.getNumVertices();
+				memcpy(writeLocation, & numVertices, sizeof(int));
+				totalSize += sizeof(int);
+				writeLocation += sizeof(int);
+
+				const auto vertices = combinedMesh.getVertices();
+				auto size = vertices.size() * sizeof(ofVec3f);
+				memcpy(writeLocation, combinedMesh.getVerticesPointer(), size);
+				writeLocation += size;
+				totalSize += size;
 
 				this->udpSender->Send(sendBuffer.getBinaryBuffer(), totalSize);
 			}

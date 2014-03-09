@@ -61,7 +61,7 @@ namespace ofxMultiTrack {
 		void saveCalibration(string filename = "") const;
 		void loadCalibration(string filenmae = "");
 
-		void addNodeInitialiseMessage(const Json::Value &) const;
+		void addNodeConfig(const Json::Value &) const;
 	protected:
 		ServerData::NodeSet nodes;
 		ServerData::Recorder recorder;

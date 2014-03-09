@@ -18,9 +18,10 @@ namespace ofxMultiTrack {
 			Json::Value serialize() override;
 			void deserialize(const Json::Value& data) override;
 			Json::Value getStatus() override;
-			void setTarget(const string address, int port);
+			void setConfig(const Json::Value &) override;
 			void drawWorld();
 		protected:
+			void setTarget(const string address, int port);
 			void sendBinary();
 
 			shared_ptr<Devices::KinectSDK> kinect;
@@ -36,6 +37,8 @@ namespace ofxMultiTrack {
 
 			shared_ptr<UdpTransmitSocket> udpSender;
 			ofBuffer sendBuffer;
+			ofMatrix4x4 transform;
+			Json::Value status;
 		};
 	}
 }

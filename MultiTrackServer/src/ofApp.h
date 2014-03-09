@@ -41,6 +41,7 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
+	shared_ptr<ofxMultiTrack::ServerData::NodeConnection> getSelectedNode();
 	
 	ofxMultiTrack::Server server;
 	ofxCvGui::Builder gui;
@@ -51,7 +52,6 @@ public:
 	vector<Target> targets;
 	ofPtr<RecorderControl> recorderControl;
 	ofxCvGui::ElementPtr calibrateButton;
-	
 	ofxOscSender oscSender;
 	int userSlots[USER_SLOT_COUNT];
 

@@ -458,6 +458,9 @@
     <ClInclude Include="..\..\ofxOsc\src\ofxOscArg.h">
       <Filter>addons\ofxOsc\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Set.h">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -636,6 +639,12 @@
     </ClCompile>
     <ClCompile Include="..\..\ofxOsc\src\ofxOscBundle.cpp">
       <Filter>addons\ofxOsc\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Align\Base.cpp">
+      <Filter>src\ofxMultiTrack\Align</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Set.cpp">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ namespace ofxMultiTrack {
 			virtual void update() = 0;
 			virtual bool isFrameNew() = 0;
 			virtual Json::Value getStatus() = 0;
+			virtual void setConfig(const Json::Value &) { };
 		protected:
 		};
 	}

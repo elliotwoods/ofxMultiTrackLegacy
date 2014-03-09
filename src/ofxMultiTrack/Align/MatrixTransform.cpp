@@ -49,7 +49,7 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		const ofMatrix4x4 & MatrixTransform::getTransform() const {
+		const ofMatrix4x4 MatrixTransform::getMatrixTransform() const {
 			return this->transform;
 		}
 	}

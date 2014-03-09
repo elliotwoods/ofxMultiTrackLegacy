@@ -29,11 +29,11 @@ void ofApp::setup(){
 	oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
 
 	//setup mesh osc senders from nodes
-	Json::Value setupOscMessage;
-	setupOscMessage["type"] = "meshOscSetup";
-	setupOscMessage["address"] = configJson["osc"]["address"];
-	setupOscMessage["port"] = configJson["osc"]["meshPort"];
-	this->server.addNodeInitialiseMessage(setupOscMessage);
+	Json::Value jsonSetupOscRoot;
+	auto & jsonSetupOsc = jsonSetupOscRoot["Modules"]["Mesh"]["client"];
+	jsonSetupOsc["address"] = configJson["osc"]["address"];
+	jsonSetupOsc["port"] = configJson["osc"]["meshPort"];
+	this->server.addNodeConfig(jsonSetupOscRoot);
 
 	//load calibration file if defined in config
 	if(configJson["calibrationFile"].isString()) {
@@ -361,7 +361,9 @@ void ofApp::keyPressed(int key){
 		}
 		break;
 	case 'c':
-		this->server.clearNodeUsers();
+		if (this->source.selectionValid && this->target.selectionValid) {
+			this->server.addAlignment(this->target.node, this->source.node, this->target.user, this->source.user);
+		}
 		break;
 	case 'v':
 		this->drawMode = View;
@@ -382,6 +384,13 @@ void ofApp::keyPressed(int key){
 		break;
 	case 'o':
 		this->server.applyOriginPose();
+		break;
+	case OF_KEY_BACKSPACE:
+		auto selectedNode = this->getSelectedNode();
+		if (selectedNode) {
+			selectedNode->clearTransform();
+		}
+		break;
 	}
 }
 
@@ -423,4 +432,19 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+//--------------------------------------------------------------
+shared_ptr<ofxMultiTrack::ServerData::NodeConnection> ofApp::getSelectedNode() {
+	const auto selections = ofxCvGui::Panels::Inspector::getSelection();
+	const auto serverNodes = this->server.getNodes();
+	for(auto selection : selections) {
+		auto recordingControl = (RecordingControl*) (selection);
+		for(auto node : serverNodes) {
+			if (node == recordingControl->getNode()) {
+				return node;
+			}
+		}
+	}
+	return shared_ptr<ofxMultiTrack::ServerData::NodeConnection>();
 }

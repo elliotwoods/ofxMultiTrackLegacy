@@ -57,7 +57,7 @@ namespace ofxMultiTrack {
 			void setEnabled(bool);
 			void toggleEnabled();
 
-			void addInitialiseMessage(const Json::Value &);
+			void addNodeConfig(const Json::Value &);
 			void send(const Json::Value &);
 		protected:
 			void threadedFunction() override;
@@ -75,7 +75,7 @@ namespace ofxMultiTrack {
 			int remoteIndex;
 			bool running;
 
-			Json::Value initialiseMessages;
+			Json::Value remoteConfig;
 			Json::Value toSend;
 			ofMutex toSendMutex;
 

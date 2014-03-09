@@ -90,6 +90,16 @@ namespace ofxMultiTrack {
 		ofxKinectCommonBridge& KinectSDK::getDevice() {
 			return this->kinect;
 		}
+
+		//---------
+		void KinectSDK::setConfig(const Json::Value & json) {
+			const auto parameterNames = json.getMemberNames();
+			for(auto parameterName : parameterNames) {
+				if(parameterName == "tilt") {
+					this->setElevation(json[parameterName].asFloat());
+				}
+			}
+		}
 	}
 }
 

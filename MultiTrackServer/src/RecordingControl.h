@@ -8,6 +8,7 @@
 class RecordingControl : public ofxCvGui::Element, public ofxCvGui::Widgets::IInspectable {
 public:
 	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &, ofxMultiTrack::ServerData::NodeConnection::Ptr);
+	ofxMultiTrack::ServerData::NodeConnection::Ptr getNode();
 protected:
 	void update();
 	void update(ofxCvGui::UpdateArguments &);
