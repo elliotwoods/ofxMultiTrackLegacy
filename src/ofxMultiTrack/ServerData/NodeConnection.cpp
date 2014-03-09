@@ -131,11 +131,11 @@ namespace ofxMultiTrack {
 				matrixTransform = align->getMatrixTransform();
 			}
 			Json::Value json;
-			auto & jsonMesh = json["Modules"]["Mesh"]["Transform"];
+			auto & jsonMesh = json["Modules"]["Mesh"]["transform"];
 			for(int i=0; i<16; i++) {
 				jsonMesh[i] = matrixTransform.getPtr()[i];
 			}
-			this->send(jsonMesh);
+			this->addNodeConfig(json);
 		}
 
 		//----------

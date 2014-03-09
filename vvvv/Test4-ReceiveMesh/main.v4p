@@ -7,7 +7,7 @@
    </BOUNDS>
    <BOUNDS type="Box" left="5445" top="7875" width="6000" height="4500">
    </BOUNDS>
-   <BOUNDS type="Window" left="1005" top="1620" width="14025" height="11265">
+   <BOUNDS type="Window" left="645" top="2805" width="14025" height="11265">
    </BOUNDS>
    <PIN pinname="Layers" visible="1">
    </PIN>
@@ -124,20 +124,6 @@
    </NODE>
    <LINK srcnodeid="76" srcpinname="frames per second" dstnodeid="77" dstpinname="Y Input Value">
    </LINK>
-   <NODE systemname="ReceiveMesh (MultiTrack)" filename="ReceiveMesh (MultiTrack).v4p" nodename="ReceiveMesh (MultiTrack).v4p" componentmode="Hidden" id="91">
-   <BOUNDS type="Node" left="5274" top="4265" width="0" height="0">
-   </BOUNDS>
-   <BOUNDS type="Box" left="0" top="0" width="13230" height="11610">
-   </BOUNDS>
-   <BOUNDS type="Window" left="13605" top="1455" width="13230" height="11610">
-   </BOUNDS>
-   <PIN pinname="Preview Layer" visible="1">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="32" srcpinname="Render State" dstnodeid="91" dstpinname="Render State">
-   </LINK>
-   <LINK srcnodeid="57" srcpinname="Output" dstnodeid="91" dstpinname="Input">
-   </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="92" systemname="IOBox (Value Advanced)">
    <BOUNDS type="Box" left="6420" top="3510" width="795" height="240">
    </BOUNDS>
@@ -154,8 +140,6 @@
    <PIN pinname="Descriptive Name" slicecount="1" values="|Node Index|">
    </PIN>
    </NODE>
-   <LINK srcnodeid="92" srcpinname="Y Output Value" dstnodeid="91" dstpinname="Node Index">
-   </LINK>
    <NODE systemname="Box (DX11.Geometry)" filename="%VVVV%\packs\DX11\nodes\plugins\VVVV.DX11.Nodes.dll" nodename="Box (DX11.Geometry)" componentmode="Hidden" id="93">
    <BOUNDS type="Node" left="7800" top="4575" width="100" height="100">
    </BOUNDS>
@@ -191,19 +175,19 @@
    </BOUNDS>
    <PIN pinname="Layer Out" visible="1">
    </PIN>
-   <PIN pinname="Layer 1" visible="1">
+   <PIN pinname="Layer 1" visible="1" slicecount="1" values="||">
    </PIN>
    <PIN pinname="Layer 2" visible="1" slicecount="1" values="||">
    </PIN>
    </NODE>
-   <LINK srcnodeid="91" srcpinname="Preview Layer" dstnodeid="97" dstpinname="Layer 1">
-   </LINK>
    <NODE systemname="Inverse (Transform)" nodename="Inverse (Transform)" componentmode="Hidden" id="98">
-   <BOUNDS type="Node" left="7965" top="5250" width="100" height="100">
+   <BOUNDS type="Node" left="7965" top="5250" width="840" height="270">
    </BOUNDS>
    <PIN pinname="Source" visible="1">
    </PIN>
    <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   <PIN pinname="Transform In" visible="1" slicecount="1" values="||">
    </PIN>
    </NODE>
    <LINK srcnodeid="94" srcpinname="Transform Out" dstnodeid="98" dstpinname="Source">
@@ -247,5 +231,27 @@
    <LINK srcnodeid="97" srcpinname="Layer Out" dstnodeid="100" dstpinname="Layer In">
    </LINK>
    <LINK srcnodeid="100" srcpinname="Layer Out" dstnodeid="20" dstpinname="Layers">
+   </LINK>
+   <NODE systemname="ReceiveMesh (MultiTrack)" filename="ReceiveMesh (MultiTrack).v4p" nodename="ReceiveMesh (MultiTrack).v4p" componentmode="Hidden" id="91">
+   <BOUNDS type="Node" left="5274" top="4265" width="0" height="0">
+   </BOUNDS>
+   <BOUNDS type="Box" left="0" top="0" width="13230" height="11610">
+   </BOUNDS>
+   <BOUNDS type="Window" left="13605" top="1455" width="13230" height="11610">
+   </BOUNDS>
+   <PIN pinname="Preview Layer" visible="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="32" srcpinname="Render State" dstnodeid="91" dstpinname="Render State">
+   </LINK>
+   <LINK srcnodeid="57" srcpinname="Output" dstnodeid="91" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="92" srcpinname="Y Output Value" dstnodeid="91" dstpinname="Node Index">
+   </LINK>
+   <LINK srcnodeid="91" srcpinname="Preview Layer" dstnodeid="97" dstpinname="Layer 1">
+   </LINK>
+   <LINK srcnodeid="91" srcpinname="Transform" dstnodeid="98" dstpinname="Transform In">
    </LINK>
    </PATCH>
