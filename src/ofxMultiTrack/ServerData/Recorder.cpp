@@ -1,4 +1,5 @@
 #include "Recorder.h"
+#include "../Utils/Constants.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {

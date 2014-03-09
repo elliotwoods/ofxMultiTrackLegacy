@@ -1,4 +1,5 @@
 #include "Skeleton.h"
+#include "../Utils/Constants.h"
 
 namespace ofxMultiTrack {
 	namespace Modules {

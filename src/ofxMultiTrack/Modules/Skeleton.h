@@ -3,7 +3,6 @@
 #include "Base.h"
 #include "../Devices/KinectSDK.h"
 #include "../Utils/Types.h"
-#include "../Utils/Constants.h"
 
 namespace ofxMultiTrack {
 	namespace Modules {

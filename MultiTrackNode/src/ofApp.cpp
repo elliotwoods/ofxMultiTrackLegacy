@@ -55,7 +55,8 @@ void ofApp::update(){
 
 			//position window on screen
 			int nodeIndex = this->node.getSettings().localIndex;
-			ofSetWindowPosition(nodeIndex * 1920 / 2, 0);
+			ofSetWindowShape(ofGetScreenWidth() / 2.0f, ofGetScreenHeight());
+			ofSetWindowPosition(nodeIndex * ofGetScreenWidth() / 2, 0);
 
 			//get a pointer to the kinect device to draw previews
 			auto kinectDevice = this->node.getDevices().get<ofxMultiTrack::Devices::KinectSDK>();

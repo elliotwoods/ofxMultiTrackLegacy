@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxNetwork/src/ofxNetwork.h"
 
-#include "Utils/Constants.h"
 #include "Utils/Types.h"
 #include "Devices/Set.h"
 #include "Devices/KinectSDK.h"

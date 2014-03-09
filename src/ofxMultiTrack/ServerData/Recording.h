@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxNetwork/src/ofxNetwork.h"
 
-#include "../Utils/Constants.h"
 #include "../Utils/Types.h"
 #include "../Modules/Set.h"
 #include "../Modules/Skeleton.h"

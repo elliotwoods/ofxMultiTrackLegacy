@@ -1,5 +1,6 @@
 #include "NodeConnection.h"
 #include "../Align/Factory.h"
+#include "../Utils/Constants.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {

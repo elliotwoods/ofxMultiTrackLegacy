@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "Version.h"
+#include "ofxMultiTrack/src/ofxMultiTrack/Utils/Constants.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -211,7 +212,9 @@ void ofApp::setup(){
 		auto buildValue = shared_ptr<ofxCvGui::Widgets::LiveValue<float> >(new ofxCvGui::Widgets::LiveValue<float>("Build number", [] () { return getBuildNumber(); }));
 		elements->add(buildValue);
 
-		auto fpsValue = shared_ptr<ofxCvGui::Widgets::LiveValue<float> >(new ofxCvGui::Widgets::LiveValue<float>("fps", [] () { return ofGetFrameRate(); }));
+		auto fpsValue = shared_ptr<ofxCvGui::Widgets::LiveValue<float> >(new ofxCvGui::Widgets::LiveValue<float>("Server framerate", [] () { return ofGetFrameRate(); }));
+		elements->add(fpsValue);
+
 		elements->add(shared_ptr<ofxCvGui::Widgets::Spacer>(new ofxCvGui::Widgets::Spacer()));
 	};
 

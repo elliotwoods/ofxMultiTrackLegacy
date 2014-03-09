@@ -1,5 +1,6 @@
 #include "ofxTriangle.h"
 #include "Mesh.h"
+#include "../Utils/Constants.h"
 #include "ofxCv.h"
 
 namespace ofxMultiTrack {
