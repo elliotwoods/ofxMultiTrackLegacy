@@ -4,8 +4,8 @@ using namespace ofxMultiTrack;
 using namespace ofxCvGui;
 
 //---------
-RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::Recording & recording, ServerData::NodeConnection::Ptr node)
-	: recorder(recorder), recording(recording), node(node) {
+RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::Recording & recording, ServerData::NodeConnection::Ptr node, const ServerData::NodeSet & nodes)
+	: recorder(recorder), recording(recording), node(node), nodes(nodes) {
 	this->setBounds(ofRectangle(0,0,100,30));
 
 	this->onDraw += [this] (DrawArguments & args) { this->draw(args); };
@@ -67,11 +67,11 @@ void RecordingControl::draw(DrawArguments & args) {
 
 	ofPushStyle();
 	auto index = this->node->getIndex();
-	auto notes = ofToString(index) + " :";
+	auto notes = this->node->getName() + " :";
 	
 	auto influences = this->node->getInfluenceList();
 	for(auto influence : influences) {
-		notes += " <-- " + ofToString(influence);
+		notes += " <-- " + this->nodes[influence]->getName();
 	}
 
 	ofSetColor(100);

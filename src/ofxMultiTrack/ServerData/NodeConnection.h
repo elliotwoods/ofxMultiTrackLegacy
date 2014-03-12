@@ -63,6 +63,9 @@ namespace ofxMultiTrack {
 			void saveConfig(string filename = "") const;
 			void loadConfig(string filename = "");
 			string getDefaultConfigFilename() const;
+			
+			string getName() const;
+			void setName(string);
 
 			ofParameter<float> & getTiltParameter();
 		protected:
@@ -80,6 +83,7 @@ namespace ofxMultiTrack {
 			ofxTCPClient client;
 			string address;
 			int remoteIndex;
+			string name;
 			bool running;
 
 			Json::Value remoteConfig;

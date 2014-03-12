@@ -7,7 +7,7 @@
 
 class RecordingControl : public ofxCvGui::Element, public ofxCvGui::Widgets::IInspectable {
 public:
-	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &, ofxMultiTrack::ServerData::NodeConnection::Ptr);
+	RecordingControl(ofxMultiTrack::ServerData::Recorder &, ofxMultiTrack::ServerData::Recording &, ofxMultiTrack::ServerData::NodeConnection::Ptr, const ofxMultiTrack::ServerData::NodeSet &);
 	ofxMultiTrack::ServerData::NodeConnection::Ptr getNode();
 protected:
 	void update();
@@ -20,6 +20,7 @@ protected:
 	ofxMultiTrack::ServerData::Recorder & recorder;
 	ofxMultiTrack::ServerData::Recording & recording;
 	ofxMultiTrack::ServerData::NodeConnection::Ptr node;
+	const ofxMultiTrack::ServerData::NodeSet & nodes;
 
 	ofFbo fbo;
 	bool trackDirty;

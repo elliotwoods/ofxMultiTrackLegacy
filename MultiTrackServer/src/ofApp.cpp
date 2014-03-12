@@ -23,6 +23,9 @@ void ofApp::setup(){
 	server.init();
 	for(auto node : configJson["nodes"]) {
 		server.addNode(node["address"].asString(), node["deviceIndex"].asInt());
+		if (!node["name"].empty()) {
+			this->server.getNodes().back()->setName(node["name"].asString());
+		}
 	}
 
 	//setup osc sender
@@ -162,7 +165,7 @@ void ofApp::setup(){
 	recorderPanel->add(this->recorderControl);
 	auto & nodes = this->server.getNodes();
 	for(auto node : nodes) {
-		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording(), node));
+		auto track = ofxCvGui::ElementPtr(new RecordingControl(server.getRecorder(), node->getRecording(), node, nodes));
 		recorderPanel->add(track);
 	}
 	auto calibrateButton = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button);

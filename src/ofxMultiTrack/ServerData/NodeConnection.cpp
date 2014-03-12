@@ -376,6 +376,20 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
+		string NodeConnection::getName() const {
+			if (this->name == "") {
+				return ofToString(this->getIndex());
+			} else {
+				return this->name;
+			}
+		}
+
+		//----------
+		void NodeConnection::setName(string name) {
+			this->name = name;
+		}
+
+		//----------
 		ofParameter<float> & NodeConnection::getTiltParameter() {
 			return this->tiltParameter;
 		}
