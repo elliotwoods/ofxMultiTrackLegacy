@@ -41,7 +41,7 @@ namespace ofxMultiTrack {
 			Recording & getRecording();
 
 			Json::Value getStatus();
-			int getIndex() const;
+			int getIndex() const; /// < Make sure not to call this from constructor (or before we're in the collection)
 
 			const Transform & getTransform() const;
 			void setTransform(const Transform &);
@@ -59,12 +59,19 @@ namespace ofxMultiTrack {
 
 			void addNodeConfig(const Json::Value &);
 			void send(const Json::Value &);
+
+			void saveConfig(string filename = "") const;
+			void loadConfig(string filename = "");
+			string getDefaultConfigFilename() const;
+
+			ofParameter<float> & getTiltParameter();
 		protected:
 			void threadedFunction() override;
 			void receiveMessages();
 			void sendMessages();
 
 			void performBlocking(function<void()>);
+			void onTiltParameterChange(float &);
 
 			deque<function<void()>> actionQueue; // a list of actions to be performed on the network thread
 			ofMutex lockActionQueue;
@@ -95,6 +102,9 @@ namespace ofxMultiTrack {
 			Collection & otherNodes;
 
 			ofxTCPClient meshClient;
+
+			bool disableSaving;
+			ofParameter<float> tiltParameter;
 
 			bool enabled; ///<denotes whether we will supply data
 		};

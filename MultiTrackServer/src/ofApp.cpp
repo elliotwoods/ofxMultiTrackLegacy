@@ -22,15 +22,15 @@ void ofApp::setup(){
 	//initialise the server (the important bit)
 	server.init();
 	for(auto node : configJson["nodes"]) {
-		server.addNode(node["address"].asString(), node["index"].asInt());
+		server.addNode(node["address"].asString(), node["deviceIndex"].asInt());
 	}
 
 	//setup osc sender
 	oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
 
-	//setup mesh osc senders from nodes
+	//setup mesh osc senders from nodes. this should be moved to API
 	Json::Value jsonSetupOscRoot;
-	auto & jsonSetupOsc = jsonSetupOscRoot["Modules"]["Mesh"]["client"];
+	auto & jsonSetupOsc = jsonSetupOscRoot["modules"]["Mesh"]["client"];
 	jsonSetupOsc["address"] = configJson["osc"]["address"];
 	jsonSetupOsc["port"] = configJson["osc"]["meshPort"];
 	this->server.addNodeConfig(jsonSetupOscRoot);

@@ -25,7 +25,5 @@ protected:
 	bool trackDirty;
 	int cachedCount;
 
-	ofParameter<float> tilt;
-
 	Json::Value status;
 };

@@ -111,7 +111,7 @@ namespace ofxMultiTrack {
 					}
 					meshInWorld.addIndices(newIndices);
 
-					meshInWorld.mergeDuplicateVertices(); //<--this function (surprise surprise) doesn't work
+					meshInWorld.mergeDuplicateVertices();
 					this->worldContours.push_back(meshInWorld);
 				}
 			} catch(std::exception e) {

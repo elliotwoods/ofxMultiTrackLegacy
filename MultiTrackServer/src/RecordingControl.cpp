@@ -16,9 +16,6 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 	};
 	this->trackDirty = false;
 	this->cachedCount = 0;
-
-	this->tilt.set("Tilt [degrees]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
-
 }
 
 //---------
@@ -83,24 +80,24 @@ void RecordingControl::draw(DrawArguments & args) {
 	ofSetLineWidth(1);
 	ofLine(0,this->getHeight(), this->getWidth(), this->getHeight()); 
 
-	if (ofxCvGui::Panels::Inspector::isSelected(*this)) {
+	if (this->node->isEnabled()) {
 		ofFill();
 	} else {
 		ofNoFill();
 	}
 
-	ofCircle(9, 8, 3);
+	ofCircle(9, 8, 4);
 		
-	if (!this->node->isEnabled()) {
+	if (ofxCvGui::Panels::Inspector::isSelected(*this)) {
 		ofEnableAlphaBlending();
-		ofSetColor(100,100,100,100);
+		ofSetColor(255,255,255,40);
 		ofRect(args.localBounds);
 	}
 
 	//draw connection indicator
 	ofFill();
 	ofSetColor(this->node->isConnected() ? ofColor(100, 255, 100) : ofColor(255, 100, 100));
-	ofCircle(20, 8, 3);
+	ofCircle(23, 8, 4);
 
 	ofPopStyle();
 }
@@ -129,13 +126,7 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		return this->status["remoteStatus"]["fps"].asFloat();
 	}));
 
-	auto tiltSlider = shared_ptr<Slider>(new Slider(this->tilt));
-	tiltSlider->onValueChange += [this] (const ofParameter<float> & value) {
-		Json::Value json;
-		auto & jsonMessage = json["Devices"]["KinectSDK"]["tilt"];
-		jsonMessage = value.get();
-		this->node->addNodeConfig(json);
-	};
+	auto tiltSlider = shared_ptr<Slider>(new Slider(this->node->getTiltParameter()));
 
 	inspector->add(header);
 	inspector->add(addressValue);

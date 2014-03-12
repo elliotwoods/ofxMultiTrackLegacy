@@ -15,6 +15,7 @@ namespace ofxMultiTrack {
 			//check for existing running clients on this machine
 			bool stillLooking = true;
 			while(stillLooking) {
+				ofSleepMillis(ofRandomuf() * 10000.0f);
 				ofxTCPClient checkExisting;
 				checkExisting.setup("127.0.0.1", OFXMULTITRACK_NODE_LISTEN_PORT + localNodeIndex, true);
 				if (checkExisting.isConnected()) {
@@ -101,9 +102,12 @@ namespace ofxMultiTrack {
 		}
 
 		Json::Value received;
+		int connectedCount = 0;
 		for(int iClient = 0; iClient < this->server.getNumClients(); iClient++) {
 			if (!this->server.isClientConnected(iClient)) {
 				continue;
+			} else {
+				connectedCount++;
 			}
 			Json::Reader reader;
 			auto rxString = server.receive(iClient);
@@ -115,6 +119,16 @@ namespace ofxMultiTrack {
 				}
 			}
 		}
+		if (connectedCount < this->server.getNumClients()) {
+			//strange hack where ofxNetwork reports a client as being present but not connected
+			//sendToAll still works, but receive won't work in this case.
+			//So restart our server in this case]
+			ofLogNotice("ofxMultiTrack") << "Restarting node's network connection." << endl;
+			auto port = this->server.getPort();
+			this->server.close();
+			this->server.setup(port, false);
+		}
+
 		if (!received.empty()) {
 			this->parseIncoming(received);
 		}
@@ -146,8 +160,7 @@ namespace ofxMultiTrack {
 		auto & jsonModules = json["modules"];
 		int moduleIndex = 0;
 		for(auto module : this->modules) {
-			auto & jsonModule = jsonModules[moduleIndex++];
-			jsonModule["type"] = module->getType();
+			auto & jsonModule = jsonModules[module->getType()];
 			jsonModule["data"] = module->serialize();
 		}
 
@@ -189,15 +202,15 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Node::parseIncoming(const Json::Value & json) {
-		cout << "incoming = " << json.toStyledString() << endl << endl;
+		cout << "incoming = " << json << endl << endl;
 
 		for(auto message : json) {
 			if (message.isObject()) {
 				const auto categories = message.getMemberNames();
 				for(auto category : categories) {
-					if (category == "Devices") {
+					if (category == "devices") {
 						this->devices.setConfig(message[category]);
-					} else if (category == "Modules") {
+					} else if (category == "modules") {
 						this->modules.setConfig(message[category]);
 					}
 				}

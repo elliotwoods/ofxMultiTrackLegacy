@@ -35,6 +35,10 @@ namespace ofxMultiTrack {
 			this->cachedConnected = false;
 			this->startThread(true, false);
 			this->enabled = true;
+			this->disableSaving = false;
+
+			this->tiltParameter.set("Tilt [degrees]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
+			this->tiltParameter.addListener(this, & NodeConnection::onTiltParameterChange);
 		}
 
 		//----------
@@ -131,7 +135,7 @@ namespace ofxMultiTrack {
 				matrixTransform = align->getMatrixTransform();
 			}
 			Json::Value json;
-			auto & jsonMesh = json["Modules"]["Mesh"]["transform"];
+			auto & jsonMesh = json["modules"]["Mesh"]["transform"];
 			for(int i=0; i<16; i++) {
 				jsonMesh[i] = matrixTransform.getPtr()[i];
 			}
@@ -309,12 +313,71 @@ namespace ofxMultiTrack {
 		void NodeConnection::addNodeConfig(const Json::Value & message) {
 			this->send(message);
 			merge(this->remoteConfig, message);
+			this->saveConfig();
 		}
+
 		//----------
 		void NodeConnection::send(const Json::Value & value) {
 			this->toSendMutex.lock();
 			this->toSend[this->toSend.size()] = value;
 			this->toSendMutex.unlock();
+		}
+
+		//----------
+		void NodeConnection::saveConfig(string filename) const {
+			if (this->disableSaving) {
+				return;
+			}
+
+			if (filename == "") {
+				filename = this->getDefaultConfigFilename();
+			}
+			
+			Json::StyledWriter writer;
+			ofFile output;
+			output.open(filename, ofFile::WriteOnly, false);
+			output << writer.write(this->remoteConfig);
+		}
+
+		//----------
+		void NodeConnection::loadConfig(string filename) {
+			if (filename == "") {
+				filename = this->getDefaultConfigFilename();
+			}
+			
+			this->disableSaving = true;
+
+			try {
+				ofFile input;
+				input.open(ofToDataPath(filename, true), ofFile::ReadOnly, false);
+				string jsonRaw = input.readToBuffer().getText();
+
+				Json::Reader reader;
+				Json::Value json;
+				reader.parse(jsonRaw, json);
+				this->remoteConfig = json;
+				this->send(json);
+			} catch (std::exception e) {
+				ofSystemAlertDialog(e.what());
+			}
+
+			auto newConfig = this->remoteConfig;
+			const auto tiltConfig = newConfig["devices"]["KinectSDK"]["tilt"];
+			if (!tiltConfig.empty()) {
+				this->tiltParameter.set(tiltConfig.asFloat());
+			}
+
+			this->disableSaving = false;
+		}
+
+		//----------
+		string NodeConnection::getDefaultConfigFilename() const {
+			return "nodeRemoteConfig" + ofToString(this->getIndex()) + ".json";
+		}
+
+		//----------
+		ofParameter<float> & NodeConnection::getTiltParameter() {
+			return this->tiltParameter;
 		}
 
 		//----------
@@ -351,7 +414,7 @@ namespace ofxMultiTrack {
 				{
 					Json::Value json;
 					jsonReader.parse(response, json);
-					auto & jsonSkeletons = json["modules"][0]["data"];
+					auto & jsonSkeletons = json["modules"]["Skeleton"]["data"];
 					bool newSkeleton = jsonSkeletons["isNewSkeleton"].asBool();
 					auto & jsonUsers = jsonSkeletons["users"];
 					this->lockUsers.lock();
@@ -426,6 +489,14 @@ namespace ofxMultiTrack {
 				waiting = !actionQueue.empty();
 				lockActionQueue.unlock();	
 			}
+		}
+
+		//----------
+		void NodeConnection::onTiltParameterChange(float & value) {
+			Json::Value json;
+			auto & jsonMessage = json["devices"]["KinectSDK"]["tilt"];
+			jsonMessage = value;
+			this->addNodeConfig(json);
 		}
 	}
 }

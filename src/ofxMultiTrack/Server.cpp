@@ -59,6 +59,7 @@ namespace ofxMultiTrack {
 	void Server::addNode(string address, int index) {
 		auto newNode = new ServerData::NodeConnection(address, index, this->nodes);
 		this->nodes.push_back(shared_ptr<ServerData::NodeConnection>(newNode));
+		newNode->loadConfig();
 	}
 
 	//----------
