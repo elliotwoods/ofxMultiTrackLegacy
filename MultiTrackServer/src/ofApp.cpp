@@ -21,10 +21,18 @@ void ofApp::setup(){
 
 	//initialise the server (the important bit)
 	server.init();
-	for(auto node : configJson["nodes"]) {
-		server.addNode(node["address"].asString(), node["deviceIndex"].asInt());
-		if (!node["name"].empty()) {
-			this->server.getNodes().back()->setName(node["name"].asString());
+	{
+		int nodeIndex = 0;
+		for(auto & node : configJson["nodes"]) {
+			server.addNode(node["address"].asString(), node["deviceIndex"].asInt());
+			if (!node["name"].empty()) {
+				this->server.getNodes().back()->setName(node["name"].asString());
+			}
+			if (!node["defaultParent"].empty()) {
+				const auto defaultParent = node["defaultParent"].asInt();
+				this->defaultParents.insert(pair<int, int>(nodeIndex, defaultParent));
+			}
+			nodeIndex++;
 		}
 	}
 
@@ -377,7 +385,7 @@ void ofApp::keyPressed(int key){
 		this->worldPanel->setCaption("World");
 		break;
 	case 'a':
-		ofxAssets::AssetRegister.refresh();
+		this->server.autoCalibrate(this->defaultParents);
 		break;
 	case 'l':
 		this->server.loadCalibration();

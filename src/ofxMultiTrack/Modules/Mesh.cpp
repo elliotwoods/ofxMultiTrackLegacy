@@ -36,6 +36,10 @@ namespace ofxMultiTrack {
 
 		//----------
 		void Mesh::update() {
+			if (!this->udpSender) {
+				return;
+			}
+
 			try {
 				//allocate images
 				auto rawDepthPixels = this->kinect->getDevice().getRawDepthPixelsRef();
@@ -183,7 +187,7 @@ namespace ofxMultiTrack {
 			
 		//----------
 		void Mesh::sendBinary() {
-			if (udpSender) {
+			if (this->udpSender) {
 				auto writeLocation = sendBuffer.getBinaryBuffer();
 				int totalSize = 0;
 

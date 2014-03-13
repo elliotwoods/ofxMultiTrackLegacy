@@ -129,7 +129,14 @@ namespace ofxMultiTrack {
 		void NodeConnection::setTransform(const Transform & transform) {
 			this->transform = transform;
 
-			const auto align = transform.getTransform();
+			//check for ciruclar influence referencing
+			try {
+				this->getInfluenceList();
+			} catch (...) {
+				this->clearTransform();
+			}
+
+			const auto align = this->transform.getTransform();
 			ofMatrix4x4 matrixTransform;
 			if (align) {
 				matrixTransform = align->getMatrixTransform();
@@ -263,14 +270,17 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		list<int> NodeConnection::getInfluenceList() const {
+		list<int> NodeConnection::getInfluenceList(int circularInfluenceCheck) const {
 			list<int> influence;
 			const auto ourParent = this->transform.getParent();
+			if (ourParent == circularInfluenceCheck) {
+				throw(ofxMultiTrack::Exception("Circular influence list found"));
+			}
 			if (ourParent != -1) {
 				//if we're not root, add our parent
 				influence.push_back(ourParent);
 				//and ask our parent
-				auto upstreamInfluences = otherNodes[this->transform.getParent()]->getInfluenceList();
+				auto upstreamInfluences = otherNodes[this->transform.getParent()]->getInfluenceList(this->getIndex());
 				influence.insert(influence.end(), upstreamInfluences.begin(), upstreamInfluences.end());
 			}
 			return influence;

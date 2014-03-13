@@ -50,7 +50,7 @@ namespace ofxMultiTrack {
 			ofVec3f applyTransform(const ofVec3f &) const;
 			void applyOriginPose(const User &);
 
-			list<int> getInfluenceList() const;
+			list<int> getInfluenceList(int circularInfluenceCheck = -2) const;
 			bool isRoot() const;
 
 			bool isEnabled() const;

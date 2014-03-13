@@ -112,7 +112,7 @@ using namespace ofxCvGui::Widgets;
 
 //---------
 void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
-	auto header = shared_ptr<Title>(new Title("Node #" + ofToString(this->node->getIndex()), Title::Level::H2));
+	auto header = shared_ptr<Title>(new Title("Node #" + ofToString(this->node->getIndex()) + ": " + this->node->getName(), Title::Level::H2));
 	
 	auto addressValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Address", [this] () {
 		return this->status["address"].asString();

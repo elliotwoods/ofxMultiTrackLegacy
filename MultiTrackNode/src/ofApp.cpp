@@ -69,12 +69,10 @@ void ofApp::update(){
 			//add these panels to the left column
 			this->gui.add(depthPanel);
 			this->gui.add(colorPanel);
-			auto worldPanel = this->gui.addWorld();
 
 			//override the depth draw to draw skeletons also
 			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
 				ofPushMatrix();
-				ofScale(args.size.x / 640.0f, args.size.y / 480.0f);
 				auto skeletonModule = this->node.getModules().get<ofxMultiTrack::Modules::Skeleton>();
 				if (skeletonModule) {
 					skeletonModule->drawOnDepth();
@@ -84,6 +82,7 @@ void ofApp::update(){
 
 			auto meshModule = this->node.getModules().get<ofxMultiTrack::Modules::Mesh>();
 			if (meshModule) {
+				auto worldPanel = this->gui.addWorld();
 				worldPanel->onDrawWorld += [meshModule] (ofCamera &) {
 					meshModule->drawWorld();
 				};

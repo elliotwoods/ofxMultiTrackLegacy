@@ -49,6 +49,7 @@ namespace ofxMultiTrack {
 		string getStatusString();
 
 		void autoCalibrate();
+		void autoCalibrate(const map<int, int> & defaultParents);
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
 			Align::Ptr routine = Align::Factory::makeDefault());
 		

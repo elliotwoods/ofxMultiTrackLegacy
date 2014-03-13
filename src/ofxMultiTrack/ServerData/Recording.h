@@ -20,6 +20,8 @@ namespace ofxMultiTrack {
 			const UserSet & getFrame(Timestamp);
 			void clear();
 
+			int getLikelyCalibrationUserIndex() const;
+
 			FrameSet & getFrames();
 		protected:
 			static UserSet blankFrame;

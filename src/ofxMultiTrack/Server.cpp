@@ -273,6 +273,33 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	void Server::autoCalibrate(const map<int, int> & defaultParents) {
+		for(const auto & relationship : defaultParents) {
+			int originNodeIndex = relationship.second;
+			int targetNodeIndex = relationship.first;
+			try {
+
+				auto originNode = this->nodes[originNodeIndex];
+				if (!originNode) {
+					throw(ofxMultiTrack::Exception("Node #" + ofToString(originNodeIndex) + " doesn't exist"));
+				}
+
+				auto targetNodes = this->nodes[targetNodeIndex];
+				if (!targetNodes) {
+					throw(ofxMultiTrack::Exception("Node #" + ofToString(targetNodeIndex) + " doesn't exist"));
+				}
+			
+				int originUserIndex = originNode->getRecording().getLikelyCalibrationUserIndex();
+				int targetUserIndex = targetNodes->getRecording().getLikelyCalibrationUserIndex();
+
+				this->addAlignment(targetNodeIndex, originNodeIndex, targetUserIndex, originUserIndex);
+			} catch (ofxMultiTrack::Exception & e) {
+				ofSystemAlertDialog("Failed to calibrate node #" + ofToString(targetNodeIndex) + ":\n" + string(e.what()));
+			}
+		}
+	}
+
+	//----------
 	void Server::addAlignment(int nodeIndex, int originNodeIndex, int userIndex, int originUserIndex, Align::Ptr routine) {
 		try {
 			//check nodes exist

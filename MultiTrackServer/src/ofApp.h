@@ -47,6 +47,8 @@ public:
 	ofxCvGui::Builder gui;
 	ofxCvGui::PanelPtr worldPanel;
 
+	map<int, int> defaultParents;
+
 	NodeUser source;
 	NodeUser target;
 	vector<Target> targets;

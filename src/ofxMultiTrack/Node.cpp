@@ -44,7 +44,7 @@ namespace ofxMultiTrack {
 
 			//add modules
 			this->modules.push_back(shared_ptr<Modules::Skeleton>(new Modules::Skeleton(kinect)));
-			this->modules.push_back(shared_ptr<Modules::Mesh>(new Modules::Mesh(kinect, localNodeIndex)));
+			//this->modules.push_back(shared_ptr<Modules::Mesh>(new Modules::Mesh(kinect, localNodeIndex)));
 
 			//initialise modules
 			for(auto module : this->modules) {
