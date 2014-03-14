@@ -65,29 +65,46 @@ namespace ofxMultiTrack {
 				}
 			}
 
-			//calculate length of movement per joint
-			map<int, float> pathLengthPerUser;
+			//calculate the bounds of movement per joint
+			map<int, ofVec3f> leftBottomFronts;
+			map<int, ofVec3f> rightTopBacks;
 			for(const auto & path : jointPathPerUser) {
+				auto userIndex = path.first;
+
 				if (path.second.empty()) {
 					continue;
 				}
 
 				float length = 0;
-				auto lastPosition = path.second.front();
 				for(auto point : path.second) {
-					length += (point - lastPosition).length();
-					lastPosition = point;
+					if (leftBottomFronts.count(userIndex) == 0) {
+						leftBottomFronts[userIndex] = point;
+					} else {
+						auto & leftBottomFront = leftBottomFronts[userIndex];
+						leftBottomFront.x = min(leftBottomFront.x, point.x);
+						leftBottomFront.y = min(leftBottomFront.y, point.y);
+						leftBottomFront.z = min(leftBottomFront.z, point.z);
+					}
+					if (rightTopBacks.count(userIndex) == 0) {
+						rightTopBacks[userIndex] = point;
+					} else {
+						auto & rightTopBack = rightTopBacks[userIndex];
+						rightTopBack.x = max(rightTopBack.x, point.x);
+						rightTopBack.y = max(rightTopBack.y, point.y);
+						rightTopBack.z = max(rightTopBack.z, point.z);
+					}
 				}
-				pathLengthPerUser[path.first] = length;
 			}
 
 			//find maximum path length
-			float maxLength = 0;
+			float maxSpread = 0;
 			int maxUserIndex = -1;
-			for(auto length : pathLengthPerUser) {
-				if (length.second > maxLength) {
-					maxUserIndex = length.first;
-					maxLength = length.second;
+			for(auto path : jointPathPerUser) {
+				const auto userIndex = path.first;
+				const auto spread = (leftBottomFronts[userIndex] - rightTopBacks[userIndex]).length();
+				if (spread > maxSpread) {
+					maxUserIndex = path.first;
+					maxSpread = spread;
 				}
 			}
 

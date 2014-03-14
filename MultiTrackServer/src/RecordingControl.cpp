@@ -118,8 +118,16 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		return this->status["address"].asString();
 	}));
 
+	auto deviceIndexValue = shared_ptr<LiveValue<int> >(new LiveValue<int>("Device Index", [this] () {
+		return this->status["remoteStatus"]["localIndex"].asInt();
+	}));
+
 	auto connectedValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Connected", [this] () {
 		return this->status["connected"].asBool() ? "true" : "false";
+	}));
+
+	auto enabledValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Enabled", [this] () {
+		return this->node->isConnected() ? "true" : "false";
 	}));
 
 	auto fpsValue = shared_ptr<LiveValue<float> >(new LiveValue<float>("Remote fps", [this] () {
@@ -130,6 +138,8 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 
 	inspector->add(header);
 	inspector->add(addressValue);
+	inspector->add(deviceIndexValue);
+	inspector->add(enabledValue);
 	inspector->add(connectedValue);
 	inspector->add(fpsValue);
 	inspector->add(tiltSlider);

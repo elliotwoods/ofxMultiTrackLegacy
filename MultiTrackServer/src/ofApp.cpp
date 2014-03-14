@@ -24,7 +24,9 @@ void ofApp::setup(){
 	{
 		int nodeIndex = 0;
 		for(auto & node : configJson["nodes"]) {
-			server.addNode(node["address"].asString(), node["deviceIndex"].asInt());
+			const auto deviceIndex = node["deviceIndex"].asInt();
+			const auto nodeAddress = node["address"].asString();
+			server.addNode(nodeAddress, deviceIndex);
 			if (!node["name"].empty()) {
 				this->server.getNodes().back()->setName(node["name"].asString());
 			}
@@ -196,7 +198,6 @@ void ofApp::setup(){
 	this->calibrateButton = calibrateButton;
 	recorderPanel->ofFilesDragged += [this] (ofxCvGui::FilesDraggedArguments & args) {
 		for(auto & file : args.files) {
-			cout << "Loading [" << file << "]";
 			this->server.getRecorder().load(file);
 		}
 	};
@@ -359,6 +360,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	auto & recorder = this->server.getRecorder();
+	auto selectedNode = this->getSelectedNode();
 	switch (key) {
 	case ' ':
 		switch(recorder.getState()) {
@@ -397,9 +399,13 @@ void ofApp::keyPressed(int key){
 		this->server.applyOriginPose();
 		break;
 	case OF_KEY_BACKSPACE:
-		auto selectedNode = this->getSelectedNode();
 		if (selectedNode) {
 			selectedNode->clearTransform();
+		}
+		break;
+	case 'e':
+		if (selectedNode) {
+			selectedNode->setEnabled(!selectedNode->isEnabled());
 		}
 		break;
 	}
