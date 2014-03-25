@@ -228,6 +228,22 @@ void ofApp::setup(){
 		elements->add(fpsValue);
 
 		elements->add(shared_ptr<ofxCvGui::Widgets::Spacer>(new ofxCvGui::Widgets::Spacer()));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Button>(new ofxCvGui::Widgets::Button("Auto calibrate", [this] () {
+			this->server.autoCalibrate(this->defaultParents);
+		})));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Button>(new ofxCvGui::Widgets::Button("Save calibration", [this] () {
+			this->server.saveCalibration();
+		})));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Button>(new ofxCvGui::Widgets::Button("Load calibration", [this] () {
+			this->server.loadCalibration();
+		})));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Button>(new ofxCvGui::Widgets::Button("Apply Origin Pose", [this] () {
+			this->server.applyOriginPose();
+		})));
 	};
 
 	//arrange grid on resize

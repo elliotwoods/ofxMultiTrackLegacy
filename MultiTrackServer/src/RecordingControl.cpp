@@ -18,6 +18,8 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 	this->trackDirty = false;
 	this->cachedCount = 0;
 	this->rebuildInspector = false;
+
+	this->enabledParameter.set("Enabled", true);
 }
 
 //---------
@@ -27,7 +29,8 @@ ofxMultiTrack::ServerData::NodeConnection::Ptr RecordingControl::getNode() {
 
 //---------
 void RecordingControl::update(UpdateArguments &) {
-	
+	this->enabledParameter.set(this->node->isEnabled());
+
 	this->status = this->node->getStatus();
 
 	if(this->cachedCount != this->recording.getFrames().size() || this->recorder.isRecording()) {
@@ -133,9 +136,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		return this->status["connected"].asBool() ? "true" : "false";
 	}));
 
-	auto enabledValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Enabled", [this] () {
-		return this->node->isConnected() ? "true" : "false";
-	}));
+	auto enabledToggle = shared_ptr<Toggle>(new Toggle(this->enabledParameter));
+	enabledToggle->onValueChange += [this] (const ofParameter<bool> & value) {
+		this->node->setEnabled(value.get());
+	};
 
 	auto fpsValue = shared_ptr<LiveValue<float> >(new LiveValue<float>("Remote fps", [this] () {
 		return this->status["remoteStatus"]["fps"].asFloat();
@@ -143,10 +147,11 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 
 	auto tiltSlider = shared_ptr<Slider>(new Slider(this->node->getTiltParameter()));
 
+	inspector->add(shared_ptr<Spacer>(new Spacer()));
 	inspector->add(header);
 	inspector->add(addressValue);
 	inspector->add(deviceIndexValue);
-	inspector->add(enabledValue);
+	inspector->add(enabledToggle);
 	inspector->add(connectedValue);
 	inspector->add(fpsValue);
 	inspector->add(tiltSlider);
@@ -174,17 +179,13 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		}
 	}
 
-	auto clearTransformButton = shared_ptr<Widgets::Button>(new Widgets::Button("Clear Transform"));
-	clearTransformButton->onHit += [this] (Widgets::Button::EventArgs &) {
+	inspector->add(shared_ptr<Widgets::Button>(new Widgets::Button("Clear transform", [this] () {
 		this->node->clearTransform();
 		this->rebuildInspector = true;
-	};
-	inspector->add(clearTransformButton);
+	})));
 
-	auto makeBlankTransformButton = shared_ptr<Widgets::Button>(new Widgets::Button("Make Blank Transform"));
-	makeBlankTransformButton->onHit += [this] (Widgets::Button::EventArgs &) {
+	inspector->add(shared_ptr<Widgets::Button>(new Widgets::Button("Make blank transform", [this] () {
 		this->node->setTransform(ServerData::NodeConnection::Transform(-1, Align::Factory::makeDefault()));
 		this->rebuildInspector = true;
-	};
-	inspector->add(makeBlankTransformButton);
+	})));
 }

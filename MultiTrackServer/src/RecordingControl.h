@@ -28,4 +28,6 @@ protected:
 
 	Json::Value status;
 	bool rebuildInspector;
+
+	ofParameter<bool> enabledParameter;
 };
