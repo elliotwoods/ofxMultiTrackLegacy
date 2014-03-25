@@ -27,4 +27,5 @@ protected:
 	int cachedCount;
 
 	Json::Value status;
+	bool rebuildInspector;
 };

@@ -387,11 +387,7 @@ namespace ofxMultiTrack {
 
 		//----------
 		string NodeConnection::getName() const {
-			if (this->name == "") {
-				return ofToString(this->getIndex());
-			} else {
-				return this->name;
-			}
+			return this->name;
 		}
 
 		//----------

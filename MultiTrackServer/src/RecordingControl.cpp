@@ -1,4 +1,5 @@
 #include "RecordingControl.h"
+#include "ofxMultiTrack/src/ofxMultiTrack/Align/RigidBodyFit.h"
 
 using namespace ofxMultiTrack;
 using namespace ofxCvGui;
@@ -16,6 +17,7 @@ RecordingControl::RecordingControl(ServerData::Recorder & recorder, ServerData::
 	};
 	this->trackDirty = false;
 	this->cachedCount = 0;
+	this->rebuildInspector = false;
 }
 
 //---------
@@ -59,6 +61,11 @@ void RecordingControl::update(UpdateArguments &) {
 		this->cachedCount = this->recording.getFrames().size();
 		this->trackDirty = false;
 	}
+
+	if (this->rebuildInspector) {
+		ofxCvGui::Panels::Inspector::setSelection(*this);
+		this->rebuildInspector = false;
+	}
 }
 
 //---------
@@ -67,7 +74,7 @@ void RecordingControl::draw(DrawArguments & args) {
 
 	ofPushStyle();
 	auto index = this->node->getIndex();
-	auto notes = this->node->getName() + " :";
+	auto notes = "[" + ofToString(this->node->getIndex()) + "] " + this->node->getName() + " :";
 	
 	auto influences = this->node->getInfluenceList();
 	for(auto influence : influences) {
@@ -80,6 +87,12 @@ void RecordingControl::draw(DrawArguments & args) {
 	ofSetLineWidth(1);
 	ofLine(0,this->getHeight(), this->getWidth(), this->getHeight()); 
 
+	if (ofxCvGui::Panels::Inspector::isSelected(*this)) {
+		ofEnableAlphaBlending();
+		ofSetColor(255,255,255,40);
+		ofRect(args.localBounds);
+	}
+
 	if (this->node->isEnabled()) {
 		ofFill();
 	} else {
@@ -87,12 +100,6 @@ void RecordingControl::draw(DrawArguments & args) {
 	}
 
 	ofCircle(9, 8, 4);
-		
-	if (ofxCvGui::Panels::Inspector::isSelected(*this)) {
-		ofEnableAlphaBlending();
-		ofSetColor(255,255,255,40);
-		ofRect(args.localBounds);
-	}
 
 	//draw connection indicator
 	ofFill();
@@ -143,4 +150,41 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	inspector->add(connectedValue);
 	inspector->add(fpsValue);
 	inspector->add(tiltSlider);
+
+	inspector->add(shared_ptr<Spacer>(new Spacer()));
+	inspector->add(shared_ptr<Title>(new Title("Transform", Title::Level::H3)));
+	
+	auto transformTypeValue = shared_ptr<LiveValue<string>>(new LiveValue<string>("Type", [this] () {
+		auto align = this->node->getTransform().getTransform();
+		if (align) {
+			return align->getType();
+		} else {
+			return string("none");
+		}
+	}));
+	inspector->add(transformTypeValue);
+	
+	auto nodeAlignBase = this->node->getTransform().getTransform();
+	auto nodeAlignRigidTransform = dynamic_pointer_cast<Align::RigidBodyFit>(nodeAlignBase);
+	if (nodeAlignRigidTransform) {
+		const auto transformParameters = nodeAlignRigidTransform->getParameters();
+		for(auto parameter : transformParameters) {
+			auto parameterSlider = shared_ptr<Slider>(new Slider(* parameter));
+			inspector->add(parameterSlider);
+		}
+	}
+
+	auto clearTransformButton = shared_ptr<Widgets::Button>(new Widgets::Button("Clear Transform"));
+	clearTransformButton->onHit += [this] (Widgets::Button::EventArgs &) {
+		this->node->clearTransform();
+		this->rebuildInspector = true;
+	};
+	inspector->add(clearTransformButton);
+
+	auto makeBlankTransformButton = shared_ptr<Widgets::Button>(new Widgets::Button("Make Blank Transform"));
+	makeBlankTransformButton->onHit += [this] (Widgets::Button::EventArgs &) {
+		this->node->setTransform(ServerData::NodeConnection::Transform(-1, Align::Factory::makeDefault()));
+		this->rebuildInspector = true;
+	};
+	inspector->add(makeBlankTransformButton);
 }

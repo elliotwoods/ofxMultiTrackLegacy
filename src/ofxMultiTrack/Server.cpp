@@ -91,6 +91,8 @@ namespace ofxMultiTrack {
 	
 	//----------
 	void draw(const vector<ServerData::UserSet> & views) {
+		glPushAttrib(GL_POINT_BIT);
+
 		int nodeIndex = 0;
 		for(auto & view : views) {
 			//--
@@ -99,54 +101,41 @@ namespace ofxMultiTrack {
 			auto & pointSprite = ofxAssets::image("ofxMultiTrack::" + ofToString(nodeIndex));
 			pointSprite.bind();
 			ofEnablePointSprites();
-			//
-			//--
-
+			glPointSize(14.0f);
 			view.draw();
-			
-			//--
-			//clear point sprites
-			//
 			ofDisablePointSprites();
 			pointSprite.unbind();
 			//
 			//--
-
+			
 			nodeIndex++;
 		}
+
+		glPopAttrib();
 	}
 
 	//----------
 	void Server::drawViews() const {
 		this->drawViewConeView();
-		
-		glPushAttrib(GL_POINT_BIT);
-		glPointSize(16.0f);
-		
 		draw(this->currentFrame.views);
-		
-		glPopAttrib();
 	}
 
 	//----------
 	void Server::drawWorld() const {
 		this->drawViewConesWorld();
 
-		glPushAttrib(GL_POINT_BIT);
-		glPointSize(12.0f);
-
 		//draw sources
 		draw(this->currentFrame.world);
 
-		//draw combined in geen
+		//draw combined in green
 		ofPushStyle();
 		ofSetColor(0, 255, 0);
+		glPushAttrib(GL_POINT_BIT);
 		glEnable(GL_POINT_SMOOTH);
 		glPointSize(16.0f);
 		this->currentFrame.combined.draw(false);
-
-		ofPopStyle();
 		glPopAttrib();
+		ofPopStyle();
 	}
 
 	//----------

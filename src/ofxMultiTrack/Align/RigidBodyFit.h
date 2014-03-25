@@ -2,6 +2,7 @@
 
 #include "Base.h"
 #include "ofxNonLinearFit/src/ofxNonLinearFit.h"
+#include "ofParameter.h"
 
 namespace ofxMultiTrack {
 	namespace Align {
@@ -17,11 +18,16 @@ namespace ofxMultiTrack {
 			void deserialise(const Json::Value &) override;
 
 			const ofMatrix4x4 getMatrixTransform() const override;
+			const vector<shared_ptr<ofParameter<float>>> & getParameters();
 		protected:
+			void updateParameters();
+			void callbackTransformParameter(float &);
+
 			typedef ofxNonLinearFit::Models::RigidBody Model;
 
 			Model model;
 			ofxNonLinearFit::Fit<Model> fit;
+			vector<shared_ptr<ofParameter<float>>> parameters;
 		};
 	}
 }

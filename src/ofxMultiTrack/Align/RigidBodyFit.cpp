@@ -6,7 +6,19 @@ namespace ofxMultiTrack {
 	namespace Align {
 		//----------
 		RigidBodyFit::RigidBodyFit() :
-			fit(Algorithm(nlopt::LN_NEWUOA, Algorithm::LocalGradientless)) {
+		fit(Algorithm(nlopt::LN_NEWUOA, Algorithm::LocalGradientless)) {
+			for(int i=0; i<6; i++) {
+				this->parameters.push_back(shared_ptr<ofParameter<float>>(new ofParameter<float>()));
+				this->parameters[i]->addListener(this, & RigidBodyFit::callbackTransformParameter);
+			}
+
+			this->parameters[0]->set("Translate X", 0.0, -20.0f, 20.0f);
+			this->parameters[1]->set("Translate Y", 0.0, -20.0f, 20.0f);
+			this->parameters[2]->set("Translate Z", 0.0, -20.0f, 20.0f);
+			
+			this->parameters[3]->set("Rotate X", 0.0, -180.0f, 180.0f);
+			this->parameters[4]->set("Rotate Y", 0.0, -180.0f, 180.0f);
+			this->parameters[5]->set("Rotate Z", 0.0, -180.0f, 180.0f);
 		}
 
 		//----------
@@ -34,6 +46,8 @@ namespace ofxMultiTrack {
 			double residual = 0.0;
 			fit.optimise(this->model, &dataSet, &residual);
 			cout << "Residual : " << sqrt(residual / (double) dataSet.size()) << "m" << endl;
+
+			this->updateParameters();
 		}
 
 		//----------
@@ -85,11 +99,35 @@ namespace ofxMultiTrack {
 			} else {
 				this->model.clearParameters();
 			}
+
+			this->updateParameters();
 		}
 
 		//----------
 		const ofMatrix4x4 RigidBodyFit::getMatrixTransform() const {
 			return this->model.getCachedTransform();
+		}
+
+		//----------
+		const vector<shared_ptr<ofParameter<float>>> & RigidBodyFit::getParameters() {
+			return this->parameters;
+		}
+
+		//----------
+		void RigidBodyFit::updateParameters() {
+			const auto values = this->model.getParameters();
+			for(int i=0; i<6; i++) {
+				this->parameters[i]->set((float) values[i]);
+			}
+		}
+
+		//----------
+		void RigidBodyFit::callbackTransformParameter(float &) {
+			double values[6];
+			for(int i=0; i<6; i++) {
+				values[i] = (double) this->parameters[i]->get();
+			}
+			this->model.setParameters(values);
 		}
 	}
 }
