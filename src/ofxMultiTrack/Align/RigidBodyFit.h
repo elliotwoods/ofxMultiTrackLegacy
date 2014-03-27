@@ -28,6 +28,7 @@ namespace ofxMultiTrack {
 			Model model;
 			ofxNonLinearFit::Fit<Model> fit;
 			vector<shared_ptr<ofParameter<float>>> parameters;
+			bool parameterCallbackEnabled;
 		};
 	}
 }

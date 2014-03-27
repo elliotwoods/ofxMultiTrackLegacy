@@ -20,7 +20,7 @@ namespace ofxMultiTrack {
 			const UserSet & getFrame(Timestamp);
 			void clear();
 
-			int getLikelyCalibrationUserIndex() const;
+			int getLikelyCalibrationUserIndex(string calibrationJoint) const;
 
 			FrameSet & getFrames();
 		protected:

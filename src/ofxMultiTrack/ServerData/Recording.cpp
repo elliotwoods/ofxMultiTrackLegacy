@@ -52,16 +52,16 @@ namespace ofxMultiTrack {
 		}
 
 		//----------
-		int Recording::getLikelyCalibrationUserIndex() const {
+		int Recording::getLikelyCalibrationUserIndex(string calibrationJoint) const {
 			//collate calibration joint paths
 			map<int, vector<ofVec3f> > jointPathPerUser;
 			for(const auto & frame : this->frames) {
 				for(int userIndex = 0; userIndex < frame.second.size(); userIndex++) {
 					const auto & user = frame.second[userIndex];
-					if (user.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT) == user.end()) {
+					if (user.find(calibrationJoint) == user.end()) {
 						continue;
 					}
-					jointPathPerUser[userIndex].push_back(user.at(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT).position);
+					jointPathPerUser[userIndex].push_back(user.at(calibrationJoint).position);
 				}
 			}
 

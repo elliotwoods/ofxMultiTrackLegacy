@@ -36,21 +36,27 @@ void ofApp::setup(){
 			}
 			nodeIndex++;
 		}
+
+		//load calibration file if defined in config
+		if(configJson["calibrationFile"].isString()) {
+			server.loadCalibration(configJson["calibrationFile"].asString());
+		}
+
+		if (configJson["calibrationJoint"].isString()) {
+			server.setCalibrationJointName(configJson["calibrationJoint"].asString());
+		}
 	}
 
 	//setup osc sender
-	oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
+	{
+		oscSender.setup(configJson["osc"]["address"].asString(), configJson["osc"]["port"].asInt());
 
-	//setup mesh osc senders from nodes. this should be moved to API
-	Json::Value jsonSetupOscRoot;
-	auto & jsonSetupOsc = jsonSetupOscRoot["modules"]["Mesh"]["client"];
-	jsonSetupOsc["address"] = configJson["osc"]["address"];
-	jsonSetupOsc["port"] = configJson["osc"]["meshPort"];
-	this->server.addNodeConfig(jsonSetupOscRoot);
-
-	//load calibration file if defined in config
-	if(configJson["calibrationFile"].isString()) {
-		server.loadCalibration(configJson["calibrationFile"].asString());
+		//setup mesh osc senders from nodes. this should be moved to API
+		Json::Value jsonSetupOscRoot;
+		auto & jsonSetupOsc = jsonSetupOscRoot["modules"]["Mesh"]["client"];
+		jsonSetupOsc["address"] = configJson["osc"]["address"];
+		jsonSetupOsc["port"] = configJson["osc"]["meshPort"];
+		this->server.addNodeConfig(jsonSetupOscRoot);
 	}
 
 	//--
@@ -89,7 +95,7 @@ void ofApp::setup(){
 
 	//draw markers to hands
 	worldPanel->onDraw += [this, worldPanel] (ofxCvGui::DrawArguments & args) {
-		auto markerJointName = OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT;
+		auto markerJointName = server.getCalibrationJointName();
 
 		//get vector of UserSet's (one per node) from the server
 		auto data = this->server.getCurrentFrame();
@@ -201,21 +207,6 @@ void ofApp::setup(){
 			this->server.getRecorder().load(file);
 		}
 	};
-
-	/*
-	//draw status in a scrollable panel
-	auto statusPanel = gui.addScroll("Status");
-	auto statusElement = ofxCvGui::ElementPtr(new ofxCvGui::Element);
-	statusPanel->add(statusElement);
-	statusElement->onDraw += [this, statusElement] (ofxCvGui::DrawArguments&) {
-		auto status = server.getStatusString();
-		status = "Build #: " + ofToString(getBuildNumber()) + "\n" + status;
-		ofDrawBitmapString(status, 10, 20);
-		auto resizeBounds = statusElement->getBounds();
-		resizeBounds.height = (std::count(status.begin(), status.end(), '\n') + 1 ) * 14;
-		statusElement->setBounds(resizeBounds);
-	};
-	*/
 
 	auto inspector = gui.addInspector();
 	inspector->onClear += [this] (ofxCvGui::ElementGroupPtr & elements) {
@@ -417,6 +408,7 @@ void ofApp::keyPressed(int key){
 	case OF_KEY_BACKSPACE:
 		if (selectedNode) {
 			selectedNode->clearTransform();
+			ofxCvGui::Panels::Inspector::refresh();
 		}
 		break;
 	case 'e':

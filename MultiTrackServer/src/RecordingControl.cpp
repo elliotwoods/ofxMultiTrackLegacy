@@ -66,7 +66,7 @@ void RecordingControl::update(UpdateArguments &) {
 	}
 
 	if (this->rebuildInspector) {
-		ofxCvGui::Panels::Inspector::setSelection(*this);
+		ofxCvGui::Panels::Inspector::refresh();
 		this->rebuildInspector = false;
 	}
 }

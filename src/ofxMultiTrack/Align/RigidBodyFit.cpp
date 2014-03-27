@@ -11,6 +11,8 @@ namespace ofxMultiTrack {
 				this->parameters.push_back(shared_ptr<ofParameter<float>>(new ofParameter<float>()));
 				this->parameters[i]->addListener(this, & RigidBodyFit::callbackTransformParameter);
 			}
+			
+			this->parameterCallbackEnabled = false;
 
 			this->parameters[0]->set("Translate X", 0.0, -20.0f, 20.0f);
 			this->parameters[1]->set("Translate Y", 0.0, -20.0f, 20.0f);
@@ -19,6 +21,12 @@ namespace ofxMultiTrack {
 			this->parameters[3]->set("Rotate X", 0.0, -180.0f, 180.0f);
 			this->parameters[4]->set("Rotate Y", 0.0, -180.0f, 180.0f);
 			this->parameters[5]->set("Rotate Z", 0.0, -180.0f, 180.0f);
+
+			this->parameterCallbackEnabled = true;
+
+			Model::Parameter modelParameters[6];
+			std::fill(modelParameters, modelParameters + 6, 0.0);
+			this->model.setParameters(modelParameters);
 		}
 
 		//----------
@@ -115,14 +123,20 @@ namespace ofxMultiTrack {
 
 		//----------
 		void RigidBodyFit::updateParameters() {
+			this->parameterCallbackEnabled = false;
 			const auto values = this->model.getParameters();
 			for(int i=0; i<6; i++) {
 				this->parameters[i]->set((float) values[i]);
 			}
+			this->parameterCallbackEnabled = true;
 		}
 
 		//----------
 		void RigidBodyFit::callbackTransformParameter(float &) {
+			if (! this->parameterCallbackEnabled) {
+				return;
+			}
+
 			double values[6];
 			for(int i=0; i<6; i++) {
 				values[i] = (double) this->parameters[i]->get();

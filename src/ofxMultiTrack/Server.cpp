@@ -4,6 +4,7 @@
 namespace ofxMultiTrack {
 	//----------
 	Server::Server() : recorder(this->nodes) {
+		this->calibrationJointName = "HAND_RIGHT";
 	}
 
 	//----------
@@ -246,6 +247,16 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
+	void Server::setCalibrationJointName(string jointName) {
+		this->calibrationJointName = jointName;
+	}
+
+	//----------
+	const string & Server::getCalibrationJointName() const {
+		return this->calibrationJointName;
+	}
+
+	//----------
 	void Server::autoCalibrate() {
 		auto graph = ofxTSP::Problem();
 		auto solver = ofxTSP::BruteForce();
@@ -278,8 +289,8 @@ namespace ofxMultiTrack {
 					throw(ofxMultiTrack::Exception("Node #" + ofToString(targetNodeIndex) + " doesn't exist"));
 				}
 			
-				int originUserIndex = originNode->getRecording().getLikelyCalibrationUserIndex();
-				int targetUserIndex = targetNodes->getRecording().getLikelyCalibrationUserIndex();
+				int originUserIndex = originNode->getRecording().getLikelyCalibrationUserIndex(this->calibrationJointName);
+				int targetUserIndex = targetNodes->getRecording().getLikelyCalibrationUserIndex(this->calibrationJointName);
 
 				this->addAlignment(targetNodeIndex, originNodeIndex, targetUserIndex, originUserIndex);
 			} catch (ofxMultiTrack::Exception & e) {
@@ -380,23 +391,30 @@ namespace ofxMultiTrack {
 
 				auto & targetUser = targetUserSet[userIndex];
 				auto & originUser = sourceUserSet[originUserIndex];
-				auto & targetJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & targetOtherJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
-				auto & originJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_REFERENCE_JOINT);
-				auto & originOtherJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				auto & targetJoint = targetUser.find(this->calibrationJointName);
+				auto & originJoint = originUser.find(this->calibrationJointName);
 
 				//check we have the joints
-				if (targetJoint == targetUser.end() || originJoint == originUser.end() || targetOtherJoint == targetUser.end() || originOtherJoint == originUser.end()) {
+				if (targetJoint == targetUser.end() || originJoint == originUser.end()) {
 					cout << "J";
 					continue;
 				}
 
+				/*
 				//check if right hand is above left hand
 				//generally a back-to-front checker
-				/*if(targetOtherJoint->second.position.y < targetJoint->second.position.y || originOtherJoint->second.position.y < originOtherJoint->second.position.y) {
+				//check we have the otherjoints
+				auto & targetOtherJoint = targetUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				auto & originOtherJoint = originUser.find(OFXMULTITRACK_SERVER_ALIGN_OTHER_JOINT);
+				if (targetOtherJoint == targetUser.end() || originOtherJoint == originUser.end()) {
+					cout << "J";
+					continue;
+				}
+				if(targetOtherJoint->second.position.y < targetJoint->second.position.y || originOtherJoint->second.position.y < originOtherJoint->second.position.y) {
 					cout << "U";
 					continue;
-				}*/
+				}
+				*/
 
 				//check that we're not using inferred or untracked joints
 				if (targetJoint->second.inferred || originJoint->second.inferred) {
