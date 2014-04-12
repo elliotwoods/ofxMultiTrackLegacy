@@ -422,6 +422,8 @@ namespace ofxMultiTrack {
 					actionQueue.pop_front();
 					lockActionQueue.unlock();
 				}
+
+				ofSleepMillis(2);
 			}
 			this->threadEnded = true;
 		}

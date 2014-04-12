@@ -159,6 +159,16 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	inspector->add(shared_ptr<Spacer>(new Spacer()));
 	inspector->add(shared_ptr<Title>(new Title("Transform", Title::Level::H3)));
 	
+	auto transformParentValue = shared_ptr<LiveValue<string>>(new LiveValue<string>("Parent", [this] () {
+		auto parent = this->node->getTransform().getParent();
+		if (parent == -1) {
+			return string("none");
+		} else {
+			return ofToString(parent);
+		}
+	}));
+	inspector->add(transformParentValue);
+
 	auto transformTypeValue = shared_ptr<LiveValue<string>>(new LiveValue<string>("Type", [this] () {
 		auto align = this->node->getTransform().getTransform();
 		if (align) {
