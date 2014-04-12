@@ -7,7 +7,7 @@ Requirements
 ### ofxKinectCommonBridge
 
 * Repo - https://github.com/elliotwoods/ofxKinectCommonBridge.git
-* Branch - fixesFor-ofxMultiTrack (hopefully they'll merge then can use parent URL)
+* Branch - fixesFor-ofxMultiTrack (currently one PR's in deadlock with a boring guy from MS)
 
 ### ofxPolyFit
 
@@ -19,14 +19,29 @@ Requirements
 * Repo - https://github.com/jefftimesten/ofxJSON.git
 * Branch - master
 
-### ofxGraphEdit
-
-* Repo - https://github.com/elliotwoods/ofxGraphEdit.git
-* Branch - master
-
 ### ofxAssets
 
 * Repo - https://github.com/elliotwoods/ofxAssets.git
+* Branch - master
+
+### ofxNonLinearFit
+
+* Repo - https://github.com/elliotwoods/ofxNonLinearFit.git
+* Branch - master
+
+### ofxCv
+
+* Repo - https://github.com/elliotwoods/ofxCv.git
+* Branch - VS2012-project-clean
+
+### ofxTriangle
+
+* Repo - https://github.com/elliotwoods/ofxTriangle.git
+* Branch - master
+
+### ofxTSP
+
+* Repo - https://github.com/elliotwoods/ofxTSP.git
 * Branch - master
 
 Requirements for examples
