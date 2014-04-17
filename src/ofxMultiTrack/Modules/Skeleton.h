@@ -24,6 +24,7 @@ namespace ofxMultiTrack {
 			static Json::Value serialize(KinectCommonBridge::Skeleton&);
 
 			void drawOnDepth();
+			void drawInWorld();
 		protected:
 			ofxKinectCommonBridge * kinect;
 			vector<KinectCommonBridge::Skeleton> skeletons;

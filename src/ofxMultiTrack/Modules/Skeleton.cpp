@@ -160,6 +160,7 @@ namespace ofxMultiTrack {
 
 		//---------
 		void Skeleton::drawOnDepth() {
+			ofPushMatrix();
 			ofPushStyle();
 			for(int i=0; i<skeletons.size(); i++) {
 				this->kinect->drawSkeleton(i);
@@ -179,6 +180,34 @@ namespace ofxMultiTrack {
 						auto title = indexToName(bone.second.getStartJoint());
 						auto screenPosition = bone.second.getScreenPosition();
 						ofDrawBitmapString(title, screenPosition);
+					}
+				}
+			}
+			ofPopStyle();
+			ofPopMatrix();
+		}
+
+		//---------
+		void Skeleton::drawInWorld() {
+			ofPushStyle();
+			for(int i=0; i<skeletons.size(); i++) {
+				for(auto skeleton : this->skeletons) {
+					for(auto bone : skeleton) {
+						switch(bone.second.getTrackingState()) {
+						case SkeletonBone::Tracked:
+							ofSetColor(255, 255, 255);
+							break;
+						case SkeletonBone::Inferred:
+							ofSetColor(0, 0, 255);
+							break;
+						case SkeletonBone::NotTracked:
+							ofSetColor(255, 0, 0);
+							break;
+						}
+						ofPushMatrix();
+						ofTranslate(bone.second.getStartPosition());
+						ofSphere(0.05f);
+						ofPopMatrix();
 					}
 				}
 			}

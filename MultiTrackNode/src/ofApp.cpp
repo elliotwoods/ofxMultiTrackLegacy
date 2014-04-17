@@ -70,23 +70,26 @@ void ofApp::update(){
 			this->gui.add(depthPanel);
 			this->gui.add(colorPanel);
 
+			//get modules
+			auto skeletonModule = this->node.getModules().get<ofxMultiTrack::Modules::Skeleton>();
+			auto meshModule = this->node.getModules().get<ofxMultiTrack::Modules::Mesh>();
+
 			//override the depth draw to draw skeletons also
-			depthPanel->onDrawCropped += [this] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
-				ofPushMatrix();
-				auto skeletonModule = this->node.getModules().get<ofxMultiTrack::Modules::Skeleton>();
+			depthPanel->onDrawCropped += [skeletonModule] (ofxCvGui::Panels::BaseImage::DrawCroppedArguments& args) {
 				if (skeletonModule) {
 					skeletonModule->drawOnDepth();
 				}
-				ofPopMatrix();
 			};
 
-			auto meshModule = this->node.getModules().get<ofxMultiTrack::Modules::Mesh>();
-			if (meshModule) {
-				auto worldPanel = this->gui.addWorld();
-				worldPanel->onDrawWorld += [meshModule] (ofCamera &) {
+			auto worldPanel = this->gui.addWorld();
+			worldPanel->onDrawWorld += [=] (ofCamera &) {
+				if (skeletonModule) {
+					skeletonModule->drawInWorld();
+				}
+				if (meshModule) {
 					meshModule->drawWorld();
-				};
-			}
+				}
+			};
 
 			//disable the alpha channel whilst renderering color frame by adding early and late listeners to the draw call
 			colorPanel->onDraw.addListener([this] (ofxCvGui::DrawArguments&) { ofDisableAlphaBlending(); }, -100, this);

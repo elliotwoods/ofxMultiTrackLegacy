@@ -131,6 +131,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	auto deviceIndexValue = shared_ptr<LiveValue<int> >(new LiveValue<int>("Device Index", [this] () {
 		return this->status["remoteStatus"]["localIndex"].asInt();
 	}));
+	
+	auto timestampValue = shared_ptr<LiveValue<unsigned long long> >(new LiveValue<unsigned long long>("Timestamp", [this] () {
+		return this->status["remoteStatus"]["timestamp"].asLargestUInt();
+	}));
 
 	auto connectedValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Connected", [this] () {
 		return this->status["connected"].asBool() ? "true" : "false";
@@ -152,6 +156,7 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	inspector->add(addressValue);
 	inspector->add(deviceIndexValue);
 	inspector->add(enabledToggle);
+	inspector->add(timestampValue);
 	inspector->add(connectedValue);
 	inspector->add(fpsValue);
 	inspector->add(tiltSlider);

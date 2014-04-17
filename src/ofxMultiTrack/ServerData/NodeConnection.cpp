@@ -431,13 +431,14 @@ namespace ofxMultiTrack {
 		//----------
 		void NodeConnection::receiveMessages() {
 			auto response = this->client.receive();
-			if (response.size() > 0) {
+			while (response.size() > 0) {
 				try
 				{
 					Json::Value json;
 					jsonReader.parse(response, json);
 					
 					if (!json["modules"]) {
+						cout << "bsdobh";
 						throw(Exception("No modules found"));
 					}
 					if (!json["modules"]["Skeleton"]) {
@@ -446,7 +447,7 @@ namespace ofxMultiTrack {
 					if (!json["modules"]["Skeleton"]["data"]) {
 						throw(Exception("No modules::Skeleton::data found"));
 					}
-
+					
 					auto & jsonSkeletons = json["modules"]["Skeleton"]["data"];
 					bool newSkeleton = jsonSkeletons["isNewSkeleton"].asBool();
 					auto & jsonUsers = jsonSkeletons["users"];
@@ -487,13 +488,13 @@ namespace ofxMultiTrack {
 					this->remoteStatusLock.lock();
 					this->remoteStatus = json["status"];
 					this->remoteStatusLock.unlock();
-
 				}
 				catch(std::exception e)
 				{
 					ofLogError("ofxMultiTrack") << "NodeConnection::receiveMessages : " << e.what();
 				}
 				lockUsers.unlock();
+				response = client.receive();
 			}
 		}
 

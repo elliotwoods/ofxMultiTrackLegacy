@@ -258,6 +258,8 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::autoCalibrate() {
+		ofLogError("ofxMultiTrack::Server") << "Full auto calibration is not implemented";
+		/*
 		auto graph = ofxTSP::Problem();
 		auto solver = ofxTSP::BruteForce();
 
@@ -270,6 +272,7 @@ namespace ofxMultiTrack {
 			}
 			sourceNodeIndex++;
 		}
+		*/
 	}
 
 	//----------

@@ -153,9 +153,6 @@ namespace ofxMultiTrack {
 	Json::Value Node::serialise() const {
 		Json::Value json;
 
-		json["timestamp"] = ofGetElapsedTimeMillis();
-		json["localIndex"] = this->settings.localIndex;
-
 		//iterate through modules and get a data payload from each
 		auto & jsonModules = json["modules"];
 		int moduleIndex = 0;
@@ -174,6 +171,7 @@ namespace ofxMultiTrack {
 		status["localIndex"] = this->settings.localIndex;
 		status["listeningPort"] = this->server.getPort();
 		status["connectionCount"] = this->server.getNumClients();
+		status["timestamp"] = ofGetElapsedTimeMillis();
 
 		auto & devices = status["devices"];
 		int iDevice = 0;
