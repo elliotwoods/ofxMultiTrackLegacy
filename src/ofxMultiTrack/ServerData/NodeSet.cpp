@@ -1,5 +1,5 @@
 #include "NodeSet.h"
-#include "Parameters.h"
+#include "../Utils/Config.h"
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -61,6 +61,8 @@ namespace ofxMultiTrack {
 
 		//----------
 		NodeSet::UserMatches NodeSet::makeUserMappings(const vector<UserSet> & userWorld) const {
+			const auto combineDistanceThreshold = Utils::config.getValue<float>("combineDistanceThreshold");
+
 			//pull out some types
 			typedef CombinedUserSet::NodeUserIndex NodeUserIndex;
 			typedef CombinedUserSet::SourceMapping SourceMapping;
@@ -136,7 +138,7 @@ namespace ofxMultiTrack {
 				//--
 
 				//if we found anything (useful) at all
-				if(bestMatch.valid && bestMatchDistance < Parameters.combineDistanceThreshold) {
+				if(bestMatch.valid && bestMatchDistance < combineDistanceThreshold) {
 					//then add it as a source mapping
 					searchMapping[bestMatch] = bestMatchDistance;
 

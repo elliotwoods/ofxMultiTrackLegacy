@@ -42,9 +42,8 @@ void ofApp::setup(){
 			server.loadCalibration(configJson["calibrationFile"].asString());
 		}
 
-		if (configJson["calibrationJoint"].isString()) {
-			server.setCalibrationJointName(configJson["calibrationJoint"].asString());
-		}
+		//load any system settings. if setting
+		ofxMultiTrack::Utils::config.load(configJson["system"]);
 	}
 
 	//setup osc sender
@@ -95,7 +94,7 @@ void ofApp::setup(){
 
 	//draw markers to hands
 	worldPanel->onDraw += [this, worldPanel] (ofxCvGui::DrawArguments & args) {
-		auto markerJointName = server.getCalibrationJointName();
+		auto markerJointName = ofxMultiTrack::Utils::config.getValue<string>("calibrationJoint");
 
 		//get vector of UserSet's (one per node) from the server
 		auto data = this->server.getCurrentFrame();

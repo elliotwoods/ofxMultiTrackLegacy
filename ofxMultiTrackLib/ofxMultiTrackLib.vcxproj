@@ -172,10 +172,10 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeConnection.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\NodeSet.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\OutputFrame.h" />
-    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Parameters.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recorder.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\Recording.h" />
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\User.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Config.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
@@ -231,10 +231,10 @@
     <ClCompile Include="..\src\ofxMultiTrack\Server.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeConnection.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\NodeSet.cpp" />
-    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Parameters.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recorder.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\Recording.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\ServerData\User.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Config.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Set.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
   </ItemGroup>

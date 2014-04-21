@@ -48,8 +48,6 @@ namespace ofxMultiTrack {
 		Json::Value getStatus();
 		string getStatusString();
 
-		void setCalibrationJointName(string jointName);
-		const string & getCalibrationJointName() const;
 		void autoCalibrate();
 		void autoCalibrate(const map<int, int> & defaultParents);
 		void addAlignment(int nodeIndex, int originNodeIndex, int userIndex = 0, int originUserIndex = 0,
@@ -71,7 +69,5 @@ namespace ofxMultiTrack {
 		ServerData::Recorder recorder;
 		ServerData::OutputFrame currentFrame;
 		ServerData::OutputFrame previousFrame;
-
-		string calibrationJointName;
 	};
 }

@@ -1,10 +1,10 @@
 #include "Server.h"
 #include "Utils/Constants.h"
+#include "Utils/Config.h"
 
 namespace ofxMultiTrack {
 	//----------
 	Server::Server() : recorder(this->nodes) {
-		this->calibrationJointName = "HAND_RIGHT";
 	}
 
 	//----------
@@ -247,16 +247,6 @@ namespace ofxMultiTrack {
 	}
 
 	//----------
-	void Server::setCalibrationJointName(string jointName) {
-		this->calibrationJointName = jointName;
-	}
-
-	//----------
-	const string & Server::getCalibrationJointName() const {
-		return this->calibrationJointName;
-	}
-
-	//----------
 	void Server::autoCalibrate() {
 		ofLogError("ofxMultiTrack::Server") << "Full auto calibration is not implemented";
 		/*
@@ -277,6 +267,8 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::autoCalibrate(const map<int, int> & defaultParents) {
+		const string calibrationJointName = Utils::config.getValue<string>("calibrationJoint");
+
 		for(const auto & relationship : defaultParents) {
 			int originNodeIndex = relationship.second;
 			int targetNodeIndex = relationship.first;
@@ -292,8 +284,8 @@ namespace ofxMultiTrack {
 					throw(ofxMultiTrack::Exception("Node #" + ofToString(targetNodeIndex) + " doesn't exist"));
 				}
 			
-				int originUserIndex = originNode->getRecording().getLikelyCalibrationUserIndex(this->calibrationJointName);
-				int targetUserIndex = targetNodes->getRecording().getLikelyCalibrationUserIndex(this->calibrationJointName);
+				int originUserIndex = originNode->getRecording().getLikelyCalibrationUserIndex(calibrationJointName);
+				int targetUserIndex = targetNodes->getRecording().getLikelyCalibrationUserIndex(calibrationJointName);
 
 				this->addAlignment(targetNodeIndex, originNodeIndex, targetUserIndex, originUserIndex);
 			} catch (ofxMultiTrack::Exception & e) {
@@ -304,6 +296,8 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::addAlignment(int nodeIndex, int originNodeIndex, int userIndex, int originUserIndex, Align::Ptr routine) {
+		const string calibrationJointName = Utils::config.getValue<string>("calibrationJoint");
+
 		try {
 			//check nodes exist
 			if (nodeIndex > this->nodes.size()) {
@@ -394,8 +388,8 @@ namespace ofxMultiTrack {
 
 				auto & targetUser = targetUserSet[userIndex];
 				auto & originUser = sourceUserSet[originUserIndex];
-				auto & targetJoint = targetUser.find(this->calibrationJointName);
-				auto & originJoint = originUser.find(this->calibrationJointName);
+				auto & targetJoint = targetUser.find(calibrationJointName);
+				auto & originJoint = originUser.find(calibrationJointName);
 
 				//check we have the joints
 				if (targetJoint == targetUser.end() || originJoint == originUser.end()) {

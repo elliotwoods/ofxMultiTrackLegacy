@@ -1,6 +1,10 @@
 #include "NodeConnection.h"
 #include "../Align/Factory.h"
 #include "../Utils/Constants.h"
+#include "../Utils/Config.h"
+
+#include <chrono>
+#include <thread>
 
 namespace ofxMultiTrack {
 	namespace ServerData {
@@ -423,7 +427,10 @@ namespace ofxMultiTrack {
 					lockActionQueue.unlock();
 				}
 
-				ofSleepMillis(2);
+				auto sleepTimeMicros = (long long) Utils::config.getValue<int>("nodeSleepTimeMicros");
+				if (sleepTimeMicros > 0) {
+					std::this_thread::sleep_for(std::chrono::microseconds(sleepTimeMicros));
+				}
 			}
 			this->threadEnded = true;
 		}

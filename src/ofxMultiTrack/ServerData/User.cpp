@@ -1,5 +1,4 @@
 #include "User.h"
-#include "Parameters.h"
 #include "../Utils/Constants.h"
 #include "../../ofxAssets/src/ofxAssets.h"
 #include <numeric>

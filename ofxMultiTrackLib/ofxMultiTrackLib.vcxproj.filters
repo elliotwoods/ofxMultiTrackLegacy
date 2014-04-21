@@ -335,9 +335,6 @@
     <ClInclude Include="..\src\ofxMultiTrack\ServerData\OutputFrame.h">
       <Filter>src\ofxMultiTrack\ServerData</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxMultiTrack\ServerData\Parameters.h">
-      <Filter>src\ofxMultiTrack\ServerData</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Align\MatrixTransform.h">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClInclude>
@@ -429,6 +426,9 @@
       <Filter>addons\ofxOsc\src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Set.h">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Config.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -538,9 +538,6 @@
     <ClCompile Include="..\src\ofxMultiTrack\Align\RigidBodyFit.cpp">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxMultiTrack\ServerData\Parameters.cpp">
-      <Filter>src\ofxMultiTrack\ServerData</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Align\MatrixTransform.cpp">
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
@@ -599,6 +596,9 @@
       <Filter>src\ofxMultiTrack\Align</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Set.cpp">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Config.cpp">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClCompile>
   </ItemGroup>
