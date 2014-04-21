@@ -16,6 +16,7 @@ namespace ofxMultiTrack {
 
 			template<typename T>
 			void setParameter(const string name, T value) {
+				this->lock.lock();
 				auto findParameter = this->parameters.find(name);
 				if (findParameter == this->parameters.end()) {
 					this->parameters[name] = shared_ptr<ofParameter<T> >(new ofParameter<T>(name, value));
@@ -27,26 +28,32 @@ namespace ofxMultiTrack {
 						ofLogError("ofxMultiTrack") << "Parameter " << name << " is of wrong type, doesn't match " << typeid(T).name();
 					}
 				}
+				this->lock.unlock();
 			}
 
 			template<typename T>
 			void setParameter(const string name, T value, T minimum, T maximum) {
+				this->lock.lock();
 				this->parameters[name] = shared_ptr<ofParameter<T> >(new ofParameter<T>(name, value, minimum, maximum));
+				this->lock.unlock();
 			}
 
 			template<typename T>
-			shared_ptr<ofParameter<T> > getParameter(const string name) const {
+			shared_ptr<ofParameter<T> > getParameter(const string name) {
+				this->lock.lock();
 				auto findParameter = this->parameters.find(name);
 				if (findParameter == this->parameters.end()) {
 					ofLogError("ofxMultiTrack") << "Config parameter " << name << " not found!";
+					this->lock.unlock();
 					return shared_ptr<ofParameter<T> >();
 				} else {
+					this->lock.unlock();
 					return dynamic_pointer_cast<ofParameter<T> >(findParameter->second);
 				}
 			}
 
 			template<typename T>
-			T getValue(const string name) const {
+			T getValue(const string name) {
 				auto parameter = this->getParameter<T>(name);
 				if (!parameter) {
 					ofLogError("ofxMultiTrack") << "Config parameter " << name << " is not of type " << typeid(T).name();
@@ -62,6 +69,6 @@ namespace ofxMultiTrack {
 			map<string, shared_ptr<ofAbstractParameter> > parameters;
 		};
 
-		extern Config config;
+		extern shared_ptr<Config> config;
 	}
 }

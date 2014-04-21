@@ -6,6 +6,7 @@
 #include "ofxAssets/src/ofxAssets.h"
 
 #include "Utils/Types.h"
+#include "Utils/Config.h"
 #include "Modules/Set.h"
 #include "Modules/Skeleton.h"
 
@@ -69,5 +70,6 @@ namespace ofxMultiTrack {
 		ServerData::Recorder recorder;
 		ServerData::OutputFrame currentFrame;
 		ServerData::OutputFrame previousFrame;
+		shared_ptr<Utils::Config> configReference;
 	};
 }

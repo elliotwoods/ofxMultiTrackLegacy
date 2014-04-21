@@ -8,6 +8,12 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 #pragma mark Joint
 		//----------
+		Joint::Joint() {
+			this->lastInferred = 0;
+			this->lastTracked = 0;
+		}
+
+		//----------
 		void Joint::serialise(Json::Value & json) const {
 			for(int i=0; i<3; i++) {
 				json["position"][i] = this->position[i];
@@ -38,6 +44,12 @@ namespace ofxMultiTrack {
 			} else {
 				this->tracked = json["tracked"].asBool();
 				this->inferred = json["inferred"].asBool();
+
+				if (this->tracked) {
+					this->lastTracked = ofGetElapsedTimeMicros();
+				} else if (this->inferred) {
+					this->lastInferred = ofGetElapsedTimeMicros();
+				}
 			}
 		}
 

@@ -5,6 +5,8 @@
 namespace ofxMultiTrack {
 	//----------
 	Server::Server() : recorder(this->nodes) {
+		//make a reference here so as to load early / destroy late
+		this->configReference = Utils::config;
 	}
 
 	//----------
@@ -267,7 +269,7 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::autoCalibrate(const map<int, int> & defaultParents) {
-		const string calibrationJointName = Utils::config.getValue<string>("calibrationJoint");
+		const string calibrationJointName = Utils::config->getValue<string>("calibrationJoint");
 
 		for(const auto & relationship : defaultParents) {
 			int originNodeIndex = relationship.second;
@@ -296,7 +298,7 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Server::addAlignment(int nodeIndex, int originNodeIndex, int userIndex, int originUserIndex, Align::Ptr routine) {
-		const string calibrationJointName = Utils::config.getValue<string>("calibrationJoint");
+		const string calibrationJointName = Utils::config->getValue<string>("calibrationJoint");
 
 		try {
 			//check nodes exist

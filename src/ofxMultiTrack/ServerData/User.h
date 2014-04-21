@@ -11,6 +11,7 @@ namespace ofxMultiTrack {
 	namespace ServerData {
 		class Joint : public ISerialisable {
 		public:
+			Joint();
 			void serialise(Json::Value &) const override;
 			void deserialise(const Json::Value &) override;
 			ofVec3f position;
@@ -18,6 +19,8 @@ namespace ofxMultiTrack {
 			bool inferred;
 			bool tracked;
 			string connectedTo;
+			Timestamp lastInferred;
+			Timestamp lastTracked;
 		};
 
 		class User : public std::map<string, Joint>, public ISerialisable {

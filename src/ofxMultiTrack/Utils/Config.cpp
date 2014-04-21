@@ -3,7 +3,7 @@
 namespace ofxMultiTrack {
 	namespace Utils {
 		//---------
-		Config config = Config();
+		shared_ptr<Config> config = shared_ptr<Config>(new Config());
 
 		//---------
 		Config::Config() {
@@ -14,6 +14,8 @@ namespace ofxMultiTrack {
 
 		//---------
 		Config::~Config() {
+			this->lock.lock();
+			this->lock.unlock();
 		}
 
 		//---------
