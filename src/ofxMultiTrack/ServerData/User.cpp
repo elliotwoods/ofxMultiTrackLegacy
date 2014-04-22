@@ -9,8 +9,10 @@ namespace ofxMultiTrack {
 #pragma mark Joint
 		//----------
 		Joint::Joint() {
-			this->lastInferred = 0;
-			this->lastTracked = 0;
+			this->inferred = false;
+			this->tracked = false;
+			this->lastInferred = ofGetElapsedTimeMicros();
+			this->lastNotInferred = ofGetElapsedTimeMicros();
 		}
 
 		//----------
@@ -45,10 +47,10 @@ namespace ofxMultiTrack {
 				this->tracked = json["tracked"].asBool();
 				this->inferred = json["inferred"].asBool();
 
-				if (this->tracked) {
-					this->lastTracked = ofGetElapsedTimeMicros();
-				} else if (this->inferred) {
+				if (this->inferred) {
 					this->lastInferred = ofGetElapsedTimeMicros();
+				} else {
+					this->lastNotInferred = ofGetElapsedTimeMicros();
 				}
 			}
 		}
@@ -64,65 +66,59 @@ namespace ofxMultiTrack {
 		}
 		
 		//----------
-		struct AccumulationJoint {
-			AccumulationJoint(string connectedTo) :
-				connectedTo(connectedTo) {
-			}
-
-			vector<ofVec3f> trackedPositions;
-			vector<ofVec3f> inferredPositions;
-			vector<ofQuaternion> trackedRotations;
-			vector<ofQuaternion> inferredRotations;
-
-			const string connectedTo;
-		};
-
-		//----------
 		User::User(const vector<User> & userSet) {
-			map<string, AccumulationJoint> accumulation;
+			map<string, vector<Joint> > trackedJoints;
+			map<string, vector<Joint> > inferredJoints;
+			set<string> jointNames;
 
 			for(auto & user : userSet) {
 				if(!user.isAlive()) {
 					continue;
 				}
 				for(auto & joint : user) {
-					if (accumulation.find(joint.first) == accumulation.end()) {
-						accumulation.insert(pair<string, AccumulationJoint>(joint.first, AccumulationJoint(joint.second.connectedTo)));
+					if (joint.second.tracked) {
+						auto & jointSet = joint.second.inferred ? inferredJoints : trackedJoints;
+						jointSet[joint.first].push_back(joint.second);
 					}
-					auto & accumulationJoint = accumulation.at(joint.first);
-					if(joint.second.tracked) {
-						if(joint.second.inferred) {
-							accumulationJoint.inferredPositions.push_back(joint.second.position);
-							accumulationJoint.inferredRotations.push_back(joint.second.rotation);
-						} else {
-							accumulationJoint.trackedPositions.push_back(joint.second.position);
-							accumulationJoint.trackedRotations.push_back(joint.second.rotation);
-						}
-					}
+					jointNames.insert(joint.first);
 				}
 			}
 
 			bool allDead = true;
 
-			for(auto & joint : accumulation) {
-				const auto & trackedPositions = joint.second.trackedPositions;
-				const auto & inferredPositions = joint.second.inferredPositions;
-				auto & localJoint = (*this)[joint.first];
-				bool noJoints = false;
-				if (!trackedPositions.empty()) {
-					localJoint.position = std::accumulate(trackedPositions.begin(), trackedPositions.end(), ofVec3f()) / (float) joint.second.trackedPositions.size();
-					localJoint.rotation = joint.second.trackedRotations.front();
-				} else if (!joint.second.inferredPositions.empty()) {
-					localJoint.position = std::accumulate(inferredPositions.begin(), inferredPositions.end(), ofVec3f()) / (float) joint.second.inferredPositions.size();
-					localJoint.rotation = joint.second.inferredRotations.front();
-				} else {
-					//we have no tracked data for this joint
-					//we may want to look to the previous frame for data, or use the junk coming from the kinect
-					noJoints = true;
+			for(const auto & jointName : jointNames) {
+				ofVec3f accumulatePosition;
+				float accumulateWeight = 1e-7;
+				
+				auto & localJoint = (*this)[jointName];
+
+				for(auto joint : inferredJoints[jointName]) {
+					auto ageInferred = joint.lastInferred - joint.lastNotInferred;
+					float weight = ofMap((float) ageInferred, 0, 5e6, 1.0f, 0.01f, true);
+					accumulatePosition += weight * joint.position;
+					accumulateWeight += weight;
+
+					localJoint.rotation = joint.rotation;
+					localJoint.connectedTo = joint.connectedTo;
+
+					localJoint.tracked = true;
+					localJoint.inferred = true;
 				}
-				localJoint.connectedTo = joint.second.connectedTo;
-				localJoint.tracked = ! noJoints;
-				allDead &= noJoints;
+				for(auto joint : trackedJoints[jointName]) {
+					auto ageNotInferred = joint.lastNotInferred - joint.lastInferred;
+					float weight = ofMap((float) ageNotInferred, 0, 5e6, 0.01f, 1.0f, true);
+					accumulatePosition += weight * joint.position;
+					accumulateWeight += weight;
+
+					localJoint.rotation = joint.rotation;
+					localJoint.connectedTo = joint.connectedTo;
+
+					localJoint.tracked = true;
+					localJoint.inferred = false;
+				}
+				
+				localJoint.position = accumulatePosition / accumulateWeight;
+				allDead &= !localJoint.tracked;
 			}
 
 			this->alive = ! allDead;

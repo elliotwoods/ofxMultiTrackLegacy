@@ -20,7 +20,7 @@ namespace ofxMultiTrack {
 			bool tracked;
 			string connectedTo;
 			Timestamp lastInferred;
-			Timestamp lastTracked;
+			Timestamp lastNotInferred;
 		};
 
 		class User : public std::map<string, Joint>, public ISerialisable {
