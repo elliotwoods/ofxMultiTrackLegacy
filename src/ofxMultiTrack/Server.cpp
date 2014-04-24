@@ -6,6 +6,7 @@ namespace ofxMultiTrack {
 	//----------
 	Server::Server() : recorder(this->nodes) {
 		//make a reference here so as to load early / destroy late
+		Utils::config = shared_ptr<Utils::Config>(new Utils::Config());
 		this->configReference = Utils::config;
 	}
 
@@ -128,17 +129,21 @@ namespace ofxMultiTrack {
 		this->drawViewConesWorld();
 
 		//draw sources
-		draw(this->currentFrame.world);
+		if (Utils::config->getValue<bool>("Draw source skeletons")) {
+			draw(this->currentFrame.world);
+		}
 
 		//draw combined in green
-		ofPushStyle();
-		ofSetColor(0, 255, 0);
-		glPushAttrib(GL_POINT_BIT);
-		glEnable(GL_POINT_SMOOTH);
-		glPointSize(16.0f);
-		this->currentFrame.combined.draw(false);
-		glPopAttrib();
-		ofPopStyle();
+		if (Utils::config->getValue<bool>("Draw combined skeletons")) {
+			ofPushStyle();
+			ofSetColor(0, 255, 0);
+			glPushAttrib(GL_POINT_BIT);
+			glEnable(GL_POINT_SMOOTH);
+			glPointSize(16.0f);
+			this->currentFrame.combined.draw(false);
+			glPopAttrib();
+			ofPopStyle();
+		}
 	}
 
 	//----------

@@ -427,7 +427,7 @@ namespace ofxMultiTrack {
 					lockActionQueue.unlock();
 				}
 
-				auto sleepTimeMicros = (long long) Utils::config->getValue<int>("nodeSleepTimeMicros");
+				auto sleepTimeMicros = (long long) Utils::config->getValue<int>("Node thread sleep time [us]");
 				if (sleepTimeMicros > 0) {
 					std::this_thread::sleep_for(std::chrono::microseconds(sleepTimeMicros));
 				}

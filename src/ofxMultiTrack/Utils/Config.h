@@ -15,27 +15,24 @@ namespace ofxMultiTrack {
 			~Config();
 
 			template<typename T>
-			void setParameter(const string name, T value) {
+			shared_ptr<ofParameter<T> > setParameter(const string name, T value) {
 				this->lock.lock();
 				auto findParameter = this->parameters.find(name);
+				shared_ptr<ofParameter<T> > parameterPointer;
+
 				if (findParameter == this->parameters.end()) {
-					this->parameters[name] = shared_ptr<ofParameter<T> >(new ofParameter<T>(name, value));
+					parameterPointer = shared_ptr<ofParameter<T> >(new ofParameter<T>(name, value));
+					this->parameters[name] = parameterPointer;
 				} else {
-					auto parameter = this->getParameter<T>(name);
-					if (parameter) {
-						parameter->set(value);
+					parameterPointer = this->getParameter<T>(name);
+					if (parameterPointer) {
+						parameterPointer->set(value);
 					} else {
 						ofLogError("ofxMultiTrack") << "Parameter " << name << " is of wrong type, doesn't match " << typeid(T).name();
 					}
 				}
 				this->lock.unlock();
-			}
-
-			template<typename T>
-			void setParameter(const string name, T value, T minimum, T maximum) {
-				this->lock.lock();
-				this->parameters[name] = shared_ptr<ofParameter<T> >(new ofParameter<T>(name, value, minimum, maximum));
-				this->lock.unlock();
+				return parameterPointer;
 			}
 
 			template<typename T>

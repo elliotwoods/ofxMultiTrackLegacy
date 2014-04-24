@@ -1,6 +1,11 @@
 #include "User.h"
 #include "../Utils/Constants.h"
+#include "../Utils/Config.h"
+
 #include "../../ofxAssets/src/ofxAssets.h"
+
+#include "ofAppRunner.h"
+
 #include <numeric>
 #include <set>
 
@@ -11,8 +16,8 @@ namespace ofxMultiTrack {
 		Joint::Joint() {
 			this->inferred = false;
 			this->tracked = false;
-			this->lastInferred = ofGetElapsedTimeMicros();
-			this->lastNotInferred = ofGetElapsedTimeMicros();
+			this->weight = 0.1f;
+			this->localTimestamp = 0;
 		}
 
 		//----------
@@ -47,12 +52,12 @@ namespace ofxMultiTrack {
 				this->tracked = json["tracked"].asBool();
 				this->inferred = json["inferred"].asBool();
 
-				if (this->inferred) {
-					this->lastInferred = ofGetElapsedTimeMicros();
-				} else {
-					this->lastNotInferred = ofGetElapsedTimeMicros();
-				}
+				auto timePassed = (float) (ofGetElapsedTimeMicros() - this->localTimestamp) / 1e6;
+				this->weight += (this->inferred ? -1.0f : 1.0f) * timePassed / Utils::config->getValue<float>("Inferred weight ramp time [s]");
+				this->weight = ofClamp(this->weight, 0.1f, 1.0f);
 			}
+
+			this->localTimestamp = ofGetElapsedTimeMicros();
 		}
 
 #pragma mark User
@@ -67,8 +72,7 @@ namespace ofxMultiTrack {
 		
 		//----------
 		User::User(const vector<User> & userSet) {
-			map<string, vector<Joint> > trackedJoints;
-			map<string, vector<Joint> > inferredJoints;
+			map<string, vector<Joint> > sourceJoints;
 			set<string> jointNames;
 
 			for(auto & user : userSet) {
@@ -77,8 +81,7 @@ namespace ofxMultiTrack {
 				}
 				for(auto & joint : user) {
 					if (joint.second.tracked) {
-						auto & jointSet = joint.second.inferred ? inferredJoints : trackedJoints;
-						jointSet[joint.first].push_back(joint.second);
+						sourceJoints[joint.first].push_back(joint.second);
 					}
 					jointNames.insert(joint.first);
 				}
@@ -92,37 +95,28 @@ namespace ofxMultiTrack {
 				
 				auto & localJoint = (*this)[jointName];
 
-				for(auto joint : inferredJoints[jointName]) {
-					auto ageInferred = joint.lastInferred - joint.lastNotInferred;
-					float weight = ofMap((float) ageInferred, 0, 5e6, 1.0f, 0.01f, true);
+				localJoint.tracked = false;
+				localJoint.inferred = true;
+
+				for(const auto & joint : sourceJoints[jointName]) {
+					const auto weight = joint.weight;
 					accumulatePosition += weight * joint.position;
 					accumulateWeight += weight;
 
+					//just copy these two
 					localJoint.rotation = joint.rotation;
 					localJoint.connectedTo = joint.connectedTo;
 
 					localJoint.tracked = true;
-					localJoint.inferred = true;
+					localJoint.inferred &= joint.inferred;
 				}
-				for(auto joint : trackedJoints[jointName]) {
-					auto ageNotInferred = joint.lastNotInferred - joint.lastInferred;
-					float weight = ofMap((float) ageNotInferred, 0, 5e6, 0.01f, 1.0f, true);
-					accumulatePosition += weight * joint.position;
-					accumulateWeight += weight;
 
-					localJoint.rotation = joint.rotation;
-					localJoint.connectedTo = joint.connectedTo;
-
-					localJoint.tracked = true;
-					localJoint.inferred = false;
-				}
-				
 				localJoint.position = accumulatePosition / accumulateWeight;
 				allDead &= !localJoint.tracked;
 			}
 
 			this->alive = ! allDead;
-			this->globalIndex = -1;
+			this->globalIndex = -1; // mark that we have no index yet (available to be assigned)
 		}
 
 		//----------

@@ -234,6 +234,12 @@ void ofApp::setup(){
 		elements->add(shared_ptr<ofxCvGui::Widgets::Button>(new ofxCvGui::Widgets::Button("Apply Origin Pose", [this] () {
 			this->server.applyOriginPose();
 		})));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Toggle>(new ofxCvGui::Widgets::Toggle(* ofxMultiTrack::Utils::config->getParameter<bool>("Draw source skeletons"))));
+		elements->add(shared_ptr<ofxCvGui::Widgets::Toggle>(new ofxCvGui::Widgets::Toggle(* ofxMultiTrack::Utils::config->getParameter<bool>("Draw combined skeletons"))));
+
+		elements->add(shared_ptr<ofxCvGui::Widgets::Slider>(new ofxCvGui::Widgets::Slider(* ofxMultiTrack::Utils::config->getParameter<float>("Combine distance threshold [m]"))));
+		elements->add(shared_ptr<ofxCvGui::Widgets::Slider>(new ofxCvGui::Widgets::Slider(* ofxMultiTrack::Utils::config->getParameter<float>("Inferred weight ramp time [s]"))));
 	};
 
 	//arrange grid on resize

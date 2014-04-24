@@ -61,7 +61,7 @@ namespace ofxMultiTrack {
 
 		//----------
 		NodeSet::UserMatches NodeSet::makeUserMappings(const vector<UserSet> & userWorld) const {
-			const auto combineDistanceThreshold = Utils::config->getValue<float>("combineDistanceThreshold");
+			const auto combineDistanceThreshold = Utils::config->getValue<float>("Combine distance threshold [m]");
 
 			//pull out some types
 			typedef CombinedUserSet::NodeUserIndex NodeUserIndex;

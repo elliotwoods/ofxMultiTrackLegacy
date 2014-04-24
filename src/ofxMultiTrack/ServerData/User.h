@@ -19,8 +19,8 @@ namespace ofxMultiTrack {
 			bool inferred;
 			bool tracked;
 			string connectedTo;
-			Timestamp lastInferred;
-			Timestamp lastNotInferred;
+			float weight;
+			Timestamp localTimestamp;
 		};
 
 		class User : public std::map<string, Joint>, public ISerialisable {
