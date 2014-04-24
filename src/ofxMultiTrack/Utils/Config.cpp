@@ -52,6 +52,7 @@ namespace ofxMultiTrack {
 				} parameterType = TUndefined;
 
 				if (localParameter != this->parameters.end()) {
+					//first we check the type against any already loaded parameters
 					const auto parameterTypeName = localParameter->second->type();
 					if (isParameterTypeName<bool>(parameterTypeName)) {
 						parameterType = TBool;
@@ -63,6 +64,9 @@ namespace ofxMultiTrack {
 						parameterType = TString;
 					} 
 				} else {
+					//otherwise we infer the type from the json
+					// e.g. can cause int/float mismatches depending on how writting in json
+					//	so always best initialise the param first in Config's constructor
 					if (jsonParameter.isBool()) {
 						parameterType = TBool;
 					} else if (jsonParameter.isInt()) {
