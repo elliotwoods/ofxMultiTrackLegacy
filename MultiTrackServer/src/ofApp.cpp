@@ -26,6 +26,7 @@ void ofApp::setup(){
 		for(auto & node : configJson["nodes"]) {
 			const auto deviceIndex = node["deviceIndex"].asInt();
 			const auto nodeAddress = node["address"].asString();
+			cout << "Adding node " << nodeAddress << "..." << deviceIndex << endl;
 			server.addNode(nodeAddress, deviceIndex);
 			if (!node["name"].empty()) {
 				this->server.getNodes().back()->setName(node["name"].asString());

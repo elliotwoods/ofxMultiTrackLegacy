@@ -2,8 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofSetFrameRate(100);
 	ofSetCircleResolution(3);
+	ofSetFrameRate(100);
+	ofSetVerticalSync(false);
 
 	this->kinect = 0;
 	this->state = FirstFrame;

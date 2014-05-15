@@ -136,6 +136,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		return this->status["remoteStatus"]["timestamp"].asLargestUInt();
 	}));
 
+	auto absoluteTimeOffsetValue = shared_ptr<LiveValueHistory>(new LiveValueHistory("Absolute time offset [ms]", [this] () {
+		return this->node->getAbsoluteTimeOffset();
+	}));
+
 	auto connectedValue = shared_ptr<LiveValue<string> >(new LiveValue<string>("Connected", [this] () {
 		return this->status["connected"].asBool() ? "true" : "false";
 	}));
@@ -145,9 +149,18 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 		this->node->setEnabled(value.get());
 	};
 
-	auto fpsValue = shared_ptr<LiveValue<float> >(new LiveValue<float>("Remote fps", [this] () {
+	auto fpsValue = shared_ptr<LiveValueHistory>(new LiveValueHistory("Remote fps", [this] () {
 		return this->status["remoteStatus"]["fps"].asFloat();
-	}));
+	}, true));
+
+	auto rxpsValue = shared_ptr<LiveValueHistory>(new LiveValueHistory("Receives per second [Hz]", [this] () {
+		auto interval = (float) this->node->getLastRxInterval() / (float) 1e3;
+		if (interval < ofGetLastFrameTime() * 5.0f) {
+			return 1.0f / interval;
+		} else {
+			return 0.0f;
+		}
+	}, true));
 
 	auto tiltSlider = shared_ptr<Slider>(new Slider(this->node->getTiltParameter()));
 
@@ -157,8 +170,10 @@ void RecordingControl::populate(ofxCvGui::ElementGroupPtr inspector) {
 	inspector->add(deviceIndexValue);
 	inspector->add(enabledToggle);
 	inspector->add(timestampValue);
+	inspector->add(absoluteTimeOffsetValue);
 	inspector->add(connectedValue);
 	inspector->add(fpsValue);
+	inspector->add(rxpsValue);
 	inspector->add(tiltSlider);
 
 	inspector->add(shared_ptr<Spacer>(new Spacer()));

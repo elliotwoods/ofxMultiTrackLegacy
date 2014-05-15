@@ -1,5 +1,7 @@
 #include "Node.h"
 #include "Utils/Constants.h"
+#include "Utils/Utils.h"
+#include <sys/timeb.h>
 
 namespace ofxMultiTrack {
 	//----------
@@ -71,9 +73,19 @@ namespace ofxMultiTrack {
 
 	//----------
 	void Node::update() {
-		//update devices
-		for(auto device : this->devices) {
-			device->update();
+		//update devices and block until a device updates or we timeout at 20fps
+		auto timeout = 1000 / 20;
+		auto startTimeoutTimer = ofGetElapsedTimeMillis();
+		bool newFrameFound = false;
+		while(!newFrameFound && ofGetElapsedTimeMillis() - startTimeoutTimer <= timeout) {
+			for(auto device : this->devices) {
+				device->update();
+				auto deviceNewFrame = device->isFrameNew();
+				newFrameFound |= deviceNewFrame;
+			}
+			if (!newFrameFound) {
+				ofSleepMillis(1);
+			}
 		}
 
 		//update modules
@@ -81,13 +93,8 @@ namespace ofxMultiTrack {
 			module->update();
 		}
 
-		//check if we have any data to send
-		bool needsSend = false;
-		for(auto device : this->devices) {
-			needsSend |= device->isFrameNew();
-		}
-		
-		if (needsSend) {
+		//only send if data received
+		if (newFrameFound) {
 			//get local dataset
 			auto json = this->serialise();
 
@@ -122,7 +129,7 @@ namespace ofxMultiTrack {
 		if (connectedCount < this->server.getNumClients()) {
 			//strange hack where ofxNetwork reports a client as being present but not connected
 			//sendToAll still works, but receive won't work in this case.
-			//So restart our server in this case]
+			//So restart our server in this case
 			ofLogNotice("ofxMultiTrack") << "Restarting node's network connection." << endl;
 			auto port = this->server.getPort();
 			this->server.close();
@@ -172,6 +179,7 @@ namespace ofxMultiTrack {
 		status["listeningPort"] = this->server.getPort();
 		status["connectionCount"] = this->server.getNumClients();
 		status["timestamp"] = ofGetElapsedTimeMillis();
+		status["absoluteTime"] = Utils::getAbsoluteTime();
 
 		auto & devices = status["devices"];
 		int iDevice = 0;

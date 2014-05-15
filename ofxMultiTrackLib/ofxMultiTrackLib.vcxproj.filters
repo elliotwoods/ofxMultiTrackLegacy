@@ -431,6 +431,9 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Config.h">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Utils.h">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxNetwork\src\ofxTCPClient.cpp">
@@ -599,6 +602,9 @@
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Config.cpp">
+      <Filter>src\ofxMultiTrack\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Utils.cpp">
       <Filter>src\ofxMultiTrack\Utils</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "../Align/Factory.h"
 #include "../Utils/Constants.h"
 #include "../Utils/Config.h"
+#include "../Utils/Utils.h"
 
 #include <chrono>
 #include <thread>
@@ -40,6 +41,9 @@ namespace ofxMultiTrack {
 			this->startThread(true, false);
 			this->enabled = true;
 			this->disableSaving = false;
+
+			this->lastRxTime = 0;
+			this->lastRxInterval = 1000;
 
 			this->tiltParameter.set("Tilt [degrees]", 0, NUI_CAMERA_ELEVATION_MINIMUM, NUI_CAMERA_ELEVATION_MAXIMUM);
 			this->tiltParameter.addListener(this, & NodeConnection::onTiltParameterChange);
@@ -110,6 +114,16 @@ namespace ofxMultiTrack {
 			this->remoteStatusLock.unlock();
 
 			return status;
+		}
+
+		//----------
+		unsigned int NodeConnection::getLastRxInterval() const {
+			return this->lastRxInterval;
+		}
+
+		//----------
+		long long NodeConnection::getAbsoluteTimeOffset() const {
+			return this->absoluteTimeOffset;
 		}
 
 		//----------
@@ -445,7 +459,6 @@ namespace ofxMultiTrack {
 					jsonReader.parse(response, json);
 					
 					if (!json["modules"]) {
-						cout << "bsdobh";
 						throw(Exception("No modules found"));
 					}
 					if (!json["modules"]["Skeleton"]) {
@@ -495,6 +508,12 @@ namespace ofxMultiTrack {
 					this->remoteStatusLock.lock();
 					this->remoteStatus = json["status"];
 					this->remoteStatusLock.unlock();
+
+					auto now = ofGetElapsedTimeMillis();
+					this->lastRxInterval = now - this->lastRxTime;
+					this->lastRxTime = now;
+
+					this->absoluteTimeOffset = (long long) Utils::getAbsoluteTime() -  json["status"]["absoluteTime"].asLargestInt();
 				}
 				catch(std::exception e)
 				{

@@ -179,6 +179,7 @@
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Constants.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Set.h" />
     <ClInclude Include="..\src\ofxMultiTrack\Utils\Types.h" />
+    <ClInclude Include="..\src\ofxMultiTrack\Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofxAssets\src\ofxAssets.cpp" />
@@ -237,6 +238,7 @@
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Config.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Set.cpp" />
     <ClCompile Include="..\src\ofxMultiTrack\Utils\Types.cpp" />
+    <ClCompile Include="..\src\ofxMultiTrack\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ofxCv\ofxCvLib\ofxCvLib.vcxproj">

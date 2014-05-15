@@ -41,6 +41,8 @@ namespace ofxMultiTrack {
 			Recording & getRecording();
 
 			Json::Value getStatus();
+			unsigned int getLastRxInterval() const;
+			long long getAbsoluteTimeOffset() const;
 			int getIndex() const; /// < Make sure not to call this from constructor (or before we're in the collection)
 
 			const Transform & getTransform() const;
@@ -85,6 +87,9 @@ namespace ofxMultiTrack {
 			int remoteIndex;
 			string name;
 			bool running;
+			unsigned long long lastRxTime;
+			unsigned int lastRxInterval;
+			long long absoluteTimeOffset;
 
 			Json::Value remoteConfig;
 			Json::Value toSend;
