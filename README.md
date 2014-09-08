@@ -7,7 +7,7 @@ Requirements
 ### ofxKinectCommonBridge
 
 * Repo - https://github.com/elliotwoods/ofxKinectCommonBridge.git
-* Branch - fixesFor-ofxMultiTrack (currently one PR's in deadlock with a boring guy from MS)
+* Branch - fixesFor-ofxMultiTrack (one PR was in deadlock last time i checked)
 
 ### ofxPolyFit
 
